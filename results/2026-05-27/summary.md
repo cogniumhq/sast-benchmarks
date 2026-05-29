@@ -31,6 +31,8 @@
 | cognium-ai + qwen3-coder-next | Ollama | 51 GB | `--llm-discovery --cloned-only` | 2s | ⚠️ OOM | — | — | — | — | — | 2026-05-28 |
 | cognium-ai + kimi-k2.6 | llmproxy.xus.one | cloud | `--llm-discovery --cloned-only` | 1s | **71.4%** (85/119) | 83.3% | 61.5% | 64.5% | 57.1% | ~2h | 2026-05-29 |
 | cognium-ai + claude-opus-latest | llmproxy.xus.one | cloud | `--llm-discovery --cloned-only` | 1s | **87.4%** (104/119) | 92.6% | 84.6% | 87.1% | 76.2% | ~10m 36s | 2026-05-29 |
+| cognium-ai + qwen3-coder-30b 4bit | mlx-lm (Apple MLX) | 16 GB | `--llm-discovery --cloned-only` | 1s | **79.0%** (94/119) | 85.2% | 84.6% | 74.2% | 66.7% | 9m 2s | 2026-05-29 |
+| cognium-ai + devstral-small-2507 4bit | mlx-lm (Apple MLX) | ~11 GB | `--llm-discovery --cloned-only` | 1s | **79.0%** (94/119) | 87.0% | 76.9% | 74.2% | 66.7% | ~9m | 2026-05-29 |
 
 > ⚠️ qwen3-coder-next OOM: 51GB model requires 64GB+ RAM. Machine has ~2GB free after OS.  
 > ⚠️ kimi-k2.6: 16/34 misses are LLM errors (likely rate limits / context overflow) — true capability likely higher. Re-run with `--llm-delay=3` recommended.  
