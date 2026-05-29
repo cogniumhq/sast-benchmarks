@@ -1,0 +1,32 @@
+{
+  "generated_at": "2026-05-04T02:06:16.669Z",
+  "dataset": "datasets/top-java-github/projects.json",
+  "offset": 14,
+  "limit": 1,
+  "model": "llama3.2:3b",
+  "provider": "Ollama",
+  "raw_artifacts": "withheld from public repository; stored in the configured private raw directory",
+  "projects": [
+    {
+      "rank": 15,
+      "full_name": "google/guava",
+      "html_url": "https://github.com/google/guava",
+      "commit": "73466ef29ce504b2667d968f094b3fd4b3cd8bf3",
+      "model": "llama3.2:3b",
+      "provider": "Ollama",
+      "started_at": "2026-05-04T01:51:16.677Z",
+      "ended_at": "2026-05-04T02:06:16.669Z",
+      "exit_code": null,
+      "signal": "SIGTERM",
+      "timed_out": true,
+      "raw_publication": "withheld",
+      "total": null,
+      "critical": null,
+      "high": null,
+      "medium": null,
+      "low": null,
+      "unknown": null,
+      "parse_error": true
+    }
+  ]
+}

@@ -1,0 +1,251 @@
+{
+  "published_at": "2026-04-22",
+  "imported_at": "2026-05-03",
+  "source_url": "https://cognium.dev/benchmark/",
+  "benchmark": {
+    "name": "circle-ir SAST Benchmarks",
+    "source_url": "https://cognium.dev/benchmark/"
+  },
+  "dataset": {
+    "name": "mixed public SAST benchmark suite",
+    "revision": "as published on cognium.dev benchmark page, April 22 2026",
+    "source_url": "https://cognium.dev/benchmark/"
+  },
+  "tool": {
+    "name": "circle-ir",
+    "version": "3.19.4",
+    "configuration": "static analysis only; no LLM verification",
+    "command": "git clone https://github.com/cogniumhq/circle-ir && cd circle-ir/benchmarks && npm install && npm run benchmark"
+  },
+  "summary": {
+    "total_cases": 2203,
+    "true_positives": 1234,
+    "true_negatives_known": 888,
+    "false_positives": 3,
+    "false_negatives": 78,
+    "total_benchmarks": 16,
+    "perfect_benchmarks": 8,
+    "benchmarks_at_or_above_90_percent": 13,
+    "languages": 6
+  },
+  "results": [
+    {
+      "language": "Java",
+      "benchmark": "OWASP Benchmark",
+      "tests": 1415,
+      "tp": 708,
+      "tn": 707,
+      "fp": 0,
+      "fn": 0,
+      "tpr": "100%",
+      "fpr": "0%",
+      "score": "100%"
+    },
+    {
+      "language": "Java",
+      "benchmark": "Juliet Test Suite",
+      "tests": 243,
+      "tp": 122,
+      "tn": 121,
+      "fp": 0,
+      "fn": 0,
+      "tpr": "100%",
+      "fpr": "0%",
+      "score": "100%"
+    },
+    {
+      "language": "Java",
+      "benchmark": "SecuriBench Micro",
+      "tests": 123,
+      "tp": 60,
+      "tn": 60,
+      "fp": 1,
+      "fn": 2,
+      "tpr": "96.8%",
+      "fpr": "1.6%",
+      "score": "97.7%"
+    },
+    {
+      "language": "Java",
+      "benchmark": "CWE-Bench-Java",
+      "tests": 120,
+      "tp": 61,
+      "tn": null,
+      "fp": null,
+      "fn": 59,
+      "tpr": "50.8%",
+      "fpr": null,
+      "score": "50.8%"
+    },
+    {
+      "language": "Java",
+      "benchmark": "WebGoat",
+      "tests": 29,
+      "tp": 26,
+      "tn": null,
+      "fp": null,
+      "fn": 3,
+      "tpr": "89.7%",
+      "fpr": null,
+      "score": "89.3%"
+    },
+    {
+      "language": "Java",
+      "benchmark": "DVJA",
+      "tests": 7,
+      "tp": 7,
+      "tn": null,
+      "fp": null,
+      "fn": 0,
+      "tpr": "100%",
+      "fpr": null,
+      "score": "100%"
+    },
+    {
+      "language": "Node.js / TypeScript",
+      "benchmark": "NodeGoat",
+      "tests": 14,
+      "tp": 14,
+      "tn": null,
+      "fp": null,
+      "fn": 0,
+      "tpr": "100%",
+      "fpr": null,
+      "score": "100%"
+    },
+    {
+      "language": "Node.js / TypeScript",
+      "benchmark": "Juice Shop",
+      "tests": 14,
+      "tp": 14,
+      "tn": null,
+      "fp": null,
+      "fn": 0,
+      "tpr": "100%",
+      "fpr": null,
+      "score": "100%"
+    },
+    {
+      "language": "Node.js / TypeScript",
+      "benchmark": "NodeJS Synthetic",
+      "tests": 25,
+      "tp": 23,
+      "tn": null,
+      "fp": null,
+      "fn": 2,
+      "tpr": "92.0%",
+      "fpr": null,
+      "score": "92.9%"
+    },
+    {
+      "language": "Python",
+      "benchmark": "PyGoat",
+      "tests": 26,
+      "tp": 23,
+      "tn": null,
+      "fp": null,
+      "fn": 3,
+      "tpr": "88.5%",
+      "fpr": null,
+      "score": "90.0%"
+    },
+    {
+      "language": "Python",
+      "benchmark": "DVPWA",
+      "tests": 6,
+      "tp": 6,
+      "tn": null,
+      "fp": null,
+      "fn": 0,
+      "tpr": "100%",
+      "fpr": null,
+      "score": "100%"
+    },
+    {
+      "language": "Rust",
+      "benchmark": "Rust Synthetic",
+      "tests": 50,
+      "tp": 46,
+      "tn": null,
+      "fp": null,
+      "fn": 4,
+      "tpr": "92.0%",
+      "fpr": null,
+      "score": "92.3%"
+    },
+    {
+      "language": "Rust",
+      "benchmark": "CWE-Bench-Rust",
+      "tests": 30,
+      "tp": 28,
+      "tn": null,
+      "fp": null,
+      "fn": 2,
+      "tpr": "93.3%",
+      "fpr": null,
+      "score": "94.4%"
+    },
+    {
+      "language": "Bash",
+      "benchmark": "Bash Synthetic",
+      "tests": 31,
+      "tp": 31,
+      "tn": null,
+      "fp": null,
+      "fn": 0,
+      "tpr": "100%",
+      "fpr": null,
+      "score": "100%"
+    },
+    {
+      "language": "HTML/JS",
+      "benchmark": "HTML/JS Synthetic",
+      "tests": 30,
+      "tp": 30,
+      "tn": null,
+      "fp": null,
+      "fn": 0,
+      "tpr": "100%",
+      "fpr": null,
+      "score": "100%"
+    },
+    {
+      "language": "Other",
+      "benchmark": "Firing Range",
+      "tests": 40,
+      "tp": 35,
+      "tn": null,
+      "fp": 2,
+      "fn": 3,
+      "tpr": "92.1%",
+      "fpr": null,
+      "score": "92.1%"
+    }
+  ],
+  "language_summary": [
+    { "language": "Java", "perfect_100": 3, "at_or_above_90": 4, "total_benchmarks": 6 },
+    { "language": "Node.js / TypeScript", "perfect_100": 2, "at_or_above_90": 3, "total_benchmarks": 3 },
+    { "language": "Python", "perfect_100": 1, "at_or_above_90": 2, "total_benchmarks": 2 },
+    { "language": "Rust", "perfect_100": 0, "at_or_above_90": 2, "total_benchmarks": 2 },
+    { "language": "Bash", "perfect_100": 1, "at_or_above_90": 1, "total_benchmarks": 1 },
+    { "language": "HTML/JS", "perfect_100": 1, "at_or_above_90": 1, "total_benchmarks": 1 },
+    { "language": "Total", "perfect_100": 8, "at_or_above_90": 13, "total_benchmarks": 16 }
+  ],
+  "cwe_bench_java_breakdown": [
+    { "cwe": "CWE-022", "category": "Path Traversal", "detected": 37, "total": 55, "missed": 18, "rate": "67.3%" },
+    { "cwe": "CWE-078", "category": "Command Injection", "detected": 6, "total": 13, "missed": 7, "rate": "46.2%" },
+    { "cwe": "CWE-079", "category": "XSS", "detected": 13, "total": 31, "missed": 18, "rate": "41.9%" },
+    { "cwe": "CWE-094", "category": "Code Injection", "detected": 5, "total": 21, "missed": 16, "rate": "23.8%" }
+  ],
+  "artifacts": {
+    "raw_output": "raw/2026-04-22/cognium-dev-benchmark.html",
+    "summary_markdown": "results/2026-04-22/summary.md",
+    "summary_csv": "results/2026-04-22/results.csv"
+  },
+  "limitations": [
+    "Imported from the live cognium.dev benchmark page rather than rerunning the benchmark during this commit.",
+    "Several benchmark rows do not publish true-negative or false-positive counts on the source page.",
+    "CWE-Bench-Java uses per-project detection, not per-CVE counts.",
+    "These results test static analysis only; the full SAST plus LLM verification pipeline is separate."
+  ]
+}

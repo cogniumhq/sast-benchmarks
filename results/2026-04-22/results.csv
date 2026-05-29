@@ -1,0 +1,17 @@
+published_at,source_url,tool,tool_version,mode,llm_verification,language,benchmark,tests,tp,tn,fp,fn,tpr,fpr,score
+2026-04-22,https://cognium.dev/benchmark/,circle-ir,3.19.4,static-analysis,false,Java,OWASP Benchmark,1415,708,707,0,0,100%,0%,100%
+2026-04-22,https://cognium.dev/benchmark/,circle-ir,3.19.4,static-analysis,false,Java,Juliet Test Suite,243,122,121,0,0,100%,0%,100%
+2026-04-22,https://cognium.dev/benchmark/,circle-ir,3.19.4,static-analysis,false,Java,SecuriBench Micro,123,60,60,1,2,96.8%,1.6%,97.7%
+2026-04-22,https://cognium.dev/benchmark/,circle-ir,3.19.4,static-analysis,false,Java,CWE-Bench-Java,120,61,,,59,50.8%,,50.8%
+2026-04-22,https://cognium.dev/benchmark/,circle-ir,3.19.4,static-analysis,false,Java,WebGoat,29,26,,,3,89.7%,,89.3%
+2026-04-22,https://cognium.dev/benchmark/,circle-ir,3.19.4,static-analysis,false,Java,DVJA,7,7,,,0,100%,,100%
+2026-04-22,https://cognium.dev/benchmark/,circle-ir,3.19.4,static-analysis,false,Node.js / TypeScript,NodeGoat,14,14,,,0,100%,,100%
+2026-04-22,https://cognium.dev/benchmark/,circle-ir,3.19.4,static-analysis,false,Node.js / TypeScript,Juice Shop,14,14,,,0,100%,,100%
+2026-04-22,https://cognium.dev/benchmark/,circle-ir,3.19.4,static-analysis,false,Node.js / TypeScript,NodeJS Synthetic,25,23,,,2,92.0%,,92.9%
+2026-04-22,https://cognium.dev/benchmark/,circle-ir,3.19.4,static-analysis,false,Python,PyGoat,26,23,,,3,88.5%,,90.0%
+2026-04-22,https://cognium.dev/benchmark/,circle-ir,3.19.4,static-analysis,false,Python,DVPWA,6,6,,,0,100%,,100%
+2026-04-22,https://cognium.dev/benchmark/,circle-ir,3.19.4,static-analysis,false,Rust,Rust Synthetic,50,46,,,4,92.0%,,92.3%
+2026-04-22,https://cognium.dev/benchmark/,circle-ir,3.19.4,static-analysis,false,Rust,CWE-Bench-Rust,30,28,,,2,93.3%,,94.4%
+2026-04-22,https://cognium.dev/benchmark/,circle-ir,3.19.4,static-analysis,false,Bash,Bash Synthetic,31,31,,,0,100%,,100%
+2026-04-22,https://cognium.dev/benchmark/,circle-ir,3.19.4,static-analysis,false,HTML/JS,HTML/JS Synthetic,30,30,,,0,100%,,100%
+2026-04-22,https://cognium.dev/benchmark/,circle-ir,3.19.4,static-analysis,false,Other,Firing Range,40,35,,2,3,92.1%,,92.1%
