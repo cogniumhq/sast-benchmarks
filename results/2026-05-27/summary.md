@@ -8,29 +8,29 @@
 
 ## 1. Curated Benchmark Suite (Static SAST — no LLM)
 
-| Benchmark | Language | Tests | Score | TPR | FPR | Notes |
-|---|---|---|---|---|---|---|
-| OWASP Benchmark v1.2 | Java | 1,415 | **100%** | 100% | 0% | 11 categories, 0 FP |
-| Juliet Test Suite v01 | Java | 243 | **100%** | 100% | 0% | 14 CWEs, 0 FN |
-| SecuriBench Micro | Java | 108 vuln / 15 safe | **97.7% TPR** | 97.7% | 6.7% | 2 FN (aliasing, collection copy); 1 FP |
-| CWE-Bench-Java (static) | Java | 119 CVEs | **71.4%** | — | — | 85/119 detected; CodeQL=22.5%, IRIS/GPT-4=45.8% |
-| OWASP Python Benchmark | Python | 1,230 | **84.1% TPR** | 84.1% | 14.9% | F1=80.2%; 100% on sqli/weakrand/hash/cookie; weak on deser/ldap |
-| NodeJS Benchmark | JavaScript | 25 | **100% TPR** | 100% | 11.1% | F1=97.0%; 1 FP on cmdi |
+| Benchmark | Language | Tests | Score | TPR | FPR | Duration | Notes |
+|---|---|---|---|---|---|---|---|
+| OWASP Benchmark v1.2 | Java | 1,415 | **100%** | 100% | 0% | 11.9s | 11 categories, 0 FP |
+| Juliet Test Suite v01 | Java | 243 | **100%** | 100% | 0% | ~1.5s | 14 CWEs, 0 FN |
+| SecuriBench Micro | Java | 108 vuln / 15 safe | **97.7% TPR** | 97.7% | 6.7% | ~2s | 2 FN (aliasing, collection copy); 1 FP |
+| CWE-Bench-Java (static) | Java | 119 CVEs | **71.4%** | — | — | ~1m 20s | 85/119 detected; CodeQL=22.5%, IRIS/GPT-4=45.8% |
+| OWASP Python Benchmark | Python | 1,230 | **84.1% TPR** | 84.1% | 14.9% | 2.15s | F1=80.2%; 100% on sqli/weakrand/hash/cookie; weak on deser/ldap |
+| NodeJS Benchmark | JavaScript | 25 | **100% TPR** | 100% | 11.1% | 0.07s | F1=97.0%; 1 FP on cmdi |
 
 ---
 
 ## 2. CWE-Bench-Java — Model Comparison
 
-| Tool / Model | Provider | Model Size | Flags | LLM Delay | Score | CWE-022 | CWE-078 | CWE-079 | CWE-094 | Date |
-|---|---|---|---|---|---|---|---|---|---|---|
-| CodeQL | — | — | — | — | 22.5% (27/120) | — | — | — | — | IRIS paper |
-| IRIS (GPT-4) | OpenAI | — | — | — | 45.8% (55/120) | — | — | — | — | IRIS paper |
-| cognium-ai | Static | — | `--no-llm` | — | **71.4%** (85/119) | 83.3% | 61.5% | 64.5% | 57.1% | 2026-05-28 |
-| cognium-ai + qwen3-coder:30b | Ollama | 18 GB | `--llm-discovery --cloned-only` | 1s | **79.8%** (95/119) | 87.0% | 84.6% | 74.2% | 66.7% | 2026-05-21 |
-| cognium-ai + gpt-oss:20b | Ollama | 13 GB | `--llm-discovery --cloned-only` | 1s | **81.5%** (97/119) | 90.7% | 69.2% | 83.9% | 61.9% | 2026-05-28 |
-| cognium-ai + qwen3-coder-next | Ollama | 51 GB | `--llm-discovery --cloned-only` | 2s | ⚠️ OOM | — | — | — | — | 2026-05-28 |
-| cognium-ai + kimi-k2.6 | llmproxy.xus.one | cloud | `--llm-discovery --cloned-only` | 1s | **71.4%** (85/119) | 83.3% | 61.5% | 64.5% | 57.1% | 2026-05-29 |
-| cognium-ai + claude-opus-latest | llmproxy.xus.one | cloud | `--llm-discovery --cloned-only` | 1s | **87.4%** (104/119) | 92.6% | 84.6% | 87.1% | 76.2% | 2026-05-29 |
+| Tool / Model | Provider | Model Size | Flags | LLM Delay | Score | CWE-022 | CWE-078 | CWE-079 | CWE-094 | Duration | Date |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| CodeQL | — | — | — | — | 22.5% (27/120) | — | — | — | — | — | IRIS paper |
+| IRIS (GPT-4) | OpenAI | — | — | — | 45.8% (55/120) | — | — | — | — | — | IRIS paper |
+| cognium-ai | Static | — | `--no-llm` | — | **71.4%** (85/119) | 83.3% | 61.5% | 64.5% | 57.1% | ~1m 20s | 2026-05-28 |
+| cognium-ai + qwen3-coder:30b | Ollama | 18 GB | `--llm-discovery --cloned-only` | 1s | **79.8%** (95/119) | 87.0% | 84.6% | 74.2% | 66.7% | ~2h | 2026-05-21 |
+| cognium-ai + gpt-oss:20b | Ollama | 13 GB | `--llm-discovery --cloned-only` | 1s | **81.5%** (97/119) | 90.7% | 69.2% | 83.9% | 61.9% | ~2h 1m | 2026-05-28 |
+| cognium-ai + qwen3-coder-next | Ollama | 51 GB | `--llm-discovery --cloned-only` | 2s | ⚠️ OOM | — | — | — | — | — | 2026-05-28 |
+| cognium-ai + kimi-k2.6 | llmproxy.xus.one | cloud | `--llm-discovery --cloned-only` | 1s | **71.4%** (85/119) | 83.3% | 61.5% | 64.5% | 57.1% | ~2h | 2026-05-29 |
+| cognium-ai + claude-opus-latest | llmproxy.xus.one | cloud | `--llm-discovery --cloned-only` | 1s | **87.4%** (104/119) | 92.6% | 84.6% | 87.1% | 76.2% | ~10m 36s | 2026-05-29 |
 
 > ⚠️ qwen3-coder-next OOM: 51GB model requires 64GB+ RAM. Machine has ~2GB free after OS.  
 > ⚠️ kimi-k2.6: 16/34 misses are LLM errors (likely rate limits / context overflow) — true capability likely higher. Re-run with `--llm-delay=3` recommended.  
