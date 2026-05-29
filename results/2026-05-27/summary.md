@@ -1,7 +1,7 @@
 # Cognium-AI Benchmark Results — 2026-05-27
 
 **Engine:** cognium-ai v2.7.18 · circle-ir-ai  
-**Date:** 2026-05-27 / 2026-05-28  
+**Date:** 2026-05-27 / 2026-05-28 / 2026-05-29  
 **Ollama version:** 0.24.0 (local, upgraded during run)
 
 ---
@@ -29,11 +29,12 @@
 | cognium-ai + qwen3-coder:30b | Ollama | 18 GB | `--llm-discovery --cloned-only` | 1s | **79.8%** (95/119) | 87.0% | 84.6% | 74.2% | 66.7% | 2026-05-21 |
 | cognium-ai + gpt-oss:20b | Ollama | 13 GB | `--llm-discovery --cloned-only` | 1s | **81.5%** (97/119) | 90.7% | 69.2% | 83.9% | 61.9% | 2026-05-28 |
 | cognium-ai + qwen3-coder-next | Ollama | 51 GB | `--llm-discovery --cloned-only` | 2s | ⚠️ OOM | — | — | — | — | 2026-05-28 |
-| cognium-ai + kimi-k2.6 | llmproxy.xus.one | cloud | `--llm-discovery --cloned-only` | 1s | **71.4%** (85/119) | 83.3% | 61.5% | 64.5% | 57.1% | 2026-05-28 |
-| cognium-ai + claude-opus-latest | llmproxy.xus.one | cloud | `--llm-discovery --cloned-only` | 1s | **71.4%** (85/119) | 83.3% | 61.5% | 64.5% | 57.1% | 2026-05-28 |
+| cognium-ai + kimi-k2.6 | llmproxy.xus.one | cloud | `--llm-discovery --cloned-only` | 1s | **71.4%** (85/119) | 83.3% | 61.5% | 64.5% | 57.1% | 2026-05-29 |
+| cognium-ai + claude-opus-latest | llmproxy.xus.one | cloud | `--llm-discovery --cloned-only` | 1s | **87.4%** (104/119) | 92.6% | 84.6% | 87.1% | 76.2% | 2026-05-29 |
 
 > ⚠️ qwen3-coder-next OOM: 51GB model requires 64GB+ RAM. Machine has ~2GB free after OS.  
-> ⚠️ Issue #72: Cloud runs (kimi-k2.6, claude-opus-latest) show no LLM uplift — `.env` in `circle-ir-ai/` overwrites externally set `LLM_BASE_URL`/`LLM_API_KEY` vars via dotenv. Fix: `dotenvConfig({ override: false })`. Pending re-run after fix is merged.
+> ⚠️ kimi-k2.6: 16/34 misses are LLM errors (likely rate limits / context overflow) — true capability likely higher. Re-run with `--llm-delay=3` recommended.  
+> Issue #72 fixed: `dotenvConfig({ override: false })` — cloud proxy env vars now respected correctly.
 
 ---
 
