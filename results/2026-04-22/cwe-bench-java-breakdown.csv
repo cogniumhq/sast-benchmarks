@@ -1,0 +1,5 @@
+published_at,source_url,tool,tool_version,cwe,category,detected,total,missed,rate
+2026-04-22,https://cognium.dev/benchmark/,circle-ir,3.19.4,CWE-022,Path Traversal,37,55,18,67.3%
+2026-04-22,https://cognium.dev/benchmark/,circle-ir,3.19.4,CWE-078,Command Injection,6,13,7,46.2%
+2026-04-22,https://cognium.dev/benchmark/,circle-ir,3.19.4,CWE-079,XSS,13,31,18,41.9%
+2026-04-22,https://cognium.dev/benchmark/,circle-ir,3.19.4,CWE-094,Code Injection,5,21,16,23.8%

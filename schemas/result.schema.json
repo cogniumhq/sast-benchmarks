@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cognium.dev/schemas/sast-benchmark-result.schema.json",
+  "title": "Cognium SAST Benchmark Result",
+  "type": "object",
+  "required": [
+    "published_at",
+    "benchmark",
+    "dataset",
+    "tool",
+    "summary",
+    "artifacts"
+  ],
+  "properties": {
+    "published_at": { "type": "string", "format": "date" },
+    "benchmark": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string" },
+        "version": { "type": "string" },
+        "source_url": { "type": "string" },
+        "revision": { "type": "string" }
+      }
+    },
+    "dataset": {
+      "type": "object",
+      "required": ["name", "revision"],
+      "properties": {
+        "name": { "type": "string" },
+        "revision": { "type": "string" },
+        "source_url": { "type": "string" }
+      }
+    },
+    "tool": {
+      "type": "object",
+      "required": ["name", "version"],
+      "properties": {
+        "name": { "type": "string" },
+        "version": { "type": "string" },
+        "configuration": { "type": "string" },
+        "command": { "type": "string" }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": ["total_cases", "true_positives", "false_negatives"],
+      "properties": {
+        "total_cases": { "type": "integer", "minimum": 0 },
+        "true_positives": { "type": "integer", "minimum": 0 },
+        "false_negatives": { "type": "integer", "minimum": 0 },
+        "false_positives": { "type": "integer", "minimum": 0 },
+        "inconclusive": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "properties": {
+        "raw_output": { "type": "string" },
+        "summary_markdown": { "type": "string" },
+        "summary_csv": { "type": "string" }
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}
