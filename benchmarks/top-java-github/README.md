@@ -1,7 +1,7 @@
 # Top Java GitHub Projects Benchmark
 
-This benchmark track runs `cognium-ai` against the top 100 non-archived Java
-repositories selected from GitHub by stars.
+This benchmark track runs `cognium-ai` against 100 curated tier-1 Java libraries
+and infrastructure components selected for security scanning relevance.
 
 Dataset:
 
