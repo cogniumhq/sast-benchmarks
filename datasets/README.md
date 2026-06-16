@@ -14,5 +14,5 @@ pinned. Each dataset folder should record:
 Current datasets:
 
 - `cwe-bench-java/`: source notes for CWE-Bench-Java.
-- `top-java-github/`: GitHub Search API snapshot for the top 100 non-archived Java repositories by stars.
+- `top-java-github/`: curated tier-1 Java libraries and infrastructure components for security scanning.
 - `top-javascript-github/`: GitHub Search API snapshot for the top 10 non-archived JavaScript repositories by stars.

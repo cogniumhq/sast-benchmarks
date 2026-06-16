@@ -13,4 +13,4 @@ Each benchmark folder should explain:
 Current tracks:
 
 - `cwe-bench-java/`: Java CVE benchmark track with per-project detection notes.
-- `top-java-github/`: top 100 GitHub Java repositories selected by stars for ecosystem-scale cognium-ai analysis.
+- `top-java-github/`: 100 curated tier-1 Java libraries and infrastructure components for security-focused cognium-ai analysis.

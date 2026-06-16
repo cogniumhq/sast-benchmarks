@@ -16,5 +16,6 @@ folders.
 
 Current scripts:
 
-- `select-top-java-projects.mjs`: refreshes `datasets/top-java-github/` from the GitHub Search API.
+- `import-tier1-java-targets.mjs`: refreshes `datasets/top-java-github/` from the curated tier-1 target list (`tier1-targets.csv`). Pass `--enrich` with `GITHUB_TOKEN` to backfill GitHub metadata.
+- `select-top-java-projects.mjs`: legacy GitHub Search API selector (star-ranked). Prefer `import-tier1-java-targets.mjs` for security scan benchmarks.
 - `run-cognium-ai-java-corpus.mjs`: clones selected repositories, runs `cognium-ai`, keeps raw output private, and writes sanitized public summaries.
