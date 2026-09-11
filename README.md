@@ -22,6 +22,13 @@ verification. Two dated snapshots, never merged:
 | [`results/2026-04-22/`](results/2026-04-22/summary.md) | cognium-dev 3.19.4 (published then as `circle-ir`) | 16 | Java, Node.js/TS, Python, Rust, Bash, HTML/JS (+ Firing Range) | 8 rows at 100%, 14 at ≥ 90%; CWE-Bench-Java 50.8% (61/120, IRIS-strict) |
 | [`results/2026-09-11/`](results/2026-09-11/summary.md) | cognium-dev 4.9.13 | 4 | Go, C#/.NET (preview) | Go Synthetic 78.9%; Vulnerability-goapp TPR 50.0% / FPR 14.3%; C# Synthetic TPR 90.9% / FPR 25.0%; Juliet C# recall 13.8% |
 
+Tool comparison lane — [`results/2026-09-11-owasp-java-comparison/`](results/2026-09-11-owasp-java-comparison/summary.md):
+OWASP Benchmark Java v1.2, **all 2,740 cases, the official scorecard rule, one
+scorer for every tool**. cognium-dev 4.9.13: TPR 91.0% / FPR 17.4% / Youden
+73.5; CodeQL, Semgrep, SonarQube Community and SpotBugs + Find-Sec-Bugs rows
+are added as they are run on the same revision. (The April snapshot's
+1,415-case OWASP row is not comparable and says so.)
+
 For each row:
 
 - **what it measures, how it is scored, the published numbers** →

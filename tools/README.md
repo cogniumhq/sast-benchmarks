@@ -10,8 +10,8 @@ sets it produced.
 | --- | --- | --- | --- |
 | `cognium/` | **cognium-dev** static engine (npm `cognium-dev` / `circle-ir`) | active — the engine measured on `cognium.dev/benchmark` | `results/2026-04-22/`, `results/2026-09-11/` |
 | `cognium-ai/` | **cognium-ai** SAST + LLM CLI (npm `cognium-ai`) | active — separate lane, never merged into the static tables | `results/2026-05-05/`, `results/2026-05-27/` |
-| `codeql/` | CodeQL CLI | planned baseline — no published run yet | reference numbers on CWE-Bench-Java (22.5%) are quoted from the IRIS paper, not from a run here |
-| `semgrep/` | Semgrep | planned baseline — no published run yet | — |
+| `codeql/` | CodeQL CLI | planned — next row in `results/2026-09-11-owasp-java-comparison/` | reference numbers on CWE-Bench-Java (22.5%) are quoted from the IRIS paper, not from a run here |
+| `semgrep/` | Semgrep OSS | planned — next row in `results/2026-09-11-owasp-java-comparison/` | — |
 
 ## What each lane README must contain
 

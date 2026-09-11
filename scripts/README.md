@@ -42,6 +42,11 @@ For every `results/<date>/results.json` it checks:
 4. Every path under `artifacts` exists in the repository.
 5. Every row's benchmark name maps to a slug (table at the top of the script)
    with a `benchmarks/<slug>/README.md` and a `datasets/<slug>/README.md`.
+6. Every `results/<dir>/comparison.json` (tool-comparison lanes): required
+   fields, each tool's TP+FP+FN+TN equals `dataset.cases` and TP+FN equals
+   `dataset.vulnerable`, stated TPR / FPR / precision / Youden match the
+   totals, per-category sums match, artifact paths exist, and a `tools/` lane
+   README exists for the tool.
 
 Exit code 1 with one line per problem, otherwise `OK: N result set(s)
 validated`. Adding a new benchmark row requires adding its slug to the map,

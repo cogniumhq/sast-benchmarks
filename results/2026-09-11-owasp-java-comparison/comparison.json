@@ -1,0 +1,209 @@
+{
+  "published_at": "2026-09-11",
+  "benchmark": {
+    "name": "OWASP Benchmark Java v1.2 — full suite tool comparison",
+    "source_url": "https://owasp.org/www-project-benchmark/"
+  },
+  "dataset": {
+    "name": "OWASP Benchmark Java v1.2",
+    "revision": "OWASP-Benchmark/BenchmarkJava commit 20cbf3d11123347e47ed89541e6942836def53f7 (2026-09-08); expectedresults-1.2.csv byte-identical to datasets/owasp-benchmark-java/expectedresults-1.2.csv",
+    "source_url": "https://github.com/OWASP-Benchmark/BenchmarkJava",
+    "cases": 2740,
+    "vulnerable": 1415,
+    "safe": 1325
+  },
+  "scoring_rule": "file-level match on BenchmarkTestNNNNN with exact CWE; all 2,740 cases; Youden = TPR - FPR",
+  "scorer": "scripts/score-owasp-benchmark.mjs",
+  "tools": [
+    {
+      "tool": "cognium-dev",
+      "version": "4.9.13",
+      "package": "cognium-dev@4.9.13 (npm)",
+      "run_at": "2026-09-11",
+      "command": "cognium-dev scan <owasp-java>/src/main/java/org/owasp/benchmark/testcode -l java -f json --threads 8 -q -o cognium-dev-4.9.13-owasp-java.json",
+      "configuration": "default config; no project profile detected (testcode dir has no pom.xml); no LLM",
+      "wall_clock_seconds": 13.3,
+      "runtime": "Node v25.9.0, macOS 26.6.2, Apple Silicon",
+      "findings_total": 10176,
+      "findings_mapped_to_cases": 10176,
+      "totals": {
+        "tp": 1287,
+        "fp": 231,
+        "fn": 128,
+        "tn": 1094
+      },
+      "overall": {
+        "tpr": 90.95,
+        "fpr": 17.43,
+        "precision": 84.78,
+        "f1": 87.76,
+        "youden": 73.52
+      },
+      "per_category": [
+        {
+          "category": "cmdi",
+          "cwe": 78,
+          "tp": 113,
+          "fp": 39,
+          "fn": 13,
+          "tn": 86,
+          "tpr": 89.68,
+          "fpr": 31.2,
+          "precision": 74.34,
+          "f1": 81.29,
+          "youden": 58.48
+        },
+        {
+          "category": "crypto",
+          "cwe": 327,
+          "tp": 130,
+          "fp": 0,
+          "fn": 0,
+          "tn": 116,
+          "tpr": 100,
+          "fpr": 0,
+          "precision": 100,
+          "f1": 100,
+          "youden": 100
+        },
+        {
+          "category": "hash",
+          "cwe": 328,
+          "tp": 89,
+          "fp": 0,
+          "fn": 40,
+          "tn": 107,
+          "tpr": 68.99,
+          "fpr": 0,
+          "precision": 100,
+          "f1": 81.65,
+          "youden": 68.99
+        },
+        {
+          "category": "ldapi",
+          "cwe": 90,
+          "tp": 24,
+          "fp": 0,
+          "fn": 3,
+          "tn": 32,
+          "tpr": 88.89,
+          "fpr": 0,
+          "precision": 100,
+          "f1": 94.12,
+          "youden": 88.89
+        },
+        {
+          "category": "pathtraver",
+          "cwe": 22,
+          "tp": 116,
+          "fp": 0,
+          "fn": 17,
+          "tn": 135,
+          "tpr": 87.22,
+          "fpr": 0,
+          "precision": 100,
+          "f1": 93.17,
+          "youden": 87.22
+        },
+        {
+          "category": "securecookie",
+          "cwe": 614,
+          "tp": 33,
+          "fp": 0,
+          "fn": 3,
+          "tn": 31,
+          "tpr": 91.67,
+          "fpr": 0,
+          "precision": 100,
+          "f1": 95.65,
+          "youden": 91.67
+        },
+        {
+          "category": "sqli",
+          "cwe": 89,
+          "tp": 255,
+          "fp": 0,
+          "fn": 17,
+          "tn": 232,
+          "tpr": 93.75,
+          "fpr": 0,
+          "precision": 100,
+          "f1": 96.77,
+          "youden": 93.75
+        },
+        {
+          "category": "trustbound",
+          "cwe": 501,
+          "tp": 58,
+          "fp": 0,
+          "fn": 25,
+          "tn": 43,
+          "tpr": 69.88,
+          "fpr": 0,
+          "precision": 100,
+          "f1": 82.27,
+          "youden": 69.88
+        },
+        {
+          "category": "weakrand",
+          "cwe": 330,
+          "tp": 218,
+          "fp": 0,
+          "fn": 0,
+          "tn": 275,
+          "tpr": 100,
+          "fpr": 0,
+          "precision": 100,
+          "f1": 100,
+          "youden": 100
+        },
+        {
+          "category": "xpathi",
+          "cwe": 643,
+          "tp": 14,
+          "fp": 0,
+          "fn": 1,
+          "tn": 20,
+          "tpr": 93.33,
+          "fpr": 0,
+          "precision": 100,
+          "f1": 96.55,
+          "youden": 93.33
+        },
+        {
+          "category": "xss",
+          "cwe": 79,
+          "tp": 237,
+          "fp": 192,
+          "fn": 9,
+          "tn": 17,
+          "tpr": 96.34,
+          "fpr": 91.87,
+          "precision": 55.24,
+          "f1": 70.22,
+          "youden": 4.48
+        }
+      ],
+      "artifacts": {
+        "scorecard_json": "results/2026-09-11-owasp-java-comparison/cognium-dev.scorecard.json",
+        "scorecard_md": "results/2026-09-11-owasp-java-comparison/cognium-dev.scorecard.md",
+        "per_cwe_csv": "results/2026-09-11-owasp-java-comparison/cognium-dev.per-cwe.csv",
+        "raw_scan": "raw/2026-09-11-owasp-java-comparison/cognium-dev-4.9.13-owasp-java.scan.json.gz",
+        "normalized_findings": "raw/2026-09-11-owasp-java-comparison/cognium-dev-4.9.13-owasp-java.normalized-findings.json"
+      }
+    }
+  ],
+  "planned_tools": [
+    "codeql",
+    "semgrep",
+    "sonarqube-community",
+    "spotbugs-findsecbugs"
+  ],
+  "relation_to_static_snapshot": "results/2026-04-22 reports OWASP Benchmark as 1,415 cases / 100% TPR / 0% FPR from the historical harness. That harness is not public and no combination of whole OWASP categories yields 1,415 cases with 708 vulnerable, so its case selection cannot be reconstructed. The row here is the reproducible, official-rule, full-suite number and is the one to use for any comparison.",
+  "limitations": [
+    "Single tool so far; competitor rows are added as they are run with the same scorer, dataset revision and rule.",
+    "XSS: 192 of 209 safe cases are flagged (FPR 91.9%) — the engine does not credit OWASP's output-encoding controls; this is the dominant source of the 231 false positives. cmdi FPR 31.2% is the other.",
+    "Findings without a CWE (code-quality passes) are ignored by the rule and cannot help or hurt the score.",
+    "Static analysis only; the cognium-ai SAST + LLM lane is published separately."
+  ]
+}

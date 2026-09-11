@@ -15,6 +15,10 @@ https://github.com/OWASP-Benchmark/BenchmarkJava (project page: https://owasp.or
 
 Benchmark v1.2 (2,740 test cases; `expectedresults-1.2.csv` dated 2016-06-1x). Upstream commit not pinned at the April 22, 2026 publication (imported from the live page); the harness clones the upstream default branch. Pin a commit before the next rerun.
 
+For `results/2026-09-11-owasp-java-comparison/`: commit
+`20cbf3d11123347e47ed89541e6942836def53f7` (2026-09-08), all 2,740 cases,
+ground truth byte-identical to the committed CSV.
+
 ## Ground truth
 
 `expectedresults-1.2.csv` — upstream OWASP ground truth (`test name, category, real vulnerability, cwe`), copied verbatim with attribution.

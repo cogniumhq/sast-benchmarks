@@ -68,6 +68,10 @@ dataset has no scored negatives, so TN, FP and FPR cannot be reported for it.
   no C# false-positive rate has been published yet.
 - The one-command harness for the April 22 set is not in the public source
   tree; see `docs/run-new-benchmarks.md`.
+- The April OWASP Benchmark row (1,415 cases, 100% / 0%) cannot be
+  reconstructed from whole categories; the reproducible full-suite number
+  (2,740 cases, official rule) is in `results/2026-09-11-owasp-java-comparison/`
+  and is the one used for tool comparisons.
 
 ## What the track does not measure
 

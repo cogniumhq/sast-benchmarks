@@ -127,10 +127,41 @@ for (const rel of resultFiles) {
   }
 }
 
+// ---------- comparison result sets (results/<dir>/comparison.json) ----------
+const comparisonFiles = fs.readdirSync(path.join(root, 'results'))
+  .map((d) => path.join('results', d, 'comparison.json'))
+  .filter((p) => fs.existsSync(path.join(root, p)));
+
+for (const rel of comparisonFiles) {
+  let j;
+  try { j = JSON.parse(fs.readFileSync(path.join(root, rel), 'utf8')); } catch (e) { fail(rel, `invalid JSON: ${e.message}`); continue; }
+  for (const k of ['published_at', 'benchmark', 'dataset', 'scoring_rule', 'scorer', 'tools']) if (!(k in j)) fail(rel, `missing "${k}"`);
+  const cases = j.dataset?.cases;
+  for (const t of j.tools || []) {
+    const id = `${t.tool} ${t.version}`;
+    for (const k of ['tool', 'version', 'command', 'totals', 'overall', 'artifacts']) if (!(k in t)) fail(rel, `${id}: missing "${k}"`);
+    const tt = t.totals || {};
+    const n = (tt.tp ?? 0) + (tt.fp ?? 0) + (tt.fn ?? 0) + (tt.tn ?? 0);
+    if (cases && n !== cases) fail(rel, `${id}: TP+FP+FN+TN = ${n} but dataset.cases = ${cases}`);
+    if (j.dataset?.vulnerable != null && tt.tp + tt.fn !== j.dataset.vulnerable) fail(rel, `${id}: TP+FN = ${tt.tp + tt.fn} but dataset.vulnerable = ${j.dataset.vulnerable}`);
+    const o = t.overall || {};
+    const chk = (name, stated, calc) => { if (stated != null && Math.abs(stated - calc) > 0.05) fail(rel, `${id}: ${name} ${stated} but computed ${calc.toFixed(2)}`); };
+    chk('tpr', o.tpr, (100 * tt.tp) / (tt.tp + tt.fn));
+    chk('fpr', o.fpr, (100 * tt.fp) / (tt.fp + tt.tn));
+    chk('precision', o.precision, (100 * tt.tp) / (tt.tp + tt.fp));
+    chk('youden', o.youden, (100 * tt.tp) / (tt.tp + tt.fn) - (100 * tt.fp) / (tt.fp + tt.tn));
+    if (Array.isArray(t.per_category)) {
+      for (const k of ['tp', 'fp', 'fn', 'tn']) { const s = sum(t.per_category, k); if (s !== tt[k]) fail(rel, `${id}: per_category ${k} sum ${s} != totals ${tt[k]}`); }
+    }
+    for (const [k, p] of Object.entries(t.artifacts || {})) if (typeof p === 'string' && !fs.existsSync(path.join(root, p))) fail(rel, `${id}: artifacts.${k} -> "${p}" does not exist`);
+    if (!fs.existsSync(path.join(root, 'tools', t.tool === 'cognium-dev' ? 'cognium' : t.tool, 'README.md'))) fail(rel, `${id}: no tools/ lane README for "${t.tool}"`);
+  }
+}
+
 if (resultFiles.length === 0) problems.push('no results/*/results.json files found');
 if (problems.length) {
   console.error(`FAIL (${problems.length})`);
   for (const p of problems) console.error(' - ' + p);
   process.exit(1);
 }
-console.log(`OK: ${resultFiles.length} result set(s) validated: ${resultFiles.join(', ')}`);
+console.log(`OK: ${resultFiles.length} result set(s) + ${comparisonFiles.length} comparison set(s) validated: ${[...resultFiles, ...comparisonFiles].join(', ')}`);

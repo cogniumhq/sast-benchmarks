@@ -23,6 +23,10 @@ Static-analysis snapshots (mirrored by `https://cognium.dev/benchmark`):
   16 benchmarks, 6 language groups.
 - `2026-09-11`: cognium-dev 4.9.13 first scored Go and C#/.NET results
   (4 benchmarks). Extends language coverage; does not re-score the April set.
+- `2026-09-11-owasp-java-comparison`: OWASP Benchmark Java v1.2, **all 2,740
+  cases, official scorecard rule**, one scorer for every tool — the lane for
+  comparing cognium-dev with CodeQL, Semgrep, SonarQube, SpotBugs. cognium-dev
+  4.9.13: TPR 91.0% / FPR 17.4% / Youden 73.5. Competitor rows follow.
 
 cognium-ai (SAST + LLM) runs:
 

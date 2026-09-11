@@ -35,7 +35,7 @@ ls summary.md results.csv results.json cwe-bench-java-breakdown.csv
 
 | Language | Benchmark | Tests | TP | TN | FP | FN | TPR | FPR | Score |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Java | OWASP Benchmark | 1,415 | 708 | 707 | 0 | 0 | 100% | 0% | 100% |
+| Java | OWASP Benchmark (see note) | 1,415 | 708 | 707 | 0 | 0 | 100% | 0% | 100% |
 | Java | Juliet Test Suite | 243 | 122 | 121 | 0 | 0 | 100% | 0% | 100% |
 | Java | SecuriBench Micro | 123 | 60 | 60 | 1 | 2 | 96.8% | 1.6% | 97.7% |
 | Java | CWE-Bench-Java | 120 | 61 | n/a | n/a | 59 | 50.8% | n/a | 50.8% |
@@ -51,6 +51,14 @@ ls summary.md results.csv results.json cwe-bench-java-breakdown.csv
 | Bash | Bash Synthetic | 31 | 31 | n/a | n/a | 0 | 100% | n/a | 100% |
 | HTML/JS | HTML/JS Synthetic | 30 | 30 | n/a | n/a | 0 | 100% | n/a | 100% |
 | Other | Firing Range | 40 | 35 | n/a | 2 | 3 | 92.1% | n/a | 92.1% |
+
+Note on the OWASP Benchmark row: the full v1.2 suite has 2,740 cases. The
+1,415-case selection above came from the historical harness, which is not
+public, and it cannot be reconstructed from whole OWASP categories. The
+reproducible, official-rule, full-suite result for the current engine is in
+`results/2026-09-11-owasp-java-comparison/` (cognium-dev 4.9.13: TPR 91.0%,
+FPR 17.4%, Youden 73.5) and is the only OWASP number to use when comparing
+with other tools.
 
 ## Language Summary
 
