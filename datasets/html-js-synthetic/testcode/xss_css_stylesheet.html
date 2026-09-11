@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<body>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const theme = params.get('theme');
+  const style = document.createElement('style');
+  style.textContent = 'body { background: ' + theme + '; }';
+  document.head.appendChild(style);
+</script>
+</body>
+</html>

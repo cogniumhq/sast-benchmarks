@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+<body>
+<a id="link">Click here</a>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const url = params.get('next');
+  document.getElementById('link').href = url;
+</script>
+</body>
+</html>

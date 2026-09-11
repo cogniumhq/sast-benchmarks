@@ -1,0 +1,12 @@
+/**
+ * XSS - Vulnerable (template literal)
+ * CWE-79: Cross-Site Scripting
+ * Expected: VULNERABLE
+ */
+const express = require('express');
+const app = express();
+
+app.get('/greet', (req, res) => {
+    const name = req.query.name;
+    res.send(`<html><body><h1>Hello, ${name}!</h1></body></html>`);
+});

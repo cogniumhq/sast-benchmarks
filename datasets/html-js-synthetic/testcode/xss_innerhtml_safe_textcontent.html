@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+<body>
+<div id="output"></div>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const userInput = params.get('name');
+  document.getElementById('output').textContent = userInput;
+</script>
+</body>
+</html>

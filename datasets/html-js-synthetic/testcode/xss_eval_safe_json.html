@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+<body>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const data = params.get('data');
+  const parsed = JSON.parse(data);
+  console.log(parsed);
+</script>
+</body>
+</html>

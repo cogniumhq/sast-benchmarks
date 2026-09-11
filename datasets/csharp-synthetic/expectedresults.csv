@@ -1,0 +1,18 @@
+# C# Synthetic expected results
+# Format: name,category,isVulnerable,cwe,description (commas in description escaped as \,)
+name,category,isVulnerable,cwe,description
+sqli_adonet_concat,sqli,true,CWE-89,Request.Query → SqlCommand string concat
+sqli_adonet_interpolation,sqli,true,CWE-89,Interpolated $"...{id}..." into SqlCommand
+sqli_adonet_parameterized_safe,sqli,false,CWE-89,Parameterized query with AddWithValue — SAFE
+cmdi_process_shell_concat,cmdi,true,CWE-78,Request.Form → Process.Start shell concat
+cmdi_argumentlist_safe,cmdi,false,CWE-78,ProcessStartInfo.ArgumentList (no shell) — SAFE
+pathtraver_readalltext_concat,pathtraver,true,CWE-22,Request.Query → File.ReadAllText(Path.Combine(root\, input))
+pathtraver_getfilename_safe,pathtraver,false,CWE-22,Path.GetFileName strips directory — SAFE
+ssrf_httpclient_get,ssrf,true,CWE-918,Request.Query → HttpClient.GetAsync(input)
+xss_response_write_concat,xss,true,CWE-79,Request.Query → Response.WriteAsync raw HTML concat
+xss_htmlencode_safe,xss,false,CWE-79,HtmlEncoder.Encode before write — SAFE
+codeinj_csharpscript_eval,codeinj,true,CWE-94,Request.Form → CSharpScript.EvaluateAsync
+deser_binaryformatter,deser,true,CWE-502,Request.Body → BinaryFormatter.Deserialize
+ldap_directorysearcher_concat,ldap,true,CWE-90,Request.Query → DirectorySearcher filter concat
+xpath_selectnodes_concat,xpath,true,CWE-643,Request.Query → XmlNode.SelectNodes concat
+xxe_loadxml_default,xxe,true,CWE-611,Request.Body → XmlDocument.LoadXml with default (DTD-enabled) settings

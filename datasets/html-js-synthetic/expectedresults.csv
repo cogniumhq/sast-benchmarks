@@ -1,0 +1,33 @@
+# HTML/JS Synthetic expected results
+# Format: name,category,isVulnerable,cwe,description (commas in description escaped as \,)
+name,category,isVulnerable,cwe,description
+xss_innerhtml_url_param,dom_xss,true,CWE-79,URL parameter directly set to innerHTML
+xss_innerhtml_hash,dom_xss,true,CWE-79,Location hash directly set to innerHTML
+xss_innerhtml_safe_textcontent,dom_xss,false,CWE-79,URL parameter set via textContent (safe)
+xss_innerhtml_safe_escaped,dom_xss,false,CWE-79,URL parameter escaped before innerHTML
+xss_docwrite_url_param,doc_write,true,CWE-79,URL parameter passed to document.write
+xss_docwrite_referrer,doc_write,true,CWE-79,Document referrer passed to document.write
+xss_docwrite_safe_static,doc_write,false,CWE-79,Static content in document.write (safe)
+xss_eval_url_param,eval_xss,true,CWE-94,URL parameter passed to eval
+xss_function_constructor,eval_xss,true,CWE-94,URL parameter passed to Function constructor
+xss_settimeout_string,eval_xss,true,CWE-94,URL parameter passed to setTimeout as string
+xss_eval_safe_json,eval_xss,false,CWE-94,JSON.parse instead of eval (safe)
+xss_event_onclick,event_handler,true,CWE-79,URL parameter set as onclick handler
+xss_event_onerror_img,event_handler,true,CWE-79,URL parameter in img onerror via innerHTML
+xss_event_safe_addeventlistener,event_handler,false,CWE-79,Safe event listener with function reference
+xss_script_src_injection,script_src,true,CWE-79,URL parameter sets script src
+xss_script_src_jsonp,script_src,true,CWE-79,JSONP callback with user-controlled URL
+xss_script_src_safe_static,script_src,false,CWE-79,Static script src (safe)
+xss_location_href,url_manipulation,true,CWE-79,URL parameter used in location.href with javascript:
+xss_anchor_href,url_manipulation,true,CWE-79,URL parameter set as anchor href
+xss_location_safe_validated,url_manipulation,false,CWE-79,URL validated before redirect (safe)
+xss_template_literal,template,true,CWE-79,Template literal with user input to innerHTML
+xss_template_safe_textcontent,template,false,CWE-79,Template literal to textContent (safe)
+xss_postmessage_no_origin,postmessage,true,CWE-79,postMessage handler without origin check
+xss_postmessage_safe_origin,postmessage,false,CWE-79,postMessage handler with origin check (safe)
+xss_jquery_html,jquery,true,CWE-79,jQuery .html() with user input
+xss_jquery_selector,jquery,true,CWE-79,jQuery selector with user input (DOM clobbering)
+xss_jquery_safe_text,jquery,false,CWE-79,jQuery .text() with user input (safe)
+xss_css_style_attribute,css_injection,true,CWE-79,User input in style attribute
+xss_css_stylesheet,css_injection,true,CWE-79,User input in dynamic stylesheet
+xss_css_safe_validated,css_injection,false,CWE-79,CSS value validated against allowlist (safe)

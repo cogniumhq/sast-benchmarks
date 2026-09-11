@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<body>
+<div id="output"></div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const content = params.get('content');
+  $('#output').text(content);
+</script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+/**
+ * XSS - Vulnerable (reflected)
+ * CWE-79: Cross-Site Scripting
+ * Expected: VULNERABLE
+ */
+const express = require('express');
+const app = express();
+
+app.get('/search', (req, res) => {
+    const query = req.query.q;
+    res.send('<h1>Results for: ' + query + '</h1>');
+});

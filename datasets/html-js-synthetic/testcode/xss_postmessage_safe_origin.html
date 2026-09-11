@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<body>
+<div id="output"></div>
+<script>
+  window.addEventListener('message', function(event) {
+    if (event.origin !== 'https://trusted.example.com') {
+      return;
+    }
+    document.getElementById('output').textContent = event.data;
+  });
+</script>
+</body>
+</html>

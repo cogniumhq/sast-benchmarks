@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<body>
+<div id="box">Content</div>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const color = params.get('color');
+  const allowedColors = ['red', 'green', 'blue', 'white', 'black'];
+  if (allowedColors.includes(color)) {
+    document.getElementById('box').style.backgroundColor = color;
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+# OWASP Juice Shop Expected Results
+# Based on analysis of routes/*.ts files
+# Format: filePath,category,isVulnerable,cwe,description
+filePath,category,isVulnerable,cwe,description
+routes/search.ts,sqli,true,89,SQL injection via template literal in sequelize.query
+routes/login.ts,sqli,true,89,SQL injection via template literal in sequelize.query
+routes/redirect.ts,redirect,true,601,Open redirect via res.redirect with user input
+routes/fileServer.ts,pathtraver,true,22,Path traversal with null byte bypass in sendFile
+routes/b2bOrder.ts,codeinj,true,94,Code injection via vm.runInContext with safeEval
+routes/profileImageUrlUpload.ts,ssrf,true,918,SSRF via fetch with user-controlled URL
+routes/trackOrder.ts,nosqli,true,943,NoSQL injection via $where with template literal
+routes/videoHandler.ts,xss,true,79,XSS via subtitle injection into HTML
+routes/userProfile.ts,codeinj,true,94,Code injection via eval on username pattern
+routes/updateProductReviews.ts,nosqli,true,943,NoSQL injection via req.body.id with multi:true
+# Removed captcha.ts - edge case: eval is safe (server-generated) but file has req.body elsewhere
+routes/2fa.ts,sqli,false,89,Safe - uses ORM properly
+routes/appVersion.ts,sqli,false,89,Safe - no database queries with user input
+routes/languages.ts,sqli,false,89,Safe - reads from config
+routes/metrics.ts,sqli,false,89,Safe - metrics endpoint

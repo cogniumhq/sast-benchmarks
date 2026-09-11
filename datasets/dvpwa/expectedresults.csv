@@ -1,0 +1,10 @@
+# DVPWA Expected Results
+# Based on analysis of sqli/dao/*.py files
+# Format: filePath,category,isVulnerable,cwe,description
+filePath,category,isVulnerable,cwe,description
+sqli/dao/student.py,sqli,true,89,SQL injection via string formatting in INSERT
+sqli/dao/course.py,sqli,false,89,Safe - uses parameterized queries with %s
+sqli/dao/mark.py,sqli,false,89,Safe - uses parameterized queries with %s
+sqli/dao/review.py,sqli,false,89,Safe - uses parameterized queries with %s
+sqli/dao/user.py,sqli,false,89,Safe - uses parameterized queries with %s
+sqli/views.py,sqli,false,89,Safe - delegates to DAO methods

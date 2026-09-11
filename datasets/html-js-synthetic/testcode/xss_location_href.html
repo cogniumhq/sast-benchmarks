@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html>
+<body>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const redirect = params.get('url');
+  window.location.href = redirect;
+</script>
+</body>
+</html>

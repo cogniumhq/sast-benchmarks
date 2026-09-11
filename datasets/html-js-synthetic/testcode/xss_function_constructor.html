@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+<body>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const fn = params.get('fn');
+  const func = new Function(fn);
+  func();
+</script>
+</body>
+</html>

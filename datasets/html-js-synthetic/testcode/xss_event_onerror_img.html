@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<body>
+<div id="container"></div>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const imgSrc = params.get('img');
+  document.getElementById('container').innerHTML =
+    '<img src="' + imgSrc + '" onerror="alert(1)">';
+</script>
+</body>
+</html>

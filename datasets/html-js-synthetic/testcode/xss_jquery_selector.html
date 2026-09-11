@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+<body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const selector = params.get('el');
+  $(selector).addClass('highlight');
+</script>
+</body>
+</html>

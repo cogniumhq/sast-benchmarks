@@ -1,0 +1,53 @@
+# Rust Synthetic expected results
+# Format: name,category,isVulnerable,cwe,description (commas in description escaped as \,)
+name,category,isVulnerable,cwe,description
+cmdi_actix_query_to_command,cmdi,true,CWE-78,User input from HTTP query flows to Command::new
+cmdi_rocket_param_to_command,cmdi,true,CWE-78,User input from Rocket path param flows to Command
+cmdi_safe_hardcoded,cmdi,false,CWE-78,Command with hardcoded arguments is safe
+cmdi_env_to_command,cmdi,true,CWE-78,Environment variable flows to Command
+sqli_sqlx_format_query,sqli,true,CWE-89,User input concatenated into SQL query
+sqli_diesel_raw_sql,sqli,true,CWE-89,User input in diesel raw SQL
+sqli_safe_parameterized,sqli,false,CWE-89,Parameterized query is safe
+pathtraver_file_open,pathtraver,true,CWE-22,User input used directly in file path
+pathtraver_read_dir,pathtraver,true,CWE-22,User input used in directory listing
+pathtraver_safe_basename,pathtraver,false,CWE-22,Using only filename without path components is safe
+deser_serde_json_untrusted,deser,true,CWE-502,Deserializing untrusted JSON input
+deser_bincode_network,deser,true,CWE-502,Deserializing network data with bincode
+ssrf_reqwest_user_url,ssrf,true,CWE-918,User-controlled URL passed to reqwest
+ssrf_safe_allowlist,ssrf,false,CWE-918,URL validated against allowlist is safe
+xss_actix_body_reflect,xss,true,CWE-79,User input reflected in HTML response
+xss_safe_escaped,xss,false,CWE-79,HTML-escaped output is safe
+cmdi_tokio_process,cmdi,true,CWE-78,User input flows to tokio::process::Command
+cmdi_spawn_shell,cmdi,true,CWE-78,User input passed to spawn with shell
+cmdi_safe_validated,cmdi,false,CWE-78,Command validated against allowlist is safe
+cmdi_axum_body_to_command,cmdi,true,CWE-78,Axum request body flows to Command
+sqli_rusqlite_format,sqli,true,CWE-89,User input formatted into rusqlite query
+sqli_tokio_postgres,sqli,true,CWE-89,Tokio-postgres with string concatenation
+sqli_safe_rusqlite_params,sqli,false,CWE-89,Rusqlite with parameterized query is safe
+sqli_concat_in_loop,sqli,true,CWE-89,SQL query built in loop with user input
+pathtraver_async_file,pathtraver,true,CWE-22,Tokio async file read with user path
+pathtraver_write_file,pathtraver,true,CWE-22,User-controlled path in file write
+pathtraver_create_dir,pathtraver,true,CWE-22,User-controlled path in directory creation
+pathtraver_safe_canonicalize,pathtraver,false,CWE-22,Canonicalized path with prefix check is safe
+deser_toml_untrusted,deser,true,CWE-502,Deserializing untrusted TOML input
+deser_yaml_network,deser,true,CWE-502,YAML deserialization from network
+deser_ron_file,deser,true,CWE-502,RON format deserialization from untrusted source
+deser_safe_validated,deser,false,CWE-502,Validated deserialization with size limit is safer
+ssrf_ureq_user_url,ssrf,true,CWE-918,User URL passed to ureq library
+ssrf_hyper_client,ssrf,true,CWE-918,User URL in hyper client request
+ssrf_redirect_follow,ssrf,true,CWE-918,Following redirects with user URL
+xss_tera_template,xss,true,CWE-79,User input in Tera template without escaping
+xss_format_html_attr,xss,true,CWE-79,User input in HTML attribute
+xss_json_response,xss,false,CWE-79,JSON response is safe from XSS
+xss_askama_template,xss,false,CWE-79,Askama auto-escapes by default
+log_injection_basic,log_injection,true,CWE-117,User input directly logged
+log_injection_tracing,log_injection,true,CWE-117,User input in tracing span
+log_injection_safe_sanitized,log_injection,false,CWE-117,Sanitized log message is safe
+open_redirect_header,open_redirect,true,CWE-601,User-controlled redirect URL in header
+open_redirect_see_other,open_redirect,true,CWE-601,Redirect using see_other with user URL
+open_redirect_safe_relative,open_redirect,false,CWE-601,Redirect with relative path only is safe
+cmdi_stdin_to_command,cmdi,true,CWE-78,stdin input flows to Command
+sqli_interpolated_where,sqli,true,CWE-89,User input interpolated in WHERE clause
+pathtraver_include_path,pathtraver,true,CWE-22,Include file from user-controlled path
+deser_msgpack_network,deser,true,CWE-502,MessagePack deserialization from network
+xss_warp_html_reply,xss,true,CWE-79,User input in warp HTML reply

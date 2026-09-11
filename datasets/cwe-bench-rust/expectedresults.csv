@@ -1,0 +1,45 @@
+# CWE-Bench-Rust Expected Results
+# test name, category, is vulnerable (true/false), CWE
+# Based on RustSec advisory patterns
+
+# Path Traversal (CWE-22)
+RustTest00001,pathtraver,true,22
+RustTest00002,pathtraver,false,22
+RustTest00003,pathtraver,true,22
+RustTest00004,pathtraver,false,22
+RustTest00005,pathtraver,true,22
+
+# Command Injection (CWE-78)
+RustTest00006,cmdi,true,78
+RustTest00007,cmdi,false,78
+RustTest00008,cmdi,true,78
+RustTest00009,cmdi,false,78
+RustTest00010,cmdi,true,78
+
+# SQL Injection (CWE-89)
+RustTest00011,sqli,true,89
+RustTest00012,sqli,false,89
+RustTest00013,sqli,true,89
+RustTest00014,sqli,false,89
+RustTest00015,sqli,true,89
+
+# Deserialization (CWE-502)
+RustTest00016,deser,true,502
+RustTest00017,deser,false,502
+RustTest00018,deser,true,502
+RustTest00019,deser,true,502
+RustTest00020,deser,false,502
+
+# SSRF (CWE-918)
+RustTest00021,ssrf,true,918
+RustTest00022,ssrf,false,918
+RustTest00023,ssrf,true,918
+RustTest00024,ssrf,false,918
+RustTest00025,ssrf,true,918
+
+# XSS (CWE-79)
+RustTest00026,xss,true,79
+RustTest00027,xss,false,79
+RustTest00028,xss,true,79
+RustTest00029,xss,false,79
+RustTest00030,xss,true,79

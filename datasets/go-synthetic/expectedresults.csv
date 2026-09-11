@@ -1,0 +1,32 @@
+# Go Synthetic expected results
+# Format: name,category,isVulnerable,cwe,description (commas in description escaped as \,)
+name,category,isVulnerable,cwe,description
+sqli_query_concat,sqli,true,CWE-89,database/sql Query with string concatenation
+sqli_query_sprintf,sqli,true,CWE-89,fmt.Sprintf-built SQL passed to db.Query
+sqli_exec_concat,sqli,true,CWE-89,db.Exec with concatenated DELETE
+sqli_gin_param_to_query,sqli,true,CWE-89,Gin c.Param flows into raw db.Query
+sqli_safe_placeholder,sqli,false,CWE-89,db.Query with parameter placeholder is safe
+sqli_safe_hardcoded,sqli,false,CWE-89,Hardcoded query with no taint is safe
+cmdi_exec_sh_c,cmdi,true,CWE-78,exec.Command("sh"\, "-c"\, input)
+cmdi_exec_bash_c_form,cmdi,true,CWE-78,exec.Command("bash"\, "-c"\, tainted form value)
+cmdi_exec_concat_arg,cmdi,true,CWE-78,sh -c with concatenated user input
+cmdi_exec_stdin_to_sh,cmdi,true,CWE-78,os.Stdin scan piped to sh -c (CLI tool)
+cmdi_safe_args_slice,cmdi,false,CWE-78,exec.Command(prog\, args...) with tainted arg is safe (no shell)
+cmdi_safe_hardcoded,cmdi,false,CWE-78,exec.Command with fully static arguments
+pathtraver_os_open,pathtraver,true,CWE-22,os.Open with tainted path
+pathtraver_readfile,pathtraver,true,CWE-22,os.ReadFile with tainted path
+pathtraver_join_under_root,pathtraver,true,CWE-22,filepath.Join(root\, input) without prefix check
+pathtraver_open_form,pathtraver,true,CWE-22,os.OpenFile with PostForm-sourced path
+pathtraver_safe_hardcoded,pathtraver,false,CWE-22,os.Open with hardcoded path is safe
+pathtraver_safe_basename,pathtraver,false,CWE-22,filepath.Base strips directories before open
+xss_write_direct,xss,true,CWE-79,w.Write([]byte(input)) with tainted query string
+xss_fprintf_tainted,xss,true,CWE-79,fmt.Fprintf to ResponseWriter with tainted format arg
+xss_writestring_form,xss,true,CWE-79,io.WriteString of tainted form value into response
+xss_safe_template,xss,false,CWE-79,html/template auto-escapes tainted output
+xss_safe_hardcoded_body,xss,false,CWE-79,Response body has no tainted source
+ssrf_http_get_tainted,ssrf,true,CWE-918,http.Get with tainted URL
+ssrf_newrequest_tainted,ssrf,true,CWE-918,http.NewRequest with tainted URL
+ssrf_post_form_url,ssrf,true,CWE-918,http.Post with tainted URL string
+ssrf_get_with_header_url,ssrf,true,CWE-918,X-Forward header drives outbound http.Get
+ssrf_safe_hardcoded_url,ssrf,false,CWE-918,http.Get with hardcoded URL is safe
+ssrf_safe_hardcoded_post,ssrf,false,CWE-918,http.Post with hardcoded URL is safe

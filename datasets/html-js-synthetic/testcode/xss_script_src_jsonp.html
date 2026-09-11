@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<body>
+<script>
+  function handleData(data) {
+    console.log(data);
+  }
+  const params = new URLSearchParams(window.location.search);
+  const endpoint = params.get('api');
+  const s = document.createElement('script');
+  s.src = endpoint + '?callback=handleData';
+  document.head.appendChild(s);
+</script>
+</body>
+</html>

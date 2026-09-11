@@ -1,0 +1,16 @@
+# DVJA Expected Results
+# Format: filePath,category,isVulnerable,cwe,description
+#
+# Vulnerable files
+src/main/java/com/appsecco/dvja/services/UserService.java,sqli,true,89,SQL Injection via string concatenation in findByLoginUnsafe()
+src/main/java/com/appsecco/dvja/controllers/PingAction.java,cmdi,true,78,Command Injection via Runtime.exec with user input
+src/main/java/com/appsecco/dvja/controllers/UserAction.java,idor,true,639,IDOR via userId parameter without proper authorization
+#
+# Note: UserAction.java calls findByLoginUnsafe() which is vulnerable, but the SQL injection
+# is in UserService.java (cross-file) - single-file analysis can only detect it in UserService.java
+#
+# Safe files
+src/main/java/com/appsecco/dvja/controllers/Home.java,sqli,false,0,No user input in queries
+src/main/java/com/appsecco/dvja/controllers/BaseController.java,cmdi,false,0,No command execution
+src/main/java/com/appsecco/dvja/models/User.java,sqli,false,0,Model class - no queries
+src/main/java/com/appsecco/dvja/models/Product.java,sqli,false,0,Model class - no queries

@@ -1,0 +1,27 @@
+# NodeJS Benchmark Expected Results
+# test name, category, real vulnerability, CWE
+NodeTest00001,sqli,true,89
+NodeTest00002,sqli,false,89
+NodeTest00003,sqli,true,89
+NodeTest00004,sqli,false,89
+NodeTest00005,sqli,true,89
+NodeTest00006,cmdi,true,78
+NodeTest00007,cmdi,false,78
+NodeTest00008,cmdi,true,78
+NodeTest00009,cmdi,false,78
+NodeTest00010,cmdi,true,78
+NodeTest00011,pathtraver,true,22
+NodeTest00012,pathtraver,false,22
+NodeTest00013,pathtraver,true,22
+NodeTest00014,pathtraver,false,22
+NodeTest00015,pathtraver,true,22
+NodeTest00016,xss,true,79
+NodeTest00017,xss,false,79
+NodeTest00018,xss,true,79
+NodeTest00019,xss,false,79
+NodeTest00020,xss,true,79
+NodeTest00021,nosqli,true,943
+NodeTest00022,codeinj,true,94
+NodeTest00023,codeinj,false,94
+NodeTest00024,codeinj,true,94
+NodeTest00025,ssrf,true,918

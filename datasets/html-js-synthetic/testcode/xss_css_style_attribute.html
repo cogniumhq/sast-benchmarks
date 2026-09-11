@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+<body>
+<div id="box">Content</div>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const color = params.get('color');
+  document.getElementById('box').setAttribute('style', 'background:' + color);
+</script>
+</body>
+</html>

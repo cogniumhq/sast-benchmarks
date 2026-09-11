@@ -1,0 +1,34 @@
+# Bash Synthetic expected results
+# Format: name,category,isVulnerable,cwe,description (commas in description escaped as \,)
+name,category,isVulnerable,cwe,description
+cmdi_read_to_sh_c,cmdi,true,CWE-78,read input piped to sh -c
+cmdi_read_to_bash_c,cmdi,true,CWE-78,read input piped to bash -c
+cmdi_read_to_zsh_c,cmdi,true,CWE-78,read input piped to zsh -c
+cmdi_curl_output_to_sh,cmdi,true,CWE-78,curl response executed via sh -c (supply-chain attack pattern)
+cmdi_wget_output_to_bash,cmdi,true,CWE-78,wget response executed via bash -c
+cmdi_safe_hardcoded,cmdi,false,CWE-78,sh -c with hardcoded argument is safe
+cmdi_safe_static_args,cmdi,false,CWE-78,bash -c with fully static arguments
+codeinj_read_to_eval,codeinj,true,CWE-94,read input passed to eval
+codeinj_curl_to_eval,codeinj,true,CWE-94,curl response passed to eval
+codeinj_wget_to_eval,codeinj,true,CWE-94,wget response passed to eval (pipe install pattern)
+codeinj_read_multi_to_eval,codeinj,true,CWE-94,Multiple reads\, one flows to eval
+codeinj_safe_hardcoded_eval,codeinj,false,CWE-94,eval with fully hardcoded string is safe
+sqli_read_to_mysql,sqli,true,CWE-89,read input concatenated into mysql -e query
+sqli_read_to_psql,sqli,true,CWE-89,read input passed to psql -c
+sqli_read_to_sqlite3,sqli,true,CWE-89,read input passed directly to sqlite3
+sqli_curl_to_mysql,sqli,true,CWE-89,HTTP response used as SQL argument
+sqli_safe_hardcoded_mysql,sqli,false,CWE-89,mysql with hardcoded query is safe
+sqli_safe_hardcoded_psql,sqli,false,CWE-89,psql with hardcoded maintenance query
+pathtraver_read_to_cat,pathtraver,true,CWE-22,read input used directly in cat
+pathtraver_read_to_rm,pathtraver,true,CWE-22,read input used in rm -rf (destructive path traversal)
+pathtraver_read_to_cp,pathtraver,true,CWE-22,read input used as cp source path
+pathtraver_read_to_mv,pathtraver,true,CWE-22,read input used as mv source path
+pathtraver_curl_to_cat,pathtraver,true,CWE-22,HTTP-sourced path used in cat
+pathtraver_safe_hardcoded_cat,pathtraver,false,CWE-22,cat with hardcoded path is safe
+pathtraver_safe_hardcoded_rm,pathtraver,false,CWE-22,rm targeting a known temp file is safe
+ssrf_read_to_curl,ssrf,true,CWE-918,read URL passed to curl
+ssrf_read_to_wget,ssrf,true,CWE-918,read URL passed to wget
+ssrf_curl_chained_to_curl,ssrf,true,CWE-918,curl response used as next request URL (redirect abuse)
+ssrf_read_curl_with_flag,ssrf,true,CWE-918,read URL passed to curl with -s flag
+ssrf_safe_hardcoded_curl,ssrf,false,CWE-918,curl with hardcoded URL is safe
+ssrf_safe_hardcoded_wget,ssrf,false,CWE-918,wget with hardcoded URL is safe

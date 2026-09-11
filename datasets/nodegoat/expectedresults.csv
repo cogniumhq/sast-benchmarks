@@ -1,0 +1,21 @@
+# NodeGoat Expected Results
+# Format: filePath,category,isVulnerable,cwe,description
+# Categories: codeinj, ssrf, xss, nosqli, sqli, cmdi, pathtraver
+#
+# Vulnerable files - known vulnerabilities in OWASP NodeGoat
+app/routes/contributions.js,codeinj,true,94,Code injection via eval(req.body.preTax/afterTax/roth)
+app/data/allocations-dao.js,nosqli,true,943,NoSQL injection via $where with unsanitized threshold
+app/routes/research.js,ssrf,true,918,SSRF via needle.get with user-controlled URL
+app/routes/research.js,xss,true,79,Reflected XSS via res.write(body) without encoding
+app/routes/memos.js,xss,true,79,Stored XSS via insert(req.body.memo) without sanitization
+#
+# Safe files - no known vulnerabilities (used for FPR calculation)
+app/routes/index.js,codeinj,false,0,Static route handler - no user input processing
+app/routes/session.js,codeinj,false,0,Session management with proper handling
+app/data/user-dao.js,nosqli,false,0,Uses proper MongoDB query syntax
+app/data/contributions-dao.js,nosqli,false,0,Uses proper MongoDB query syntax
+app/data/memos-dao.js,nosqli,false,0,Uses proper MongoDB query syntax
+app/routes/profile.js,xss,false,0,Uses res.render with templating
+app/routes/benefits.js,xss,false,0,Uses res.render with templating
+app/routes/allocations.js,xss,false,0,Uses res.render with templating
+app/routes/tutorial.js,codeinj,false,0,Static content handler

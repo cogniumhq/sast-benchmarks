@@ -1,0 +1,32 @@
+# PyGoat Expected Results
+# Format: filePath,category,isVulnerable,cwe,description
+#
+# Vulnerable files - known vulnerabilities in OWASP PyGoat
+introduction/views.py:sql_lab,sqli,true,89,SQL Injection via string concatenation in raw() query
+introduction/views.py:injection_sql_lab,sqli,true,89,SQL Injection via string concatenation in raw() query
+introduction/views.py:cmd_lab,cmdi,true,78,Command Injection via subprocess.Popen with shell=True
+introduction/views.py:cmd_lab2,codeinj,true,94,Code Injection via eval() with user input
+introduction/views.py:xxe_parse,xxe,true,611,XXE via external entity processing enabled
+introduction/views.py:insec_des_lab,deserialization,true,502,Insecure Deserialization via pickle.loads on user cookie
+introduction/views.py:a9_lab,deserialization,true,502,Unsafe YAML deserialization with yaml.Loader
+introduction/views.py:a9_lab2,codeinj,true,94,Code Injection via ImageMath.eval with user input
+introduction/views.py:ssrf_lab,pathtraver,true,22,Path Traversal via os.path.join with user file input
+introduction/views.py:ssrf_lab2,ssrf,true,918,SSRF via requests.get with user-controlled URL
+introduction/views.py:xss_lab,xss,true,79,Reflected XSS via unsanitized query parameter
+introduction/views.py:xss_lab2,xss,true,79,XSS with incomplete script tag sanitization
+introduction/views.py:xss_lab3,xss,true,79,XSS via JSFuck-style payload (alphanumeric filter only)
+introduction/views.py:ssti_lab,ssti,true,1336,SSTI via user input written to Django templates
+introduction/views.py:crypto_failure_lab,weakcrypto,true,327,Weak cryptography using MD5 for password hashing
+#
+# Safe files - no known taint vulnerabilities (non-XSS tests only - XSS patterns too broad for Django render())
+introduction/views.py:register,sqli,false,0,Uses Django forms with ORM - no raw SQL
+introduction/views.py:sql,sqli,false,0,Static render - no user input processing
+introduction/views.py:cmd,cmdi,false,0,Static render - no user input processing
+introduction/views.py:xxe,xxe,false,0,Static render - no user input
+introduction/views.py:ba,pathtraver,false,0,Static render only
+introduction/views.py:data_exp,pathtraver,false,0,Static render only
+introduction/views.py:ssrf,ssrf,false,0,Static render only
+introduction/views.py:auth_failure,deserialization,false,0,Auth decorator - no deserialization
+pygoat/settings.py,codeinj,false,0,Django settings - no user input
+pygoat/urls.py,codeinj,false,0,URL routing - no user input
+manage.py,codeinj,false,0,Django management script - no user input
