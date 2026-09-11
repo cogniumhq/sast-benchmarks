@@ -79,6 +79,20 @@ said 16. Firing Range (92.1%) is counted here so the rows reconcile with the
 | CWE-079 | XSS | 13 / 31 | 18 | 41.9% |
 | CWE-094 | Code Injection | 5 / 21 | 16 | 23.8% |
 
+## Methodology (as published)
+
+- cognium-dev is a semantic static analyzer with inter-procedural taint
+  tracking.
+- All results are from static analysis only — no LLM involvement in detection
+  or verification.
+- Each benchmark's dataset is recorded under `datasets/` (index in
+  `datasets/README.md`): OWASP Benchmark, NIST Juliet Test Suite,
+  CWE-Bench-Java (`https://github.com/iris-sast/cwe-bench-java`), and the rest.
+- CWE-Bench-Java uses per-project binary detection: each project contains one
+  CVE, scored as detected or not.
+- Score column, "perfect" and "near-perfect" definitions:
+  `benchmarks/static-analysis-suite/README.md`.
+
 ## Known Gaps From Source Page
 
 - SSTI is not currently in cognium-dev's CWE coverage, causing the PyGoat false negative.
