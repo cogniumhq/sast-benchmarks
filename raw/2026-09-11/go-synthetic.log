@@ -1,0 +1,74 @@
+Go Security Benchmark
+=====================
+
+Running 29 test cases...
+
+✓ sqli_query_concat: TP (sources: 1, sinks: 1)
+✓ sqli_query_sprintf: TP (sources: 1, sinks: 1)
+✓ sqli_exec_concat: TP (sources: 1, sinks: 1)
+✓ sqli_gin_param_to_query: TP (sources: 1, sinks: 1)
+✓ sqli_safe_placeholder: TN (sources: 1, sinks: 0)
+✓ sqli_safe_hardcoded: TN (sources: 0, sinks: 0)
+✓ cmdi_exec_sh_c: TP (sources: 1, sinks: 1)
+✓ cmdi_exec_bash_c_form: TP (sources: 1, sinks: 1)
+✓ cmdi_exec_concat_arg: TP (sources: 1, sinks: 1)
+✗ cmdi_exec_stdin_to_sh: FN (sources: 0, sinks: 1)
+✓ cmdi_safe_args_slice: TN (sources: 1, sinks: 0)
+✓ cmdi_safe_hardcoded: TN (sources: 0, sinks: 0)
+✓ pathtraver_os_open: TP (sources: 1, sinks: 1)
+✓ pathtraver_readfile: TP (sources: 2, sinks: 1)
+✓ pathtraver_join_under_root: TP (sources: 2, sinks: 1)
+✗ pathtraver_open_form: FN (sources: 1, sinks: 0)
+✓ pathtraver_safe_hardcoded: TN (sources: 0, sinks: 0)
+✓ pathtraver_safe_basename: TN (sources: 1, sinks: 1)
+✓ xss_write_direct: TP (sources: 1, sinks: 1)
+✗ xss_fprintf_tainted: FN (sources: 1, sinks: 0)
+✗ xss_writestring_form: FN (sources: 1, sinks: 0)
+✓ xss_safe_template: TN (sources: 1, sinks: 0)
+✓ xss_safe_hardcoded_body: TN (sources: 0, sinks: 1)
+✓ ssrf_http_get_tainted: TP (sources: 1, sinks: 1)
+✓ ssrf_newrequest_tainted: TP (sources: 1, sinks: 1)
+✓ ssrf_post_form_url: TP (sources: 1, sinks: 1)
+✓ ssrf_get_with_header_url: TP (sources: 1, sinks: 1)
+✓ ssrf_safe_hardcoded_url: TN (sources: 0, sinks: 0)
+✓ ssrf_safe_hardcoded_post: TN (sources: 0, sinks: 1)
+
+--- Results by Category ---
+
+Category     | TP | TN | FP | FN | TPR     | FPR     | Score
+-------------|----|----|----|----|---------|---------|-------
+sqli         |  4 |  2 |  0 |  0 | 100.0%  |   0.0%  | 100.0%
+cmdi         |  3 |  2 |  0 |  1 |  75.0%  |   0.0%  | 75.0%
+pathtraver   |  3 |  2 |  0 |  1 |  75.0%  |   0.0%  | 75.0%
+xss          |  1 |  2 |  0 |  2 |  33.3%  |   0.0%  | 33.3%
+ssrf         |  4 |  2 |  0 |  0 | 100.0%  |   0.0%  | 100.0%
+-------------|----|----|----|----|---------|---------|-------
+TOTAL        | 15 | 10 |  0 |  4 |  78.9%  |   0.0%  | 78.9%
+
+Time: 63ms
+Total: 29 test cases
+
+Score: 78.9% (TPR: 78.9%, FPR: 0.0%)
+
+--- Failures ---
+
+FN: cmdi_exec_stdin_to_sh (CWE-78)
+  Expected: vulnerable
+  Detected: 0 sources, 1 sinks
+  Description: os.Stdin scan piped to sh -c (CLI tool)
+
+FN: pathtraver_open_form (CWE-22)
+  Expected: vulnerable
+  Detected: 1 sources, 0 sinks
+  Description: os.OpenFile with PostForm-sourced path
+
+FN: xss_fprintf_tainted (CWE-79)
+  Expected: vulnerable
+  Detected: 1 sources, 0 sinks
+  Description: fmt.Fprintf to ResponseWriter with tainted format arg
+
+FN: xss_writestring_form (CWE-79)
+  Expected: vulnerable
+  Detected: 1 sources, 0 sinks
+  Description: io.WriteString of tainted form value into response
+

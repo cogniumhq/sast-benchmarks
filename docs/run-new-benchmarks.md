@@ -5,35 +5,33 @@ publish them into this repository.
 
 ## Current State
 
-The repository already publishes one imported result set:
+The repository publishes two static-analysis result sets:
 
-- `results/2026-04-22/`: imported from `https://cognium.dev/benchmark/`
-- `raw/2026-04-22/cognium-dev-benchmark.html`: source snapshot from the live page
+- `results/2026-04-22/`: cognium-dev 3.19.4 (then `circle-ir`), imported from
+  `https://cognium.dev/benchmark/`; source snapshot in
+  `raw/2026-04-22/cognium-dev-benchmark.html`.
+- `results/2026-09-11/`: cognium-dev / circle-ir 4.9.13, first scored Go and
+  C#/.NET results; runner logs in `raw/2026-09-11/`.
 
-The live page says the reproduction command is:
-
-```sh
-git clone https://github.com/cogniumhq/circle-ir
-cd circle-ir/benchmarks
-npm install
-npm run benchmark
-```
-
-However, as of this repo review, the local `circle-ir/package.json` does not
-define a `benchmark` script. Treat that as the first blocker before publishing
-fresh reruns. Imported historical results can remain, but new results should be
-produced by a command that exists in the source repository.
+The live page no longer advertises a one-command reproduction. The historical
+harness that produced the April 22 set is not present in the public
+`cognium-dev` source tree (the `benchmark` npm script does not exist there), so
+that set is auditable but not reproducible from a single published command.
+The 2026-09-11 Go / C# runs used per-suite runner scripts against the published
+`circle-ir@4.9.13` npm package; the exact steps are in
+`tools/cognium/README.md`. Publishing those runner scripts in a public
+location is the remaining blocker to a fully self-contained rerun.
 
 ## Recommended Tracks
 
-### Track 1: Cognium / circle-ir Fresh Run
+### Track 1: cognium-dev Fresh Run
 
 Purpose: publish the latest Cognium SAST result with raw output and a dated
 summary.
 
 Required fix first:
 
-- Add or restore a benchmark harness in `cogniumhq/circle-ir`.
+- Publish the benchmark harness in `cogniumhq/cognium-dev` (or alongside the result set here).
 - Make `npm run benchmark` or an equivalent command produce machine-readable
   output.
 - Commit the exact command in `tools/cognium/README.md` and the dated result
@@ -42,8 +40,8 @@ Required fix first:
 Target output shape:
 
 ```text
-raw/YYYY-MM-DD/cognium-circle-ir.json
-raw/YYYY-MM-DD/cognium-circle-ir.log
+raw/YYYY-MM-DD/cognium-dev.json
+raw/YYYY-MM-DD/cognium-dev.log
 results/YYYY-MM-DD/results.json
 results/YYYY-MM-DD/results.csv
 results/YYYY-MM-DD/summary.md
@@ -51,8 +49,8 @@ results/YYYY-MM-DD/summary.md
 
 Minimum result metadata:
 
-- circle-ir version
-- circle-ir commit SHA
+- cognium-dev / circle-ir package version
+- cognium-dev commit SHA
 - benchmark dataset revision
 - command
 - Node.js version
@@ -68,7 +66,7 @@ Purpose: produce a repeatable Java CVE benchmark run before attempting the full
 Start with a small, named subset:
 
 ```sh
-cd <circle-ir-checkout>/cwe-bench-java
+cd <cognium-dev-checkout>/cwe-bench-java
 python3 scripts/setup.py --no-build --cwe CWE-022
 ```
 
@@ -82,7 +80,7 @@ benchmark claim.
 
 ### Track 3: cognium-ai Static and LLM Evaluation
 
-Purpose: publish AI-assisted SAST behavior separately from the core circle-ir
+Purpose: publish AI-assisted SAST behavior separately from the core cognium-dev
 static benchmark.
 
 Keep this lane separate because `cognium-ai` results include model, provider,

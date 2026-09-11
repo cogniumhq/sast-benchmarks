@@ -3,7 +3,7 @@
   "imported_at": "2026-05-03",
   "source_url": "https://cognium.dev/benchmark/",
   "benchmark": {
-    "name": "circle-ir SAST Benchmarks",
+    "name": "cognium-dev SAST Benchmarks",
     "source_url": "https://cognium.dev/benchmark/"
   },
   "dataset": {
@@ -12,10 +12,12 @@
     "source_url": "https://cognium.dev/benchmark/"
   },
   "tool": {
-    "name": "circle-ir",
+    "name": "cognium-dev",
+    "former_name": "circle-ir",
     "version": "3.19.4",
+    "source_url": "https://github.com/cogniumhq/cognium-dev",
     "configuration": "static analysis only; no LLM verification",
-    "command": "git clone https://github.com/cogniumhq/circle-ir && cd circle-ir/benchmarks && npm install && npm run benchmark"
+    "command": "not reproducible with a single published command: the historical benchmark harness is not present in the public cognium-dev source tree; audit via `git clone https://github.com/cogniumhq/sast-benchmarks && cd sast-benchmarks/results/2026-04-22 && ls summary.md results.csv results.json cwe-bench-java-breakdown.csv`"
   },
   "summary": {
     "total_cases": 2203,
@@ -25,7 +27,7 @@
     "false_negatives": 78,
     "total_benchmarks": 16,
     "perfect_benchmarks": 8,
-    "benchmarks_at_or_above_90_percent": 13,
+    "benchmarks_at_or_above_90_percent": 14,
     "languages": 6
   },
   "results": [
@@ -229,7 +231,8 @@
     { "language": "Rust", "perfect_100": 0, "at_or_above_90": 2, "total_benchmarks": 2 },
     { "language": "Bash", "perfect_100": 1, "at_or_above_90": 1, "total_benchmarks": 1 },
     { "language": "HTML/JS", "perfect_100": 1, "at_or_above_90": 1, "total_benchmarks": 1 },
-    { "language": "Total", "perfect_100": 8, "at_or_above_90": 13, "total_benchmarks": 16 }
+    { "language": "Other", "perfect_100": 0, "at_or_above_90": 1, "total_benchmarks": 1 },
+    { "language": "Total", "perfect_100": 8, "at_or_above_90": 14, "total_benchmarks": 16 }
   ],
   "cwe_bench_java_breakdown": [
     { "cwe": "CWE-022", "category": "Path Traversal", "detected": 37, "total": 55, "missed": 18, "rate": "67.3%" },
@@ -240,12 +243,18 @@
   "artifacts": {
     "raw_output": "raw/2026-04-22/cognium-dev-benchmark.html",
     "summary_markdown": "results/2026-04-22/summary.md",
-    "summary_csv": "results/2026-04-22/results.csv"
+    "summary_csv": "results/2026-04-22/results.csv",
+    "cwe_breakdown_csv": "results/2026-04-22/cwe-bench-java-breakdown.csv"
   },
   "limitations": [
     "Imported from the live cognium.dev benchmark page rather than rerunning the benchmark during this commit.",
     "Several benchmark rows do not publish true-negative or false-positive counts on the source page.",
     "CWE-Bench-Java uses per-project detection, not per-CVE counts.",
-    "These results test static analysis only; the full SAST plus LLM verification pipeline is separate."
+    "SSTI (Server-Side Template Injection) is not in the engine's CWE coverage; this causes the PyGoat false negative.",
+    "Firing Range has 2 false positives in the escape/ category and 3 false negatives in cors/.",
+    "These results test static analysis only; the full SAST plus LLM verification pipeline is separate.",
+    "The historical one-command benchmark harness is not present in the current public source tree, so this result set is auditable but not currently reproducible with a single published command.",
+    "The source page's language summary omitted the Firing Range ('Other') row; it is included here so the rows reconcile with the 16 published benchmarks (8 perfect, 14 at or above 90%).",
+    "Go and C#/.NET are supported by the engine but were not scored in this snapshot; see results/2026-09-11/."
   ]
 }

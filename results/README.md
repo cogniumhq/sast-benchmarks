@@ -16,16 +16,17 @@ same date, keep benchmark names inside the summary and result files.
 
 ## Published Results
 
-- `2026-04-22`: circle-ir 3.19.4 static-analysis benchmark results imported
-  from `https://cognium.dev/benchmark/`.
-- `2026-04-30`: sanitized cognium-ai static and LLM-enriched evaluation results
-  on an intentionally vulnerable Python demo repository.
+Static-analysis snapshots (mirrored by `https://cognium.dev/benchmark`):
 
-## Recent Runs
+- `2026-04-22`: cognium-dev 3.19.4 (published then as `circle-ir`)
+  static-analysis results imported from `https://cognium.dev/benchmark/`.
+  16 benchmarks, 6 language groups.
+- `2026-09-11`: cognium-dev 4.9.13 first scored Go and C#/.NET results
+  (4 benchmarks). Extends language coverage; does not re-score the April set.
 
-- `2026-05-04`: Java static baseline and Java outreach static baseline results.
+cognium-ai (SAST + LLM) runs:
+
+- `2026-05-03`: top 100 GitHub Java projects selected and queued for batched
+  cognium-ai LLM analysis (plan plus one sample run).
 - `2026-05-05`: JavaScript top-10 static baseline results.
-
-## Planned Runs
-
-- `2026-05-03`: top 100 GitHub Java projects selected and queued for batched cognium-ai LLM analysis.
+- `2026-05-27`: Java / JavaScript / Python top-10 LLM-enriched runs.

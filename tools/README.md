@@ -13,7 +13,7 @@ Each tool folder should record:
 
 Current tool lanes:
 
-- `cognium/`: Cognium / circle-ir benchmark command and static-analysis notes.
+- `cognium/`: cognium-dev (formerly circle-ir) benchmark commands and static-analysis notes.
 - `cognium-ai/`: cognium-ai static, trust, quality, secrets, and LLM-enrichment
   evaluation notes.
 - `codeql/`: CodeQL CLI and query suite notes.

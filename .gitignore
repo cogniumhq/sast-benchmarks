@@ -5,3 +5,6 @@ tmp/
 *.sarif
 *.sqlite
 *.db
+
+# Raw benchmark evidence is committed even though ad-hoc logs are not
+!raw/**/*.log

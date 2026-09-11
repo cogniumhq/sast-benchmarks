@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Cloudflare Web Analytics -->
+  <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"3fd33854612841cf8ad1a4b449c78d5a"}'></script>
+  <!-- End Cloudflare Web Analytics -->
+
+  <title>circle-ir SAST Benchmarks — cognium.dev</title>
+  <meta name="description" content="Static analysis benchmarks for circle-ir neuro-symbolic SAST library. Reproducible results across 16 benchmarks, 6 languages. No LLM. MIT licensed.">
+  <meta name="keywords" content="SAST, static analysis, benchmarks, security testing, circle-ir, OWASP, Juliet, vulnerability detection">
+  <meta name="author" content="Cognium Labs">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="canonical" href="https://cognium.dev/benchmark">
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='12' fill='%23F97316'/></svg>">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://cognium.dev/benchmark">
+  <meta property="og:title" content="circle-ir SAST Benchmarks">
+  <meta property="og:description" content="Static analysis benchmarks for circle-ir. 16 benchmarks, 6 languages. Reproducible. No LLM.">
+  <meta property="og:site_name" content="cognium.dev">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@cogniumhq">
+  <meta name="twitter:title" content="circle-ir SAST Benchmarks">
+  <meta name="twitter:description" content="Static analysis benchmarks for circle-ir. 16 benchmarks, 6 languages. Reproducible. No LLM.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ===== RESET ===== */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0a0a0a;
+      --bg-elevated: #141414;
+      --bg-card: #1a1a1a;
+      --surface: #222;
+      --border: rgba(255,255,255,.08);
+      --border-accent: rgba(232,134,58,.3);
+
+      --text-primary: #f5f5f5;
+      --text-secondary: #b0b0b0;
+      --text-muted: #8a8a8a;
+
+      --accent: #E8863A;
+      --accent-light: #F5A55A;
+      --accent-glow: rgba(232,134,58,.15);
+      --accent-text: #1a1a1a;
+      --green: #22C55E;
+      --red: #EF4444;
+      --blue: #3B82F6;
+
+      --font-body: 'Instrument Sans', -apple-system, sans-serif;
+      --font-mono: 'IBM Plex Mono', 'SF Mono', monospace;
+
+      --max-w: 1100px;
+      --section-pad: 120px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text-primary);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::selection {
+      background: var(--accent);
+      color: #000;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ===== NAV ===== */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: 60px;
+      background: rgba(10,10,10,.8);
+      backdrop-filter: blur(20px) saturate(1.4);
+      border-bottom: 1px solid var(--border);
+      z-index: 100;
+    }
+
+    .nav-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 32px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      font-size: 15px;
+      letter-spacing: -.02em;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-logo .dot {
+      width: 8px; height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 12px var(--accent), 0 0 24px rgba(232,134,58,.3);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .nav-links a {
+      font-size: 14px;
+      color: var(--text-secondary);
+      transition: color .2s;
+    }
+
+    .nav-links a:hover { color: var(--text-primary); }
+    .nav-links a.active { color: var(--accent); }
+
+    .nav-install {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--accent);
+      border: 1px solid var(--border-accent);
+      background: rgba(232,134,58,.06);
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all .2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-install:hover {
+      background: rgba(232,134,58,.12);
+      border-color: rgba(232,134,58,.4);
+    }
+
+    .hamburger {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 20px;
+      height: 2px;
+      background: var(--text-secondary);
+      margin: 4px 0;
+      transition: .3s;
+    }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 60px; left: 0; right: 0; bottom: 0;
+      background: var(--bg);
+      padding: 32px;
+      z-index: 99;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .mobile-menu.active {
+      display: flex;
+    }
+
+    .mobile-menu a {
+      font-size: 18px;
+      color: var(--text-secondary);
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .mobile-menu a:hover { color: var(--text-primary); }
+
+    /* ===== SECTIONS ===== */
+    section {
+      padding: var(--section-pad) 32px;
+      position: relative;
+    }
+
+    .section-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: .15em;
+      color: var(--accent);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-label::before {
+      content: '';
+      width: 24px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    h2 {
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: 40px;
+      line-height: 1.15;
+      letter-spacing: -.03em;
+      color: var(--text-primary);
+      margin-bottom: 20px;
+    }
+
+    h2 .accent { color: var(--accent); }
+
+    .section-desc {
+      font-size: 18px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      max-width: 700px;
+    }
+
+    /* ===== BENCHMARK HEADER ===== */
+    .benchmark-header {
+      padding-top: 140px;
+      padding-bottom: 80px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .benchmark-header h1 {
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: clamp(32px, 5vw, 48px);
+      line-height: 1.1;
+      letter-spacing: -.03em;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+
+    .benchmark-header .subtitle {
+      font-family: var(--font-mono);
+      font-size: 16px;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+    }
+
+    .benchmark-header .version {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-muted);
+      padding: 8px 16px;
+      background: rgba(232,134,58,.06);
+      border: 1px solid var(--border-accent);
+      border-radius: 100px;
+      display: inline-block;
+    }
+
+    /* ===== INTRO ===== */
+    .intro {
+      padding-top: 60px;
+      padding-bottom: 40px;
+    }
+
+    .intro p {
+      font-size: 18px;
+      color: var(--text-secondary);
+      line-height: 1.75;
+      max-width: 800px;
+    }
+
+    .intro a {
+      color: var(--accent);
+      transition: color .2s;
+    }
+
+    .intro a:hover {
+      color: var(--accent-light);
+    }
+
+    /* ===== RESULTS SECTION ===== */
+    .results {
+      padding-top: 0;
+    }
+
+    h3.table-heading {
+      font-family: var(--font-mono);
+      font-weight: 500;
+      font-size: 13px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      margin-bottom: 16px;
+      margin-top: 48px;
+    }
+
+    h3.table-heading:first-of-type {
+      margin-top: 0;
+    }
+
+    /* ===== TABLES ===== */
+    .table-container {
+      overflow-x: auto;
+      margin-bottom: 8px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--bg-card);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-mono);
+      font-size: 13px;
+    }
+
+    thead {
+      background: var(--bg-elevated);
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      text-align: left;
+      padding: 14px 16px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      font-size: 10px;
+      white-space: nowrap;
+    }
+
+    th.num, td.num {
+      text-align: right;
+    }
+
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover {
+      background: rgba(255,255,255,.02);
+    }
+
+    td.benchmark-name {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    td.score {
+      font-weight: 600;
+    }
+
+    td.score.perfect {
+      color: var(--green);
+    }
+
+    td.score.near-perfect {
+      color: var(--accent);
+    }
+
+    td.score.moderate {
+      color: var(--text-secondary);
+    }
+
+    /* ===== SUMMARY TABLE ===== */
+    .summary-table td.lang {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .summary-table tr.total-row {
+      background: var(--bg-elevated);
+    }
+
+    .summary-table tr.total-row td {
+      font-weight: 600;
+      color: var(--text-primary);
+      border-top: 1px solid var(--border);
+    }
+
+    /* ===== CWE BREAKDOWN ===== */
+    .cwe-table td.cwe-id {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .cwe-table td.category {
+      color: var(--text-secondary);
+    }
+
+    /* ===== METHODOLOGY ===== */
+    .methodology ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 32px;
+    }
+
+    .methodology li {
+      position: relative;
+      padding-left: 24px;
+      margin-bottom: 16px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    .methodology li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 10px;
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+    }
+
+    .methodology a {
+      color: var(--accent);
+    }
+
+    .methodology a:hover {
+      color: var(--accent-light);
+    }
+
+    /* ===== LIMITATIONS ===== */
+    .limitations {
+      background: var(--bg-elevated);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .limitations h2 {
+      color: var(--text-primary);
+    }
+
+    .limitations .section-label {
+      color: var(--red);
+    }
+
+    .limitations .section-label::before {
+      background: var(--red);
+    }
+
+    .limitations ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 32px;
+    }
+
+    .limitations li {
+      position: relative;
+      padding-left: 24px;
+      margin-bottom: 16px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    .limitations li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 10px;
+      width: 6px;
+      height: 6px;
+      background: var(--red);
+      border-radius: 50%;
+    }
+
+    .limitations code {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      color: var(--accent);
+      background: rgba(232,134,58,.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* ===== REPRODUCTION ===== */
+    .reproduction pre {
+      background: #0d0d0d;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      margin: 32px 0 20px;
+    }
+
+    .reproduction p {
+      color: var(--text-secondary);
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    .reproduction .note {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-top: 24px;
+    }
+
+    .reproduction a {
+      color: var(--accent);
+    }
+
+    .reproduction a:hover {
+      color: var(--accent-light);
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      padding: 48px 32px;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 40px;
+    }
+
+    .footer-brand p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-top: 8px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 48px;
+    }
+
+    .footer-col h5 {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .footer-col a {
+      display: block;
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      transition: color .2s;
+    }
+
+    .footer-col a:hover { color: var(--text-primary); }
+
+    .footer-bottom {
+      max-width: var(--max-w);
+      margin: 32px auto 0;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .social-links a {
+      color: var(--text-muted);
+      transition: color .2s;
+    }
+
+    .social-links a:hover {
+      color: var(--accent);
+    }
+
+    /* ===== TOAST ===== */
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--accent);
+      color: var(--accent-text);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 12px 24px;
+      border-radius: 8px;
+      opacity: 0;
+      transition: all .3s ease;
+      z-index: 200;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 900px) {
+      :root { --section-pad: 80px; }
+      .footer-links { gap: 32px; }
+    }
+
+    @media (max-width: 640px) {
+      :root { --section-pad: 64px; }
+      section { padding-left: 20px; padding-right: 20px; }
+      h2 { font-size: 28px; }
+      .nav-inner { padding: 0 20px; }
+      .nav-links, .nav-install { display: none; }
+      .hamburger { display: flex; flex-direction: column; }
+      .mobile-menu { padding: 24px 20px; }
+      .mobile-menu a {
+        font-size: 16px;
+        padding: 14px 0;
+      }
+      .benchmark-header { padding-top: 100px; padding-bottom: 60px; }
+      .benchmark-header h1 { font-size: 28px; }
+      .intro { padding-top: 48px; padding-bottom: 48px; }
+      h3.table-heading { margin-top: 32px; }
+      table { font-size: 11px; }
+      th, td { padding: 10px 12px; }
+      .footer-inner { flex-direction: column; padding: 0; }
+      .footer-links { flex-direction: column; gap: 24px; }
+      footer { padding: 40px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav id="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">
+        <span class="dot"></span>
+        cognium
+      </a>
+      <div class="nav-links">
+        <a href="/#how-it-works">How It Works</a>
+        <a href="/benchmark" class="active">Benchmarks</a>
+        <a href="/#coverage">Coverage</a>
+        <a href="https://github.com/cogniumhq/cognium" target="_blank" rel="noopener">GitHub ↗</a>
+      </div>
+      <button class="nav-install" id="nav-cta" type="button" aria-label="Copy install command">
+        <span>$ npm install -g cognium</span>
+        <span style="opacity:.5">⏎</span>
+      </button>
+      <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false" type="button">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="/#how-it-works">How It Works</a>
+    <a href="/benchmark">Benchmarks</a>
+    <a href="/#coverage">Coverage</a>
+    <a href="/#get-started">Get Started</a>
+    <a href="https://github.com/cogniumhq/cognium" target="_blank" rel="noopener">GitHub ↗</a>
+  </div>
+
+  <main>
+    <!-- Header -->
+    <section class="benchmark-header">
+      <div class="section-inner">
+        <h1>circle-ir SAST Benchmarks</h1>
+        <p class="subtitle">Static analysis only. No LLM. Reproducible.</p>
+        <span class="version">circle-ir 3.19.4 · benchmark date April 22, 2026</span>
+      </div>
+    </section>
+
+    <!-- Intro -->
+    <section class="intro">
+      <div class="section-inner">
+        <p>
+          <a href="https://github.com/cogniumhq/circle-ir">circle-ir</a> is an MIT-licensed neuro-symbolic static analysis library. These benchmarks measure the static analysis engine only—no LLM verification layer is involved. All benchmark code, harnesses, and raw outputs are available in the <a href="https://github.com/cogniumhq/circle-ir/tree/main/benchmarks">circle-ir repository</a> for independent reproduction.
+        </p>
+      </div>
+    </section>
+
+    <!-- Results Tables -->
+    <section class="results">
+      <div class="section-inner">
+        <div class="section-label">Results</div>
+        <h2>Benchmarks by <span class="accent">Language</span></h2>
+
+        <!-- Java -->
+        <h3 class="table-heading">Java (6 benchmarks)</h3>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Benchmark</th>
+                <th class="num">Tests</th>
+                <th class="num">TP</th>
+                <th class="num">TN</th>
+                <th class="num">FP</th>
+                <th class="num">FN</th>
+                <th class="num">TPR</th>
+                <th class="num">FPR</th>
+                <th class="num">Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="benchmark-name">OWASP Benchmark</td>
+                <td class="num">1,415</td>
+                <td class="num">708</td>
+                <td class="num">707</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">100%</td>
+                <td class="num">0%</td>
+                <td class="num score perfect">100%</td>
+              </tr>
+              <tr>
+                <td class="benchmark-name">Juliet Test Suite</td>
+                <td class="num">243</td>
+                <td class="num">122</td>
+                <td class="num">121</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">100%</td>
+                <td class="num">0%</td>
+                <td class="num score perfect">100%</td>
+              </tr>
+              <tr>
+                <td class="benchmark-name">SecuriBench Micro</td>
+                <td class="num">123</td>
+                <td class="num">60</td>
+                <td class="num">60</td>
+                <td class="num">1</td>
+                <td class="num">2</td>
+                <td class="num">96.8%</td>
+                <td class="num">1.6%</td>
+                <td class="num score near-perfect">97.7%</td>
+              </tr>
+              <tr>
+                <td class="benchmark-name">CWE-Bench-Java</td>
+                <td class="num">120</td>
+                <td class="num">61</td>
+                <td class="num">—</td>
+                <td class="num">—</td>
+                <td class="num">59</td>
+                <td class="num">50.8%</td>
+                <td class="num">—</td>
+                <td class="num score moderate">50.8%</td>
+              </tr>
+              <tr>
+                <td class="benchmark-name">WebGoat</td>
+                <td class="num">29</td>
+                <td class="num">26</td>
+                <td class="num">—</td>
+                <td class="num">—</td>
+                <td class="num">3</td>
+                <td class="num">89.7%</td>
+                <td class="num">—</td>
+                <td class="num score near-perfect">89.3%</td>
+              </tr>
+              <tr>
+                <td class="benchmark-name">DVJA</td>
+                <td class="num">7</td>
+                <td class="num">7</td>
+                <td class="num">—</td>
+                <td class="num">—</td>
+                <td class="num">0</td>
+                <td class="num">100%</td>
+                <td class="num">—</td>
+                <td class="num score perfect">100%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Node.js/TypeScript -->
+        <h3 class="table-heading">Node.js / TypeScript (3 benchmarks)</h3>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Benchmark</th>
+                <th class="num">Tests</th>
+                <th class="num">TP</th>
+                <th class="num">TN</th>
+                <th class="num">FP</th>
+                <th class="num">FN</th>
+                <th class="num">TPR</th>
+                <th class="num">FPR</th>
+                <th class="num">Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="benchmark-name">NodeGoat</td>
+                <td class="num">14</td>
+                <td class="num">14</td>
+                <td class="num">—</td>
+                <td class="num">—</td>
+                <td class="num">0</td>
+                <td class="num">100%</td>
+                <td class="num">—</td>
+                <td class="num score perfect">100%</td>
+              </tr>
+              <tr>
+                <td class="benchmark-name">Juice Shop</td>
+                <td class="num">14</td>
+                <td class="num">14</td>
+                <td class="num">—</td>
+                <td class="num">—</td>
+                <td class="num">0</td>
+                <td class="num">100%</td>
+                <td class="num">—</td>
+                <td class="num score perfect">100%</td>
+              </tr>
+              <tr>
+                <td class="benchmark-name">NodeJS Synthetic</td>
+                <td class="num">25</td>
+                <td class="num">23</td>
+                <td class="num">—</td>
+                <td class="num">—</td>
+                <td class="num">2</td>
+                <td class="num">92.0%</td>
+                <td class="num">—</td>
+                <td class="num score near-perfect">92.9%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Python -->
+        <h3 class="table-heading">Python (2 benchmarks)</h3>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Benchmark</th>
+                <th class="num">Tests</th>
+                <th class="num">TP</th>
+                <th class="num">TN</th>
+                <th class="num">FP</th>
+                <th class="num">FN</th>
+                <th class="num">TPR</th>
+                <th class="num">FPR</th>
+                <th class="num">Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="benchmark-name">PyGoat</td>
+                <td class="num">26</td>
+                <td class="num">23</td>
+                <td class="num">—</td>
+                <td class="num">—</td>
+                <td class="num">3</td>
+                <td class="num">88.5%</td>
+                <td class="num">—</td>
+                <td class="num score near-perfect">90.0%</td>
+              </tr>
+              <tr>
+                <td class="benchmark-name">DVPWA</td>
+                <td class="num">6</td>
+                <td class="num">6</td>
+                <td class="num">—</td>
+                <td class="num">—</td>
+                <td class="num">0</td>
+                <td class="num">100%</td>
+                <td class="num">—</td>
+                <td class="num score perfect">100%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Rust -->
+        <h3 class="table-heading">Rust (2 benchmarks)</h3>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Benchmark</th>
+                <th class="num">Tests</th>
+                <th class="num">TP</th>
+                <th class="num">TN</th>
+                <th class="num">FP</th>
+                <th class="num">FN</th>
+                <th class="num">TPR</th>
+                <th class="num">FPR</th>
+                <th class="num">Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="benchmark-name">Rust Synthetic</td>
+                <td class="num">50</td>
+                <td class="num">46</td>
+                <td class="num">—</td>
+                <td class="num">—</td>
+                <td class="num">4</td>
+                <td class="num">92.0%</td>
+                <td class="num">—</td>
+                <td class="num score near-perfect">92.3%</td>
+              </tr>
+              <tr>
+                <td class="benchmark-name">CWE-Bench-Rust</td>
+                <td class="num">30</td>
+                <td class="num">28</td>
+                <td class="num">—</td>
+                <td class="num">—</td>
+                <td class="num">2</td>
+                <td class="num">93.3%</td>
+                <td class="num">—</td>
+                <td class="num score near-perfect">94.4%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Other Languages -->
+        <h3 class="table-heading">Other Languages (3 benchmarks)</h3>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Benchmark</th>
+                <th class="num">Tests</th>
+                <th class="num">TP</th>
+                <th class="num">TN</th>
+                <th class="num">FP</th>
+                <th class="num">FN</th>
+                <th class="num">TPR</th>
+                <th class="num">FPR</th>
+                <th class="num">Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="benchmark-name">Bash Synthetic</td>
+                <td class="num">31</td>
+                <td class="num">31</td>
+                <td class="num">—</td>
+                <td class="num">—</td>
+                <td class="num">0</td>
+                <td class="num">100%</td>
+                <td class="num">—</td>
+                <td class="num score perfect">100%</td>
+              </tr>
+              <tr>
+                <td class="benchmark-name">HTML/JS Synthetic</td>
+                <td class="num">30</td>
+                <td class="num">30</td>
+                <td class="num">—</td>
+                <td class="num">—</td>
+                <td class="num">0</td>
+                <td class="num">100%</td>
+                <td class="num">—</td>
+                <td class="num score perfect">100%</td>
+              </tr>
+              <tr>
+                <td class="benchmark-name">Firing Range</td>
+                <td class="num">40</td>
+                <td class="num">35</td>
+                <td class="num">—</td>
+                <td class="num">2</td>
+                <td class="num">3</td>
+                <td class="num">92.1%</td>
+                <td class="num">—</td>
+                <td class="num score near-perfect">92.1%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Summary by Language -->
+    <section class="summary">
+      <div class="section-inner">
+        <div class="section-label">Summary</div>
+        <h2>Results by <span class="accent">Language</span></h2>
+        <div class="table-container">
+          <table class="summary-table">
+            <thead>
+              <tr>
+                <th>Language</th>
+                <th class="num">Perfect (100%)</th>
+                <th class="num">Near-perfect (90%+)</th>
+                <th class="num">Total Benchmarks</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="lang">Java</td>
+                <td class="num">3</td>
+                <td class="num">4</td>
+                <td class="num">6</td>
+              </tr>
+              <tr>
+                <td class="lang">Node.js / TypeScript</td>
+                <td class="num">2</td>
+                <td class="num">3</td>
+                <td class="num">3</td>
+              </tr>
+              <tr>
+                <td class="lang">Python</td>
+                <td class="num">1</td>
+                <td class="num">2</td>
+                <td class="num">2</td>
+              </tr>
+              <tr>
+                <td class="lang">Rust</td>
+                <td class="num">0</td>
+                <td class="num">2</td>
+                <td class="num">2</td>
+              </tr>
+              <tr>
+                <td class="lang">Bash</td>
+                <td class="num">1</td>
+                <td class="num">1</td>
+                <td class="num">1</td>
+              </tr>
+              <tr>
+                <td class="lang">HTML/JS</td>
+                <td class="num">1</td>
+                <td class="num">1</td>
+                <td class="num">1</td>
+              </tr>
+              <tr class="total-row">
+                <td class="lang">Total</td>
+                <td class="num">8</td>
+                <td class="num">13</td>
+                <td class="num">16</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- CWE-Bench-Java Breakdown -->
+    <section class="cwe-breakdown">
+      <div class="section-inner">
+        <div class="section-label">Deep Dive</div>
+        <h2>CWE-Bench-Java by <span class="accent">Category</span></h2>
+        <div class="table-container">
+          <table class="cwe-table">
+            <thead>
+              <tr>
+                <th>CWE</th>
+                <th>Category</th>
+                <th class="num">Detected</th>
+                <th class="num">Missed</th>
+                <th class="num">Rate</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="cwe-id">CWE-022</td>
+                <td class="category">Path Traversal</td>
+                <td class="num">37 / 55</td>
+                <td class="num">18</td>
+                <td class="num">67.3%</td>
+              </tr>
+              <tr>
+                <td class="cwe-id">CWE-078</td>
+                <td class="category">Command Injection</td>
+                <td class="num">6 / 13</td>
+                <td class="num">7</td>
+                <td class="num">46.2%</td>
+              </tr>
+              <tr>
+                <td class="cwe-id">CWE-079</td>
+                <td class="category">XSS</td>
+                <td class="num">13 / 31</td>
+                <td class="num">18</td>
+                <td class="num">41.9%</td>
+              </tr>
+              <tr>
+                <td class="cwe-id">CWE-094</td>
+                <td class="category">Code Injection</td>
+                <td class="num">5 / 21</td>
+                <td class="num">16</td>
+                <td class="num">23.8%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Methodology -->
+    <section class="methodology">
+      <div class="section-inner">
+        <div class="section-label">Methodology</div>
+        <h2>How we <span class="accent">measured</span></h2>
+        <ul>
+          <li>circle-ir is a neuro-symbolic static analyzer that combines traditional dataflow analysis with learned patterns</li>
+          <li>All results are from static analysis only—no LLM involvement in detection or verification</li>
+          <li>Each benchmark's source dataset is linked to its origin: <a href="https://owasp.org/www-project-benchmark/">OWASP Benchmark</a>, <a href="https://samate.nist.gov/SARD/test-suites/112">NIST Juliet Test Suite</a>, <a href="https://github.com/ArasCha/CWE-Bench-Java">CWE-Bench-Java</a>, and others</li>
+          <li>CWE-Bench-Java uses per-project binary detection: each project contains one CVE, scored as detected or not</li>
+          <li>All benchmark code, harnesses, and raw outputs are in <a href="https://github.com/cogniumhq/circle-ir/tree/main/benchmarks">cogniumhq/circle-ir/benchmarks/</a></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Limitations -->
+    <section class="limitations">
+      <div class="section-inner">
+        <div class="section-label">Limitations</div>
+        <h2>Known gaps</h2>
+        <ul>
+          <li>SSTI (Server-Side Template Injection) is not currently in circle-ir's CWE coverage—this causes the PyGoat false negative</li>
+          <li>Firing Range has 2 false positives in the <code>escape/</code> category (escaped output flagged) and 3 false negatives in <code>cors/</code> (CORS misconfigurations not detected)</li>
+          <li>CWE-Bench-Java uses per-project detection, not per-CVE counts—a single missed sink in a complex project counts as a full miss</li>
+          <li>These benchmarks test static analysis only—the full circle-ir + LLM verification pipeline (SAST+LLM) produces different results, published separately</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Reproduction -->
+    <section class="reproduction">
+      <div class="section-inner">
+        <div class="section-label">Reproduce</div>
+        <h2>Run it <span class="accent">yourself</span></h2>
+        <p>To reproduce these benchmark results, you need Git and Node.js (18+) installed.</p>
+        <pre>git clone https://github.com/cogniumhq/circle-ir
+cd circle-ir/benchmarks
+npm install
+npm run benchmark</pre>
+        <p class="note">
+          If you cannot reproduce a result, please open an issue at <a href="https://github.com/cogniumhq/circle-ir/issues">github.com/cogniumhq/circle-ir/issues</a>.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="nav-logo" style="margin-bottom:4px">
+          <span class="dot"></span>
+          cognium
+        </div>
+        <p>Semantic SAST for the AI Agentic era.</p>
+        <div class="social-links">
+          <a href="https://x.com/cogniumhq" aria-label="Twitter"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+          <a href="https://github.com/cogniumhq" aria-label="GitHub"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
+          <a href="https://discord.gg/cogniumhq" aria-label="Discord"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.095 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.095 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg></a>
+        </div>
+      </div>
+
+      <div class="footer-links">
+        <div class="footer-col">
+          <h5>Product</h5>
+          <a href="https://github.com/cogniumhq/cognium#readme" target="_blank" rel="noopener">Docs ↗</a>
+          <a href="/benchmark">Benchmarks</a>
+          <a href="/#coverage">Coverage</a>
+          <a href="https://github.com/cogniumhq/cognium/releases" target="_blank" rel="noopener">Changelog ↗</a>
+        </div>
+        <div class="footer-col">
+          <h5>Community</h5>
+          <a href="https://github.com/cogniumhq/cognium" target="_blank" rel="noopener">GitHub ↗</a>
+          <a href="https://github.com/cogniumhq/cognium/discussions" target="_blank" rel="noopener">Discussions ↗</a>
+        </div>
+        <div class="footer-col">
+          <h5>Network</h5>
+          <a href="https://cognium.net" target="_blank" rel="noopener" style="color:var(--accent)">cognium.net ↗</a>
+          <a href="https://specifica.org" target="_blank" rel="noopener" style="color:var(--accent)">specifica.org ↗</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      © 2026 Cognium Labs · MIT Licensed
+    </div>
+  </footer>
+
+  <div class="toast" id="toast">Copied to clipboard!</div>
+
+  <script>
+    // Nav scroll effect
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.style.borderBottomColor = window.scrollY > 50 ? 'rgba(255,255,255,.08)' : 'rgba(255,255,255,.04)';
+    });
+
+    // Hamburger menu
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobile-menu');
+    hamburger.addEventListener('click', () => {
+      const isOpen = mobileMenu.classList.toggle('active');
+      hamburger.setAttribute('aria-expanded', isOpen);
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    });
+
+    // Close mobile menu on link click
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('active');
+        hamburger.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      });
+    });
+
+    // Copy install command
+    const navCta = document.getElementById('nav-cta');
+    const toast = document.getElementById('toast');
+    navCta.addEventListener('click', () => {
+      navigator.clipboard.writeText('npm install -g cognium');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    });
+  </script>
+
+</body>
+</html>

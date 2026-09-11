@@ -19,5 +19,5 @@ reproducible setup.
 
 ## Initial Scope
 
-Start with Cognium / circle-ir, CodeQL, and Semgrep. Add other tools only after
+Start with cognium-dev, CodeQL, and Semgrep. Add other tools only after
 the baseline run and scoring rules are stable.

@@ -1,0 +1,5 @@
+published_at,source_url,tool,tool_version,mode,llm_verification,language,benchmark,tests,tp,tn,fp,fn,tpr,fpr,score
+2026-09-11,https://github.com/cogniumhq/sast-benchmarks/tree/main/results/2026-09-11,cognium-dev,4.9.13,static-analysis,false,Go,Go Synthetic,29,15,10,0,4,78.9%,0.0%,78.9%
+2026-09-11,https://github.com/cogniumhq/sast-benchmarks/tree/main/results/2026-09-11,cognium-dev,4.9.13,static-analysis,false,Go,Vulnerability-goapp,13,3,6,1,3,50.0%,14.3%,45.0%
+2026-09-11,https://github.com/cogniumhq/sast-benchmarks/tree/main/results/2026-09-11,cognium-dev,4.9.13,static-analysis,false,C#/.NET,C# Synthetic,15,10,3,1,1,90.9%,25.0%,65.9%
+2026-09-11,https://github.com/cogniumhq/sast-benchmarks/tree/main/results/2026-09-11,cognium-dev,4.9.13,static-analysis,false,C#/.NET,Juliet C# (NIST baseline _01),123,17,n/a,n/a,106,13.8%,n/a,13.8%

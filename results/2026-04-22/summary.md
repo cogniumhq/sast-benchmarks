@@ -1,26 +1,34 @@
-# circle-ir SAST Benchmark Results: 2026-04-22
+# cognium-dev SAST Benchmark Results: 2026-04-22
 
 Source: `https://cognium.dev/benchmark/`
 
 Imported into this repository on 2026-05-03 from the live `cognium.dev`
-benchmark page. The live page reports `circle-ir 3.19.4` and benchmark date
-`April 22, 2026`.
+benchmark page. The engine was published at the time under its former package
+name `circle-ir`; the project has since been renamed `cognium-dev`
+(`https://github.com/cogniumhq/cognium-dev`). The version is unchanged:
+`3.19.4`, benchmark date `April 22, 2026`.
 
 ## Scope
 
-- Tool: circle-ir
+- Tool: cognium-dev (published at the time as `circle-ir`)
 - Version: 3.19.4
 - Mode: static analysis only
 - LLM verification: not used
 - Benchmarks: 16
-- Languages: 6
-- Reproduction command:
+- Language groups: 6 (Java, Node.js / TypeScript, Python, Rust, Bash, HTML/JS)
+  plus Firing Range, which the source page lists under "Other"
+- Reproduction: **not currently reproducible with a single published
+  command.** The one-command harness that produced this snapshot is not present
+  in the public `cognium-dev` source tree. The result set is auditable from the
+  artifacts in this folder and the raw page snapshot; see
+  `docs/run-new-benchmarks.md` for the rerun status.
+
+Audit the published snapshot:
 
 ```sh
-git clone https://github.com/cogniumhq/circle-ir
-cd circle-ir/benchmarks
-npm install
-npm run benchmark
+git clone https://github.com/cogniumhq/sast-benchmarks
+cd sast-benchmarks/results/2026-04-22
+ls summary.md results.csv results.json cwe-bench-java-breakdown.csv
 ```
 
 ## Results by Benchmark
@@ -54,7 +62,13 @@ npm run benchmark
 | Rust | 0 | 2 | 2 |
 | Bash | 1 | 1 | 1 |
 | HTML/JS | 1 | 1 | 1 |
-| Total | 8 | 13 | 16 |
+| Other (Firing Range) | 0 | 1 | 1 |
+| Total | 8 | 14 | 16 |
+
+Note: the source page's summary table omitted the Firing Range row, so its
+per-language rows summed to 15 benchmarks and 13 at 90%+ while the total row
+said 16. Firing Range (92.1%) is counted here so the rows reconcile with the
+16 published benchmark results above.
 
 ## CWE-Bench-Java Breakdown
 
@@ -67,13 +81,22 @@ npm run benchmark
 
 ## Known Gaps From Source Page
 
-- SSTI is not currently in circle-ir's CWE coverage, causing the PyGoat false negative.
+- SSTI is not currently in cognium-dev's CWE coverage, causing the PyGoat false negative.
 - Firing Range has 2 false positives in the `escape/` category and 3 false negatives in `cors/`.
 - CWE-Bench-Java uses per-project detection rather than per-CVE counts.
 - These results test static analysis only; the full SAST plus LLM verification pipeline is separate.
+- The historical one-command benchmark harness is not present in the current public source tree, so this dated result set is auditable but not currently reproducible with a single published command.
+
+## Languages Not Covered By This Snapshot
+
+cognium-dev also supports Go and C#/.NET. Neither was scored in this snapshot.
+First scored results for both are published in `results/2026-09-11/` on a
+newer engine version; they are a separate dated result set, not part of the
+April 22 numbers above.
 
 ## Raw Evidence
 
 - Live HTML snapshot: `../../raw/2026-04-22/cognium-dev-benchmark.html`
 - Structured JSON: `results.json`
 - CSV: `results.csv`
+- CWE-Bench-Java breakdown CSV: `cwe-bench-java-breakdown.csv`

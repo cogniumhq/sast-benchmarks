@@ -1,39 +1,47 @@
-# Cognium Tool Lane
+# cognium-dev Tool Lane
 
-Configuration, commands, and notes for Cognium / circle-ir benchmark runs.
+Configuration, commands, and notes for cognium-dev benchmark runs.
 
-## Current Published Reproduction Command
+`cognium-dev` (`https://github.com/cogniumhq/cognium-dev`, npm packages
+`cognium-dev` and `circle-ir`) is the static-analysis engine measured on
+`https://cognium.dev/benchmark`. It was published under the package name
+`circle-ir` until the 4.x line; result sets in this repository name the tool
+`cognium-dev` and record `former_name: circle-ir` where the run predates the
+rename.
 
-Source: `https://cognium.dev/benchmark/`
+## Published Runs
 
-The live benchmark page currently publishes the following reproduction path for
-the `circle-ir 3.19.4` static-analysis benchmark run dated April 22, 2026:
+| Result set | Engine | How it was produced |
+| --- | --- | --- |
+| `results/2026-04-22/` | cognium-dev 3.19.4 (as `circle-ir`) | Imported from the live page. The one-command harness that produced it is not in the public source tree; the set is auditable, not reproducible from a single published command. |
+| `results/2026-09-11/` | circle-ir 4.9.13 (npm, same engine as cognium-dev 4.9.13) | Go and C#/.NET suites run through the benchmark runners recorded in `results/2026-09-11/summary.md`, against the published npm package. Raw logs in `raw/2026-09-11/`. |
+
+## Reproducing the 2026-09-11 Go / C# runs
+
+The runners call the engine's `analyze()` API directly (no CLI, no LLM):
 
 ```sh
-git clone https://github.com/cogniumhq/circle-ir
-cd circle-ir/benchmarks
-npm install
-npm run benchmark
+mkdir bench && cd bench
+printf '{"type":"module","dependencies":{"circle-ir":"4.9.13"}}' > package.json
+bun install                                  # or npm install
+git clone --depth 1 https://github.com/Hardw01f/Vulnerability-goapp.git vulnerability-goapp
+curl -sSLo juliet-csharp.zip https://samate.nist.gov/SARD/downloads/test-suites/2020-08-01-juliet-test-suite-for-csharp-v1-3.zip
+unzip -q juliet-csharp.zip -d juliet-csharp  # yields juliet-csharp/src/testcases
+# copy the runner scripts listed in results/2026-09-11/summary.md into ./runners
+bun run runners/run-go.ts --verbose
+bun run runners/run-csharp.ts --verbose
+bun run runners/run-vulnerability-goapp.ts --verbose --expected-results data/expectedresults.csv
+bun run runners/run-csharp-juliet.ts --verbose    # baseline _01 variant
 ```
 
-Prerequisites from the source page:
+The runner scripts themselves currently live in a private harness; publishing
+them alongside the result set is tracked in `docs/run-new-benchmarks.md`.
 
-- Git
-- Node.js 18+
+## What every run must record
 
-Use this command as the baseline when reproducing imported `cognium.dev`
-benchmark results. If a future run uses a different command, record the new
-command in the dated result folder and update this file.
-
-Verification note: during the 2026-05-03 repo review, the local
-`/Users/asok/workspace/circle-ir/package.json` did not define a `benchmark`
-script. Before publishing fresh reruns, restore or add a public benchmark
-harness command in `cogniumhq/circle-ir` and update this file.
-
-Each run should record:
-
-- circle-ir version
-- rule pack or analyzer configuration
-- command
-- runtime environment
-- raw output path
+- engine package and exact version (and npm tarball / commit when available)
+- rule pack or analyzer configuration (default config unless stated)
+- exact command
+- runtime (Node/Bun version, OS)
+- raw output path under `raw/YYYY-MM-DD/`
+- scoring rule used by the runner (flow-aware vs. source+sink co-occurrence)

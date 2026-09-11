@@ -1,0 +1,149 @@
+{
+  "published_at": "2026-09-11",
+  "run_at": "2026-09-11",
+  "source_url": "https://github.com/cogniumhq/sast-benchmarks/tree/main/results/2026-09-11",
+  "benchmark": {
+    "name": "cognium-dev SAST Benchmarks — Go and C#/.NET language expansion",
+    "source_url": "https://cognium.dev/benchmark/"
+  },
+  "dataset": {
+    "name": "Go Synthetic, Vulnerability-goapp, C# Synthetic, NIST Juliet C# 1.3 (baseline _01 variant)",
+    "revision": "Vulnerability-goapp 6e51a892d449958074f216bb10e55e122d99440c; Juliet C# 2020-08-01-juliet-test-suite-for-csharp-v1-3.zip sha256 2e6dbac4741fb020a0b1c2db69e98aed165987df2bd70bd51f7c8c5302c8e8f8; synthetic cases embedded in the runner scripts",
+    "source_url": "https://samate.nist.gov/SARD/downloads/test-suites/2020-08-01-juliet-test-suite-for-csharp-v1-3.zip"
+  },
+  "tool": {
+    "name": "cognium-dev",
+    "package": "circle-ir",
+    "version": "4.9.13",
+    "source_url": "https://github.com/cogniumhq/cognium-dev",
+    "release_tag": "circle-ir-v4.9.13",
+    "release_commit": "79d2c7f",
+    "configuration": "static analysis only; default taint config (Juliet C# runner adds the corpus' own source/sink signatures); no LLM verification",
+    "command": "bun run runners/run-go.ts --verbose; bun run runners/run-csharp.ts --verbose; bun run runners/run-vulnerability-goapp.ts --verbose --expected-results data/expectedresults.csv (regex fallback disabled); bun run runners/run-csharp-juliet.ts --verbose",
+    "runtime": "Bun 1.3.14, macOS 26.6.2, Apple Silicon"
+  },
+  "summary": {
+    "total_cases": 180,
+    "true_positives": 45,
+    "true_negatives_known": 19,
+    "false_positives": 2,
+    "false_negatives": 114,
+    "total_benchmarks": 4,
+    "perfect_benchmarks": 0,
+    "benchmarks_at_or_above_90_percent": 0,
+    "languages": 2
+  },
+  "results": [
+    {
+      "language": "Go",
+      "benchmark": "Go Synthetic",
+      "tests": 29,
+      "tp": 15,
+      "tn": 10,
+      "fp": 0,
+      "fn": 4,
+      "tpr": "78.9%",
+      "fpr": "0.0%",
+      "score": "78.9%",
+      "score_rule": "tpr - fpr",
+      "categories": [
+        { "category": "sqli", "cwe": "CWE-89", "tp": 4, "tn": 2, "fp": 0, "fn": 0 },
+        { "category": "cmdi", "cwe": "CWE-78", "tp": 3, "tn": 2, "fp": 0, "fn": 1 },
+        { "category": "pathtraver", "cwe": "CWE-22", "tp": 3, "tn": 2, "fp": 0, "fn": 1 },
+        { "category": "xss", "cwe": "CWE-79", "tp": 1, "tn": 2, "fp": 0, "fn": 2 },
+        { "category": "ssrf", "cwe": "CWE-918", "tp": 4, "tn": 2, "fp": 0, "fn": 0 }
+      ]
+    },
+    {
+      "language": "Go",
+      "benchmark": "Vulnerability-goapp",
+      "tests": 13,
+      "tp": 3,
+      "tn": 6,
+      "fp": 1,
+      "fn": 3,
+      "tpr": "50.0%",
+      "fpr": "14.3%",
+      "score": "45.0%",
+      "score_rule": "mean over categories of (tpr - fpr); harness regex fallback disabled",
+      "harness_default_with_regex_fallback": { "tp": 4, "tn": 6, "fp": 1, "fn": 2, "tpr": "66.7%", "fpr": "14.3%", "score": "70.0%", "published": false },
+      "categories": [
+        { "category": "cmdi", "cwe": "CWE-78", "tp": 2, "tn": 1, "fp": 0, "fn": 0 },
+        { "category": "sqli", "cwe": "CWE-89", "tp": 0, "tn": 4, "fp": 1, "fn": 2 },
+        { "category": "pathtraver", "cwe": "CWE-22", "tp": 0, "tn": 0, "fp": 0, "fn": 1 },
+        { "category": "xss", "cwe": "CWE-79", "tp": 1, "tn": 1, "fp": 0, "fn": 0 }
+      ]
+    },
+    {
+      "language": "C#/.NET",
+      "benchmark": "C# Synthetic",
+      "tests": 15,
+      "tp": 10,
+      "tn": 3,
+      "fp": 1,
+      "fn": 1,
+      "tpr": "90.9%",
+      "fpr": "25.0%",
+      "score": "65.9%",
+      "score_rule": "tpr - fpr",
+      "categories": [
+        { "category": "sqli", "cwe": "CWE-89", "tp": 2, "tn": 0, "fp": 1, "fn": 0 },
+        { "category": "cmdi", "cwe": "CWE-78", "tp": 1, "tn": 1, "fp": 0, "fn": 0 },
+        { "category": "pathtraver", "cwe": "CWE-22", "tp": 1, "tn": 1, "fp": 0, "fn": 0 },
+        { "category": "ssrf", "cwe": "CWE-918", "tp": 1, "tn": 0, "fp": 0, "fn": 0 },
+        { "category": "xss", "cwe": "CWE-79", "tp": 0, "tn": 1, "fp": 0, "fn": 1 },
+        { "category": "codeinj", "cwe": "CWE-94", "tp": 1, "tn": 0, "fp": 0, "fn": 0 },
+        { "category": "deser", "cwe": "CWE-502", "tp": 1, "tn": 0, "fp": 0, "fn": 0 },
+        { "category": "ldap", "cwe": "CWE-90", "tp": 1, "tn": 0, "fp": 0, "fn": 0 },
+        { "category": "xpath", "cwe": "CWE-643", "tp": 1, "tn": 0, "fp": 0, "fn": 0 },
+        { "category": "xxe", "cwe": "CWE-611", "tp": 1, "tn": 0, "fp": 0, "fn": 0 }
+      ]
+    },
+    {
+      "language": "C#/.NET",
+      "benchmark": "Juliet C# (NIST, baseline _01)",
+      "tests": 123,
+      "tp": 17,
+      "tn": null,
+      "fp": null,
+      "fn": 106,
+      "tpr": "13.8%",
+      "fpr": null,
+      "score": "13.8%",
+      "score_rule": "recall only; _01 baseline files are all vulnerable"
+    }
+  ],
+  "language_summary": [
+    { "language": "Go", "perfect_100": 0, "at_or_above_90": 0, "total_benchmarks": 2 },
+    { "language": "C#/.NET", "perfect_100": 0, "at_or_above_90": 0, "total_benchmarks": 2 },
+    { "language": "Total", "perfect_100": 0, "at_or_above_90": 0, "total_benchmarks": 4 }
+  ],
+  "juliet_csharp_breakdown": [
+    { "cwe": "CWE-023", "category": "Relative Path Traversal", "detected": 0, "total": 10, "missed": 10, "rate": "0.0%" },
+    { "cwe": "CWE-036", "category": "Absolute Path Traversal", "detected": 0, "total": 10, "missed": 10, "rate": "0.0%" },
+    { "cwe": "CWE-078", "category": "Command Injection", "detected": 0, "total": 10, "missed": 10, "rate": "0.0%" },
+    { "cwe": "CWE-080", "category": "XSS (basic)", "detected": 0, "total": 18, "missed": 18, "rate": "0.0%" },
+    { "cwe": "CWE-081", "category": "XSS (error message)", "detected": 0, "total": 9, "missed": 9, "rate": "0.0%" },
+    { "cwe": "CWE-083", "category": "XSS (attribute)", "detected": 0, "total": 9, "missed": 9, "rate": "0.0%" },
+    { "cwe": "CWE-089", "category": "SQL Injection", "detected": 8, "total": 27, "missed": 19, "rate": "29.6%" },
+    { "cwe": "CWE-090", "category": "LDAP Injection", "detected": 2, "total": 10, "missed": 8, "rate": "20.0%" },
+    { "cwe": "CWE-094", "category": "Code Injection", "detected": 0, "total": 10, "missed": 10, "rate": "0.0%" },
+    { "cwe": "CWE-643", "category": "XPath Injection", "detected": 7, "total": 10, "missed": 3, "rate": "70.0%" }
+  ],
+  "artifacts": {
+    "raw_output": "raw/2026-09-11/",
+    "summary_markdown": "results/2026-09-11/summary.md",
+    "summary_csv": "results/2026-09-11/results.csv",
+    "juliet_csharp_breakdown_csv": "results/2026-09-11/juliet-csharp-breakdown.csv"
+  },
+  "limitations": [
+    "Separate dated result set on a newer engine (4.9.13) than the April 22, 2026 snapshot (3.19.4); do not merge rows across the two sets without stating the engine version per row.",
+    "C#/.NET support is labelled experimental / preview by the engine; these are its first scored public numbers.",
+    "Juliet C# is scored on the _01 baseline variant only (recall); the Good*() controls and other variants were not scored, so no Juliet-derived C# false-positive rate is published.",
+    "Vulnerability-goapp has 13 labelled cases; a single flag moves FPR by 14.3 points.",
+    "The Vulnerability-goapp harness runner's regex fallback was disabled for the published row; the harness-default number (70.0%) is recorded for comparison only.",
+    "Score column is defined per runner and is not comparable across rows.",
+    "Static analysis only; the SAST plus LLM verification pipeline is separate.",
+    "Runner scripts are not yet published in a public repository; reproduction steps and the exact npm package are in tools/cognium/README.md."
+  ]
+}

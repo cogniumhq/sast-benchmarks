@@ -1,0 +1,43 @@
+C#/.NET Synthetic Benchmark (cognium-ai#285)
+============================================
+
+15 curated ASP.NET Core / ADO.NET cases — flow-aware scoring
+
+✓ sqli_adonet_concat: TP (sources: 1, sinks: 2, flows: 2)
+✓ sqli_adonet_interpolation: TP (sources: 2, sinks: 2, flows: 2)
+✗ sqli_adonet_parameterized_safe: FP (sources: 1, sinks: 1, flows: 0)
+✓ cmdi_process_shell_concat: TP (sources: 1, sinks: 1, flows: 1)
+✓ cmdi_argumentlist_safe: TN (sources: 1, sinks: 0, flows: 0)
+✓ pathtraver_readalltext_concat: TP (sources: 1, sinks: 1, flows: 1)
+✓ pathtraver_getfilename_safe: TN (sources: 1, sinks: 0, flows: 0)
+✓ ssrf_httpclient_get: TP (sources: 1, sinks: 1, flows: 1)
+✗ xss_response_write_concat: FN (sources: 1, sinks: 0, flows: 0)
+✓ xss_htmlencode_safe: TN (sources: 1, sinks: 0, flows: 0)
+✓ codeinj_csharpscript_eval: TP (sources: 1, sinks: 1, flows: 1)
+✓ deser_binaryformatter: TP (sources: 1, sinks: 1, flows: 1)
+✓ ldap_directorysearcher_concat: TP (sources: 1, sinks: 2, flows: 1)
+✓ xpath_selectnodes_concat: TP (sources: 1, sinks: 1, flows: 1)
+✓ xxe_loadxml_default: TP (sources: 1, sinks: 1, flows: 1)
+
+--- Results by Category ---
+
+Category     | TP | TN | FP | FN | TPR     | FPR     | Score
+-------------|----|----|----|----|---------|---------|--------
+sqli         |  2 |  0 |  1 |  0 | 100.0%  | 100.0%  | 0.0%
+cmdi         |  1 |  1 |  0 |  0 | 100.0%  |   0.0%  | 100.0%
+pathtraver   |  1 |  1 |  0 |  0 | 100.0%  |   0.0%  | 100.0%
+ssrf         |  1 |  0 |  0 |  0 | 100.0%  |   0.0%  | 100.0%
+xss          |  0 |  1 |  0 |  1 |   0.0%  |   0.0%  | 0.0%
+codeinj      |  1 |  0 |  0 |  0 | 100.0%  |   0.0%  | 100.0%
+deser        |  1 |  0 |  0 |  0 | 100.0%  |   0.0%  | 100.0%
+ldap         |  1 |  0 |  0 |  0 | 100.0%  |   0.0%  | 100.0%
+xpath        |  1 |  0 |  0 |  0 | 100.0%  |   0.0%  | 100.0%
+xxe          |  1 |  0 |  0 |  0 | 100.0%  |   0.0%  | 100.0%
+-------------|----|----|----|----|---------|---------|--------
+TOTAL        | 10 |  3 |  1 |  1 |  90.9%  |  25.0%  | 65.9%
+
+Score: 65.9% (TPR: 90.9%, FPR: 25.0%)
+
+--- 2 Failures (experimental C# — expected until circle-ir C# rules mature) ---
+  FP sqli_adonet_parameterized_safe (CWE-89, safe)
+  FN xss_response_write_concat (CWE-79, vuln)

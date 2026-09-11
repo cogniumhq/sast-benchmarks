@@ -35,17 +35,29 @@ classes used for SAST evaluation.
 
 Initial tool lanes:
 
-- Cognium / circle-ir
+- cognium-dev (formerly published as `circle-ir`)
 - cognium-ai
 - CodeQL
 - Semgrep
 
 ## Published Results
 
-- `results/2026-04-22/`: circle-ir 3.19.4 static-analysis benchmark results
-  imported from the live `cognium.dev/benchmark` page.
-- `results/2026-04-30/`: sanitized cognium-ai static and LLM-enriched
-  evaluation results on an intentionally vulnerable Python demo repository.
+Static-analysis snapshots (what `cognium.dev/benchmark` shows):
+
+- `results/2026-04-22/`: cognium-dev 3.19.4 (published then as `circle-ir`)
+  static-analysis results across 16 benchmarks / 6 language groups, imported
+  from the live `cognium.dev/benchmark` page. Raw page snapshot in
+  `raw/2026-04-22/`.
+- `results/2026-09-11/`: cognium-dev 4.9.13 first scored results for the two
+  languages missing from the April snapshot — Go (Go Synthetic,
+  Vulnerability-goapp) and C#/.NET (curated ASP.NET Core / ADO.NET set, NIST
+  Juliet C# baseline). Raw runner logs in `raw/2026-09-11/`.
+
+cognium-ai (SAST + LLM) lanes, published separately from the static snapshots:
+
+- `results/2026-05-05/`: JavaScript top-10 static baseline.
+- `results/2026-05-27/`: Java / JavaScript / Python top-10 LLM-enriched runs
+  across several models.
 
 ## Publishing Contract
 

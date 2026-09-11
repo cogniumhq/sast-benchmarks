@@ -1,0 +1,11 @@
+published_at,source_url,tool,tool_version,cwe,category,detected,total,missed,rate
+2026-09-11,https://github.com/cogniumhq/sast-benchmarks/tree/main/results/2026-09-11,cognium-dev,4.9.13,CWE-023,Relative Path Traversal,0,10,10,0.0%
+2026-09-11,https://github.com/cogniumhq/sast-benchmarks/tree/main/results/2026-09-11,cognium-dev,4.9.13,CWE-036,Absolute Path Traversal,0,10,10,0.0%
+2026-09-11,https://github.com/cogniumhq/sast-benchmarks/tree/main/results/2026-09-11,cognium-dev,4.9.13,CWE-078,Command Injection,0,10,10,0.0%
+2026-09-11,https://github.com/cogniumhq/sast-benchmarks/tree/main/results/2026-09-11,cognium-dev,4.9.13,CWE-080,XSS (basic),0,18,18,0.0%
+2026-09-11,https://github.com/cogniumhq/sast-benchmarks/tree/main/results/2026-09-11,cognium-dev,4.9.13,CWE-081,XSS (error message),0,9,9,0.0%
+2026-09-11,https://github.com/cogniumhq/sast-benchmarks/tree/main/results/2026-09-11,cognium-dev,4.9.13,CWE-083,XSS (attribute),0,9,9,0.0%
+2026-09-11,https://github.com/cogniumhq/sast-benchmarks/tree/main/results/2026-09-11,cognium-dev,4.9.13,CWE-089,SQL Injection,8,27,19,29.6%
+2026-09-11,https://github.com/cogniumhq/sast-benchmarks/tree/main/results/2026-09-11,cognium-dev,4.9.13,CWE-090,LDAP Injection,2,10,8,20.0%
+2026-09-11,https://github.com/cogniumhq/sast-benchmarks/tree/main/results/2026-09-11,cognium-dev,4.9.13,CWE-094,Code Injection,0,10,10,0.0%
+2026-09-11,https://github.com/cogniumhq/sast-benchmarks/tree/main/results/2026-09-11,cognium-dev,4.9.13,CWE-643,XPath Injection,7,10,3,70.0%

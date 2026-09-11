@@ -1,0 +1,246 @@
+Juliet C#/.NET Test Suite Runner (NIST SARD suite 110)
+======================================================
+
+Engine: circle-ir 4.x experimental C# taint
+Variant: 01 · Scoring: flow-aware (unsanitized taint.flows, matched sink type)
+
+Found 123 baseline test files across 10 supported CWEs
+
+
+  FN: CWE89_SQL_Injection__Web_Params_Get_Web_ExecuteNonQuery_01.cs (sources=2, sinks=11, flows=0)
+
+  FN: CWE89_SQL_Injection__Web_QueryString_Web_ExecuteNonQuery_01.cs (sources=0, sinks=11, flows=0)
+
+  FN: CWE89_SQL_Injection__Web_QueryString_Web_CommandText_01.cs (sources=0, sinks=9, flows=0)
+
+  FN: CWE89_SQL_Injection__Web_QueryString_Web_ExecuteScalar_01.cs (sources=0, sinks=11, flows=0)
+
+  FN: CWE89_SQL_Injection__Web_NetClient_ExecuteNonQuery_01.cs (sources=4, sinks=13, flows=0)
+
+  FN: CWE89_SQL_Injection__Web_Params_Get_Web_ExecuteScalar_01.cs (sources=2, sinks=11, flows=0)
+
+  FN: CWE89_SQL_Injection__Web_NetClient_ExecuteScalar_01.cs (sources=4, sinks=13, flows=0)
+
+  FN: CWE89_SQL_Injection__Web_Get_Cookies_Web_ExecuteScalar_01.cs (sources=0, sinks=11, flows=0)
+
+  FN: CWE89_SQL_Injection__Web_Connect_tcp_ExecuteNonQuery_01.cs (sources=2, sinks=13, flows=0)
+
+  FN: CWE89_SQL_Injection__Web_Get_Cookies_Web_CommandText_01.cs (sources=0, sinks=9, flows=0)
+
+  FN: CWE89_SQL_Injection__Web_Get_Cookies_Web_ExecuteNonQuery_01.cs (sources=0, sinks=11, flows=0)
+
+  FN: CWE89_SQL_Injection__Web_Connect_tcp_ExecuteScalar_01.cs (sources=2, sinks=13, flows=0)
+
+  FN: CWE89_SQL_Injection__Web_File_ExecuteScalar_01.cs (sources=2, sinks=11, flows=0)
+
+  FN: CWE89_SQL_Injection__Web_File_ExecuteNonQuery_01.cs (sources=2, sinks=11, flows=0)
+
+  FN: CWE89_SQL_Injection__Web_Database_ExecuteNonQuery_01.cs (sources=0, sinks=17, flows=0)
+
+  FN: CWE89_SQL_Injection__Web_Listen_tcp_ExecuteNonQuery_01.cs (sources=2, sinks=13, flows=0)
+
+  FN: CWE89_SQL_Injection__Web_Database_CommandText_01.cs (sources=0, sinks=15, flows=0)
+
+  FN: CWE89_SQL_Injection__Web_Listen_tcp_ExecuteScalar_01.cs (sources=2, sinks=13, flows=0)
+
+  FN: CWE89_SQL_Injection__Web_Database_ExecuteScalar_01.cs (sources=0, sinks=17, flows=0)
+
+  FN: CWE78_OS_Command_Injection__Environment_01.cs (sources=2, sinks=4, flows=0)
+
+  FN: CWE78_OS_Command_Injection__Params_Get_Web_01.cs (sources=1, sinks=4, flows=0)
+
+  FN: CWE78_OS_Command_Injection__ReadLine_01.cs (sources=2, sinks=4, flows=0)
+
+  FN: CWE78_OS_Command_Injection__Database_01.cs (sources=0, sinks=7, flows=0)
+
+  FN: CWE78_OS_Command_Injection__NetClient_01.cs (sources=2, sinks=5, flows=0)
+
+  FN: CWE78_OS_Command_Injection__QueryString_Web_01.cs (sources=0, sinks=4, flows=0)
+
+  FN: CWE78_OS_Command_Injection__Get_Cookies_Web_01.cs (sources=0, sinks=4, flows=0)
+
+  FN: CWE78_OS_Command_Injection__Listen_tcp_01.cs (sources=1, sinks=5, flows=0)
+
+  FN: CWE78_OS_Command_Injection__Connect_tcp_01.cs (sources=1, sinks=5, flows=0)
+
+  FN: CWE78_OS_Command_Injection__File_01.cs (sources=1, sinks=4, flows=0)
+
+  FN: CWE90_LDAP_Injection__Listen_tcp_01.cs (sources=1, sinks=9, flows=0)
+
+  FN: CWE90_LDAP_Injection__File_01.cs (sources=1, sinks=8, flows=0)
+
+  FN: CWE90_LDAP_Injection__Database_01.cs (sources=0, sinks=11, flows=0)
+
+  FN: CWE90_LDAP_Injection__ReadLine_01.cs (sources=2, sinks=8, flows=0)
+
+  FN: CWE90_LDAP_Injection__QueryString_Web_01.cs (sources=0, sinks=8, flows=0)
+
+  FN: CWE90_LDAP_Injection__NetClient_01.cs (sources=2, sinks=9, flows=0)
+
+  FN: CWE90_LDAP_Injection__Get_Cookies_Web_01.cs (sources=0, sinks=8, flows=0)
+
+  FN: CWE90_LDAP_Injection__Connect_tcp_01.cs (sources=1, sinks=9, flows=0)
+
+  FN: CWE643_Xpath_Injection__Database_01.cs (sources=0, sinks=9, flows=0)
+
+  FN: CWE643_Xpath_Injection__QueryString_Web_01.cs (sources=0, sinks=3, flows=0)
+Processing: 50/123 (0.3s)
+  FN: CWE643_Xpath_Injection__Get_Cookies_Web_01.cs (sources=0, sinks=3, flows=0)
+
+  FN: CWE94_Improper_Control_of_Generation_of_Code__Params_Get_Web_01.cs (sources=2, sinks=1, flows=1)
+
+  FN: CWE94_Improper_Control_of_Generation_of_Code__Listen_tcp_01.cs (sources=2, sinks=2, flows=0)
+
+  FN: CWE94_Improper_Control_of_Generation_of_Code__ReadLine_01.cs (sources=4, sinks=1, flows=1)
+
+  FN: CWE94_Improper_Control_of_Generation_of_Code__Environment_01.cs (sources=4, sinks=1, flows=1)
+
+  FN: CWE94_Improper_Control_of_Generation_of_Code__Database_01.cs (sources=0, sinks=6, flows=0)
+
+  FN: CWE94_Improper_Control_of_Generation_of_Code__Get_Cookies_Web_01.cs (sources=0, sinks=0, flows=0)
+
+  FN: CWE94_Improper_Control_of_Generation_of_Code__QueryString_Web_01.cs (sources=0, sinks=0, flows=0)
+
+  FN: CWE94_Improper_Control_of_Generation_of_Code__File_01.cs (sources=2, sinks=1, flows=1)
+
+  FN: CWE94_Improper_Control_of_Generation_of_Code__Connect_tcp_01.cs (sources=2, sinks=2, flows=0)
+
+  FN: CWE94_Improper_Control_of_Generation_of_Code__NetClient_01.cs (sources=4, sinks=2, flows=0)
+
+  FN: CWE23_Relative_Path_Traversal__NetClient_01.cs (sources=4, sinks=3, flows=0)
+
+  FN: CWE23_Relative_Path_Traversal__Params_Get_Web_01.cs (sources=3, sinks=2, flows=0)
+
+  FN: CWE23_Relative_Path_Traversal__Listen_tcp_01.cs (sources=3, sinks=3, flows=0)
+
+  FN: CWE23_Relative_Path_Traversal__Environment_01.cs (sources=4, sinks=2, flows=0)
+
+  FN: CWE23_Relative_Path_Traversal__File_01.cs (sources=3, sinks=2, flows=0)
+
+  FN: CWE23_Relative_Path_Traversal__QueryString_Web_01.cs (sources=2, sinks=2, flows=0)
+
+  FN: CWE23_Relative_Path_Traversal__Database_01.cs (sources=2, sinks=5, flows=0)
+
+  FN: CWE23_Relative_Path_Traversal__Connect_tcp_01.cs (sources=3, sinks=3, flows=0)
+
+  FN: CWE23_Relative_Path_Traversal__ReadLine_01.cs (sources=4, sinks=2, flows=0)
+
+  FN: CWE23_Relative_Path_Traversal__Get_Cookies_Web_01.cs (sources=2, sinks=2, flows=0)
+
+  FN: CWE36_Absolute_Path_Traversal__Environment_01.cs (sources=4, sinks=1, flows=0)
+
+  FN: CWE36_Absolute_Path_Traversal__NetClient_01.cs (sources=4, sinks=2, flows=0)
+
+  FN: CWE36_Absolute_Path_Traversal__Get_Cookies_Web_01.cs (sources=2, sinks=1, flows=0)
+
+  FN: CWE36_Absolute_Path_Traversal__Listen_tcp_01.cs (sources=3, sinks=2, flows=0)
+
+  FN: CWE36_Absolute_Path_Traversal__QueryString_Web_01.cs (sources=2, sinks=1, flows=0)
+
+  FN: CWE36_Absolute_Path_Traversal__Params_Get_Web_01.cs (sources=3, sinks=1, flows=0)
+
+  FN: CWE36_Absolute_Path_Traversal__Database_01.cs (sources=2, sinks=4, flows=0)
+
+  FN: CWE36_Absolute_Path_Traversal__Connect_tcp_01.cs (sources=3, sinks=2, flows=0)
+
+  FN: CWE36_Absolute_Path_Traversal__File_01.cs (sources=3, sinks=1, flows=0)
+
+  FN: CWE36_Absolute_Path_Traversal__ReadLine_01.cs (sources=4, sinks=1, flows=0)
+
+  FN: CWE80_XSS__Web_QueryString_Web_01.cs (sources=0, sinks=4, flows=0)
+
+  FN: CWE80_XSS__Web_ReadLine_01.cs (sources=2, sinks=4, flows=0)
+
+  FN: CWE80_XSS__CWE182_Web_Database_01.cs (sources=0, sinks=7, flows=0)
+
+  FN: CWE80_XSS__CWE182_Web_ReadLine_01.cs (sources=2, sinks=4, flows=0)
+
+  FN: CWE80_XSS__Web_Connect_tcp_01.cs (sources=1, sinks=5, flows=0)
+
+  FN: CWE80_XSS__CWE182_Web_Listen_tcp_01.cs (sources=1, sinks=5, flows=0)
+
+  FN: CWE80_XSS__Web_Listen_tcp_01.cs (sources=1, sinks=5, flows=0)
+
+  FN: CWE80_XSS__Web_NetClient_01.cs (sources=2, sinks=5, flows=0)
+
+  FN: CWE80_XSS__Web_File_01.cs (sources=1, sinks=4, flows=0)
+
+  FN: CWE80_XSS__Web_Get_Cookies_Web_01.cs (sources=0, sinks=4, flows=0)
+
+  FN: CWE80_XSS__CWE182_Web_File_01.cs (sources=1, sinks=4, flows=0)
+
+  FN: CWE80_XSS__CWE182_Web_QueryString_Web_01.cs (sources=0, sinks=4, flows=0)
+Processing: 100/123 (0.5s)
+  FN: CWE80_XSS__Web_Params_Get_Web_01.cs (sources=1, sinks=4, flows=0)
+
+  FN: CWE80_XSS__CWE182_Web_Get_Cookies_Web_01.cs (sources=0, sinks=4, flows=0)
+
+  FN: CWE80_XSS__Web_Database_01.cs (sources=0, sinks=7, flows=0)
+
+  FN: CWE80_XSS__CWE182_Web_NetClient_01.cs (sources=2, sinks=5, flows=0)
+
+  FN: CWE80_XSS__CWE182_Web_Connect_tcp_01.cs (sources=1, sinks=5, flows=0)
+
+  FN: CWE80_XSS__CWE182_Web_Params_Get_Web_01.cs (sources=1, sinks=4, flows=0)
+
+  FN: CWE81_XSS_Error_Message__Web_Connect_tcp_01.cs (sources=1, sinks=1, flows=0)
+
+  FN: CWE81_XSS_Error_Message__Web_Database_01.cs (sources=0, sinks=3, flows=0)
+
+  FN: CWE81_XSS_Error_Message__Web_ReadLine_01.cs (sources=2, sinks=0, flows=0)
+
+  FN: CWE81_XSS_Error_Message__Web_QueryString_Web_01.cs (sources=0, sinks=0, flows=0)
+
+  FN: CWE81_XSS_Error_Message__Web_File_01.cs (sources=1, sinks=0, flows=0)
+
+  FN: CWE81_XSS_Error_Message__Web_NetClient_01.cs (sources=2, sinks=1, flows=0)
+
+  FN: CWE81_XSS_Error_Message__Web_Params_Get_Web_01.cs (sources=1, sinks=0, flows=0)
+
+  FN: CWE81_XSS_Error_Message__Web_Get_Cookies_Web_01.cs (sources=0, sinks=0, flows=0)
+
+  FN: CWE81_XSS_Error_Message__Web_Listen_tcp_01.cs (sources=1, sinks=1, flows=0)
+
+  FN: CWE83_XSS_Attribute__Web_Listen_tcp_01.cs (sources=1, sinks=5, flows=0)
+
+  FN: CWE83_XSS_Attribute__Web_Params_Get_Web_01.cs (sources=1, sinks=4, flows=0)
+
+  FN: CWE83_XSS_Attribute__Web_NetClient_01.cs (sources=2, sinks=5, flows=0)
+
+  FN: CWE83_XSS_Attribute__Web_ReadLine_01.cs (sources=2, sinks=4, flows=0)
+
+  FN: CWE83_XSS_Attribute__Web_QueryString_Web_01.cs (sources=0, sinks=4, flows=0)
+
+  FN: CWE83_XSS_Attribute__Web_Database_01.cs (sources=0, sinks=7, flows=0)
+
+  FN: CWE83_XSS_Attribute__Web_File_01.cs (sources=1, sinks=4, flows=0)
+
+  FN: CWE83_XSS_Attribute__Web_Connect_tcp_01.cs (sources=1, sinks=5, flows=0)
+
+  FN: CWE83_XSS_Attribute__Web_Get_Cookies_Web_01.cs (sources=0, sinks=4, flows=0)
+
+
+
+Results by CWE (flow-aware TPR on baseline Bad() files)
+────────────────────────────────────────────────────────────────────────
+CWE        Category      Total    TP    FN      TPR
+────────────────────────────────────────────────────────────────────────
+CWE23      pathtraver       10     0    10     0.0%
+CWE36      pathtraver       10     0    10     0.0%
+CWE643     xpathi           10     7     3    70.0%
+CWE78      cmdi             10     0    10     0.0%
+CWE80      xss              18     0    18     0.0%
+CWE81      xss               9     0     9     0.0%
+CWE83      xss               9     0     9     0.0%
+CWE89      sqli             27     8    19    29.6%
+CWE90      ldapi            10     2     8    20.0%
+CWE94      codeinj          10     0    10     0.0%
+────────────────────────────────────────────────────────────────────────
+TOTAL                      123    17   106    13.8%
+
+
+════════════════════════════════════════════════════════════════════════
+  Juliet C#/.NET TPR: 13.8% (17 TP, 106 FN of 123)
+  NOTE: baseline (_01) files are all-vulnerable → this is a recall (TPR) measure.
+  FPR needs the Good*() control variants; run --variant to sweep others.
+════════════════════════════════════════════════════════════════════════
