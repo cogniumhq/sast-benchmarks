@@ -1,5 +1,16 @@
 # Cognium-AI Benchmark Results — 2026-05-27
 
+> **Scope.** This is the cognium-ai (SAST + LLM) lane: runs made with the
+> `cognium-ai` CLI's own `benchmark` command on cognium-ai 2.7.18. It is **not**
+> the static-analysis snapshot shown on `cognium.dev/benchmark`, which comes
+> only from `results/2026-04-22/` and `results/2026-09-11/`. The "Static SAST"
+> table in section 1 was produced by a different engine version and the CLI's
+> own scoring (e.g. CWE-Bench-Java over the 119 projects that built, without
+> the IRIS-strict fix-method rule used for the page's 61/120), so its numbers
+> are not comparable with the page and must not be quoted as the published
+> static result. Model comparisons in section 2 use the same CLI scoring
+> throughout, so they are comparable with each other.
+
 **Engine:** cognium-ai v2.7.18 · circle-ir-ai  
 **Date:** 2026-05-27 / 2026-05-28 / 2026-05-29  
 **Ollama version:** 0.24.0 (local, upgraded during run)
@@ -109,4 +120,3 @@ Findings are static SAST results (corpus runner uses LLM model label only; actua
 |---|---|
 | Cloud models (cognium/kimi-k2.6, cognium/claude-opus-latest) | Not yet run; via llmproxy.xus.one |
 | qwen3-coder-next CWE run | Blocked: OOM — requires 64GB+ RAM (model is 51GB) |
-| BrainHQ wiki update | Blocked on Anthropic API credits |

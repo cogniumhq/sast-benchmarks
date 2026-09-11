@@ -6,17 +6,20 @@ Configuration, commands, and notes for `cognium-ai` benchmark and evaluation run
 trust scoring, quality scoring, secrets scanning, dead-code detection, and
 semantic understanding.
 
-## Current Source
+## Versions Used in Published Runs
 
-Source metadata inspected for the April 2026 publication:
+| Result set | cognium-ai | Mode |
+| --- | --- | --- |
+| `results/2026-05-05/` | 2.5.7 | static (`--no-llm`), JavaScript top-10 |
+| `results/2026-05-27/` | 2.7.18 | static + `--llm-discovery` (Ollama, mlx-lm, cloud proxy), CWE-Bench-Java and top-10 corpora |
 
-- Package name: `cognium-ai`
-- Local package version in `package.json`: `1.10.15`
-- Published/evaluated CLI version in test report: pre-2.5.0 and v2.5.0
+Package: `https://www.npmjs.com/package/cognium-ai`. Always report the version
+recorded in the dated result folder; cognium-ai wraps a separately versioned
+engine, so a cognium-ai version alone does not pin the static analyzer.
 
-The version mismatch should be resolved before future public benchmark claims.
-Use the evaluated CLI version from the dated result folder when reporting an
-older test run.
+This lane is published separately from the static-analysis snapshot on
+`cognium.dev/benchmark` (`tools/cognium/`) and its numbers are never merged
+into it.
 
 ## Representative Commands
 

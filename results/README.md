@@ -29,4 +29,6 @@ cognium-ai (SAST + LLM) runs:
 - `2026-05-03`: top 100 GitHub Java projects selected and queued for batched
   cognium-ai LLM analysis (plan plus one sample run).
 - `2026-05-05`: JavaScript top-10 static baseline results.
-- `2026-05-27`: Java / JavaScript / Python top-10 LLM-enriched runs.
+- `2026-05-27`: Java / JavaScript / Python top-10 LLM-enriched runs plus a
+  CWE-Bench-Java model comparison. Its "static" table uses the cognium-ai
+  CLI's own scoring on a later engine and is not the page's static snapshot.
