@@ -2,7 +2,10 @@
 import fs from 'node:fs';
 import https from 'node:https';
 
-const outDir = 'datasets/top-java-github';
+// Legacy star-ranked selector. datasets/top-java-github/ is now the curated
+// tier-1 list maintained by import-tier1-java-targets.mjs, so never write there
+// by default; set OUT_DIR explicitly (e.g. datasets/top-python-github).
+const outDir = process.env.OUT_DIR || 'datasets/top-java-github-search';
 const query = process.env.GITHUB_SEARCH_QUERY || 'language:Java stars:>5000 archived:false';
 const perPage = Number(process.env.PER_PAGE || 100);
 const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN || '';

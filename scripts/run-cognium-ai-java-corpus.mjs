@@ -20,7 +20,9 @@ for (let i = 2; i < process.argv.length; i += 1) {
 const datasetPath = args.get('dataset') || 'datasets/top-java-github/projects.json';
 const workDir = args.get('workdir') || '/tmp/cognium-ai-java-top100-work';
 const privateRawDir = args.get('raw-dir') || '/tmp/cognium-ai-java-top100-raw';
-const publicOutDir = args.get('public-out') || 'results/2026-05-03';
+// Default to a folder dated today so a new run never lands inside a published
+// historical result set.
+const publicOutDir = args.get('public-out') || `results/${new Date().toISOString().slice(0, 10)}`;
 const limit = Number(args.get('limit') || 5);
 const offset = Number(args.get('offset') || 0);
 const dryRun = args.get('dry-run') === 'true';
