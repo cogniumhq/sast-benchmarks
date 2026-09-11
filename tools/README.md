@@ -10,8 +10,8 @@ sets it produced.
 | --- | --- | --- | --- |
 | `cognium/` | **cognium-dev** static engine (npm `cognium-dev` / `circle-ir`) | active — the engine measured on `cognium.dev/benchmark` | `results/2026-04-22/`, `results/2026-09-11/` |
 | `cognium-ai/` | **cognium-ai** SAST + LLM CLI (npm `cognium-ai`) | active — separate lane, never merged into the static tables | `results/2026-05-05/`, `results/2026-05-27/` |
-| `codeql/` | CodeQL CLI | planned — next row in `results/2026-09-11-owasp-java-comparison/` | reference numbers on CWE-Bench-Java (22.5%) are quoted from the IRIS paper, not from a run here |
-| `semgrep/` | Semgrep OSS | planned — next row in `results/2026-09-11-owasp-java-comparison/` | — |
+| `codeql/` | CodeQL CLI 2.27.0 | active — comparison baseline | `results/2026-09-11-owasp-java-comparison/` (OWASP full suite). CWE-Bench-Java 22.5% quoted from the IRIS paper, not a run here |
+| `semgrep/` | Semgrep OSS 1.177.0 | active — comparison baseline | `results/2026-09-11-owasp-java-comparison/` (OWASP full suite) |
 
 ## What each lane README must contain
 
@@ -49,5 +49,7 @@ quoted, with the source, wherever they appear.
 - `cognium-ai/`: `scripts/run-cognium-ai-java-corpus.mjs` verified against
   cognium-ai 4.10.0 with a real static scan (`scripts/README.md`,
   "Verification").
-- `codeql/`, `semgrep/`: README stubs only; no configuration has been
-  exercised yet.
+- `codeql/`, `semgrep/`: run on OWASP Benchmark Java (all 2,740 cases) on
+  2026-09-11 with the same scorer as cognium-dev; best standard configuration
+  published, alternatives recorded. SonarQube Community (needs Docker) and
+  SpotBugs + Find-Sec-Bugs (needs a compiled build) are next.

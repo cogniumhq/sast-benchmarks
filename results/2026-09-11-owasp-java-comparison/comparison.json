@@ -12,18 +12,27 @@
     "vulnerable": 1415,
     "safe": 1325
   },
-  "scoring_rule": "file-level match on BenchmarkTestNNNNN with exact CWE; all 2,740 cases; Youden = TPR - FPR",
+  "scoring_rule": "file-level match on BenchmarkTestNNNNN with exact CWE; all 2,740 cases; Youden = TPR - FPR; tool-reported CWEs normalized onto the Benchmark category CWE exactly as OWASP BenchmarkUtils does (Semgrep: 23/35→22, 80→79, 326/329/696→327, 338→330; CodeQL: 94→78, 335→330); a rule that declares several CWEs counts for each of them",
   "scorer": "scripts/score-owasp-benchmark.mjs",
+  "policy": "Each tool is published at its best Youden among its own standard, publicly documented configurations; every configuration tried is kept under alternatives/ and raw/. Numbers from papers or vendor pages are never entered.",
   "tools": [
     {
       "tool": "cognium-dev",
       "version": "4.9.13",
       "package": "cognium-dev@4.9.13 (npm)",
       "run_at": "2026-09-11",
-      "command": "cognium-dev scan <owasp-java>/src/main/java/org/owasp/benchmark/testcode -l java -f json --threads 8 -q -o cognium-dev-4.9.13-owasp-java.json",
       "configuration": "default config; no project profile detected (testcode dir has no pom.xml); no LLM",
+      "command": "cognium-dev scan <owasp-java>/src/main/java/org/owasp/benchmark/testcode -l java -f json --threads 8 -q -o cognium-dev-4.9.13-owasp-java.json",
       "wall_clock_seconds": 13.3,
       "runtime": "Node v25.9.0, macOS 26.6.2, Apple Silicon",
+      "artifacts": {
+        "scorecard_json": "results/2026-09-11-owasp-java-comparison/cognium-dev.scorecard.json",
+        "scorecard_md": "results/2026-09-11-owasp-java-comparison/cognium-dev.scorecard.md",
+        "per_cwe_csv": "results/2026-09-11-owasp-java-comparison/cognium-dev.per-cwe.csv",
+        "raw_scan": "raw/2026-09-11-owasp-java-comparison/cognium-dev-4.9.13-owasp-java.scan.json.gz",
+        "normalized_findings": "raw/2026-09-11-owasp-java-comparison/cognium-dev-4.9.13-owasp-java.normalized-findings.json"
+      },
+      "alternatives_tried": [],
       "findings_total": 10176,
       "findings_mapped_to_cases": 10176,
       "totals": {
@@ -183,27 +192,428 @@
           "f1": 70.22,
           "youden": 4.48
         }
-      ],
+      ]
+    },
+    {
+      "tool": "codeql",
+      "version": "2.27.0",
+      "package": "codeql-bundle-v2.27.0 (github/codeql-action release; codeql/java-queries 1.11.10)",
+      "run_at": "2026-09-11",
+      "configuration": "query suite codeql/java-queries:codeql-suites/java-security-extended.qls; database built with --build-mode=none from the repository root (Temurin JDK 17.0.20.1 for extraction)",
+      "command": "codeql database create db --language=java --build-mode=none --source-root owasp-java && codeql database analyze db codeql/java-queries:codeql-suites/java-security-extended.qls --format=sarif-latest --threads=8 -o codeql-java-security-extended.sarif",
+      "wall_clock_seconds": null,
+      "runtime": "macOS 26.6.2, Apple Silicon; database create 41 s",
       "artifacts": {
-        "scorecard_json": "results/2026-09-11-owasp-java-comparison/cognium-dev.scorecard.json",
-        "scorecard_md": "results/2026-09-11-owasp-java-comparison/cognium-dev.scorecard.md",
-        "per_cwe_csv": "results/2026-09-11-owasp-java-comparison/cognium-dev.per-cwe.csv",
-        "raw_scan": "raw/2026-09-11-owasp-java-comparison/cognium-dev-4.9.13-owasp-java.scan.json.gz",
-        "normalized_findings": "raw/2026-09-11-owasp-java-comparison/cognium-dev-4.9.13-owasp-java.normalized-findings.json"
-      }
+        "scorecard_json": "results/2026-09-11-owasp-java-comparison/codeql.scorecard.json",
+        "scorecard_md": "results/2026-09-11-owasp-java-comparison/codeql.scorecard.md",
+        "per_cwe_csv": "results/2026-09-11-owasp-java-comparison/codeql.per-cwe.csv",
+        "raw_sarif": "raw/2026-09-11-owasp-java-comparison/codeql-2.27.0-owasp-java.java-security-extended.sarif.gz",
+        "normalized_findings": "raw/2026-09-11-owasp-java-comparison/codeql-2.27.0-owasp-java.java-security-extended.normalized-findings.json"
+      },
+      "alternatives_tried": [
+        {
+          "configuration": "java-code-scanning.qls (default Code Scanning suite)",
+          "overall": {
+            "tpr": 82,
+            "fpr": 24.1,
+            "precision": 78.4,
+            "youden": 57.9
+          },
+          "scorecard_md": "results/2026-09-11-owasp-java-comparison/alternatives/codeql.java-code-scanning.scorecard.md",
+          "raw_sarif": "raw/2026-09-11-owasp-java-comparison/codeql-2.27.0-owasp-java.java-code-scanning.sarif.gz"
+        },
+        {
+          "configuration": "java-security-extended.qls scored with --multi-cwe first (literal BenchmarkUtils first-tag rule)",
+          "overall": {
+            "tpr": 90.9,
+            "fpr": 37.6,
+            "precision": 72.1,
+            "youden": 53.3
+          },
+          "scorecard_md": "results/2026-09-11-owasp-java-comparison/alternatives/codeql.java-security-extended.first-cwe-tag-only.scorecard.md"
+        }
+      ],
+      "findings_total": 7555,
+      "findings_mapped_to_cases": 7545,
+      "cwe_map": "codeql",
+      "findings_cwe_translated": 0,
+      "multi_cwe": "all",
+      "totals": {
+        "tp": 1415,
+        "fp": 531,
+        "fn": 0,
+        "tn": 794
+      },
+      "overall": {
+        "tpr": 100,
+        "fpr": 40.08,
+        "precision": 72.71,
+        "f1": 84.2,
+        "youden": 59.92
+      },
+      "per_category": [
+        {
+          "category": "cmdi",
+          "cwe": 78,
+          "tp": 126,
+          "fp": 64,
+          "fn": 0,
+          "tn": 61,
+          "tpr": 100,
+          "fpr": 51.2,
+          "precision": 66.32,
+          "f1": 79.75,
+          "youden": 48.8
+        },
+        {
+          "category": "crypto",
+          "cwe": 327,
+          "tp": 130,
+          "fp": 27,
+          "fn": 0,
+          "tn": 89,
+          "tpr": 100,
+          "fpr": 23.28,
+          "precision": 82.8,
+          "f1": 90.59,
+          "youden": 76.72
+        },
+        {
+          "category": "hash",
+          "cwe": 328,
+          "tp": 129,
+          "fp": 33,
+          "fn": 0,
+          "tn": 74,
+          "tpr": 100,
+          "fpr": 30.84,
+          "precision": 79.63,
+          "f1": 88.66,
+          "youden": 69.16
+        },
+        {
+          "category": "ldapi",
+          "cwe": 90,
+          "tp": 27,
+          "fp": 13,
+          "fn": 0,
+          "tn": 19,
+          "tpr": 100,
+          "fpr": 40.63,
+          "precision": 67.5,
+          "f1": 80.6,
+          "youden": 59.38
+        },
+        {
+          "category": "pathtraver",
+          "cwe": 22,
+          "tp": 133,
+          "fp": 66,
+          "fn": 0,
+          "tn": 69,
+          "tpr": 100,
+          "fpr": 48.89,
+          "precision": 66.83,
+          "f1": 80.12,
+          "youden": 51.11
+        },
+        {
+          "category": "securecookie",
+          "cwe": 614,
+          "tp": 36,
+          "fp": 0,
+          "fn": 0,
+          "tn": 31,
+          "tpr": 100,
+          "fpr": 0,
+          "precision": 100,
+          "f1": 100,
+          "youden": 100
+        },
+        {
+          "category": "sqli",
+          "cwe": 89,
+          "tp": 272,
+          "fp": 207,
+          "fn": 0,
+          "tn": 25,
+          "tpr": 100,
+          "fpr": 89.22,
+          "precision": 56.78,
+          "f1": 72.44,
+          "youden": 10.78
+        },
+        {
+          "category": "trustbound",
+          "cwe": 501,
+          "tp": 83,
+          "fp": 24,
+          "fn": 0,
+          "tn": 19,
+          "tpr": 100,
+          "fpr": 55.81,
+          "precision": 77.57,
+          "f1": 87.37,
+          "youden": 44.19
+        },
+        {
+          "category": "weakrand",
+          "cwe": 330,
+          "tp": 218,
+          "fp": 0,
+          "fn": 0,
+          "tn": 275,
+          "tpr": 100,
+          "fpr": 0,
+          "precision": 100,
+          "f1": 100,
+          "youden": 100
+        },
+        {
+          "category": "xpathi",
+          "cwe": 643,
+          "tp": 15,
+          "fp": 7,
+          "fn": 0,
+          "tn": 13,
+          "tpr": 100,
+          "fpr": 35,
+          "precision": 68.18,
+          "f1": 81.08,
+          "youden": 65
+        },
+        {
+          "category": "xss",
+          "cwe": 79,
+          "tp": 246,
+          "fp": 90,
+          "fn": 0,
+          "tn": 119,
+          "tpr": 100,
+          "fpr": 43.06,
+          "precision": 73.21,
+          "f1": 84.54,
+          "youden": 56.94
+        }
+      ]
+    },
+    {
+      "tool": "semgrep",
+      "version": "1.177.0",
+      "package": "semgrep 1.177.0 (OSS engine, PyPI); registry packs p/java + p/security-audit as resolved on 2026-09-11",
+      "run_at": "2026-09-11",
+      "configuration": "--config p/java --config p/security-audit --metrics=off --sarif",
+      "command": "semgrep scan --config p/java --config p/security-audit --metrics=off --sarif -o semgrep-owasp-java.sarif owasp-java/src/main/java/org/owasp/benchmark/testcode",
+      "wall_clock_seconds": 12.2,
+      "runtime": "macOS 26.6.2, Apple Silicon",
+      "artifacts": {
+        "scorecard_json": "results/2026-09-11-owasp-java-comparison/semgrep.scorecard.json",
+        "scorecard_md": "results/2026-09-11-owasp-java-comparison/semgrep.scorecard.md",
+        "per_cwe_csv": "results/2026-09-11-owasp-java-comparison/semgrep.per-cwe.csv",
+        "raw_sarif": "raw/2026-09-11-owasp-java-comparison/semgrep-1.177.0-owasp-java.p-java+p-security-audit.sarif.gz",
+        "normalized_findings": "raw/2026-09-11-owasp-java-comparison/semgrep-1.177.0-owasp-java.p-java+p-security-audit.normalized-findings.json"
+      },
+      "alternatives_tried": [
+        {
+          "configuration": "p/default",
+          "overall": {
+            "tpr": 88.2,
+            "fpr": 41.7,
+            "precision": 69.3,
+            "youden": 46.5
+          },
+          "scorecard_md": "results/2026-09-11-owasp-java-comparison/alternatives/semgrep.p-default.scorecard.md",
+          "raw_sarif": "raw/2026-09-11-owasp-java-comparison/semgrep-1.177.0-owasp-java.p-default.sarif.gz"
+        },
+        {
+          "configuration": "p/java only (identical result for p/owasp-top-ten)",
+          "overall": {
+            "tpr": 68.6,
+            "fpr": 38.6,
+            "precision": 65.5,
+            "youden": 29.9
+          },
+          "scorecard_md": "results/2026-09-11-owasp-java-comparison/alternatives/semgrep.p-java.scorecard.md",
+          "raw_sarif": "raw/2026-09-11-owasp-java-comparison/semgrep-1.177.0-owasp-java.p-java.sarif.gz"
+        }
+      ],
+      "findings_total": 2163,
+      "findings_mapped_to_cases": 2163,
+      "cwe_map": "semgrep",
+      "findings_cwe_translated": 301,
+      "multi_cwe": "all",
+      "totals": {
+        "tp": 1224,
+        "fp": 512,
+        "fn": 191,
+        "tn": 813
+      },
+      "overall": {
+        "tpr": 86.5,
+        "fpr": 38.64,
+        "precision": 70.51,
+        "f1": 77.69,
+        "youden": 47.86
+      },
+      "per_category": [
+        {
+          "category": "cmdi",
+          "cwe": 78,
+          "tp": 112,
+          "fp": 96,
+          "fn": 14,
+          "tn": 29,
+          "tpr": 88.89,
+          "fpr": 76.8,
+          "precision": 53.85,
+          "f1": 67.07,
+          "youden": 12.09
+        },
+        {
+          "category": "crypto",
+          "cwe": 327,
+          "tp": 130,
+          "fp": 0,
+          "fn": 0,
+          "tn": 116,
+          "tpr": 100,
+          "fpr": 0,
+          "precision": 100,
+          "f1": 100,
+          "youden": 100
+        },
+        {
+          "category": "hash",
+          "cwe": 328,
+          "tp": 89,
+          "fp": 0,
+          "fn": 40,
+          "tn": 107,
+          "tpr": 68.99,
+          "fpr": 0,
+          "precision": 100,
+          "f1": 81.65,
+          "youden": 68.99
+        },
+        {
+          "category": "ldapi",
+          "cwe": 90,
+          "tp": 26,
+          "fp": 28,
+          "fn": 1,
+          "tn": 4,
+          "tpr": 96.3,
+          "fpr": 87.5,
+          "precision": 48.15,
+          "f1": 64.2,
+          "youden": 8.8
+        },
+        {
+          "category": "pathtraver",
+          "cwe": 22,
+          "tp": 120,
+          "fp": 106,
+          "fn": 13,
+          "tn": 29,
+          "tpr": 90.23,
+          "fpr": 78.52,
+          "precision": 53.1,
+          "f1": 66.85,
+          "youden": 11.71
+        },
+        {
+          "category": "securecookie",
+          "cwe": 614,
+          "tp": 36,
+          "fp": 0,
+          "fn": 0,
+          "tn": 31,
+          "tpr": 100,
+          "fpr": 0,
+          "precision": 100,
+          "f1": 100,
+          "youden": 100
+        },
+        {
+          "category": "sqli",
+          "cwe": 89,
+          "tp": 234,
+          "fp": 143,
+          "fn": 38,
+          "tn": 89,
+          "tpr": 86.03,
+          "fpr": 61.64,
+          "precision": 62.07,
+          "f1": 72.11,
+          "youden": 24.39
+        },
+        {
+          "category": "trustbound",
+          "cwe": 501,
+          "tp": 43,
+          "fp": 18,
+          "fn": 40,
+          "tn": 25,
+          "tpr": 51.81,
+          "fpr": 41.86,
+          "precision": 70.49,
+          "f1": 59.72,
+          "youden": 9.95
+        },
+        {
+          "category": "weakrand",
+          "cwe": 330,
+          "tp": 218,
+          "fp": 0,
+          "fn": 0,
+          "tn": 275,
+          "tpr": 100,
+          "fpr": 0,
+          "precision": 100,
+          "f1": 100,
+          "youden": 100
+        },
+        {
+          "category": "xpathi",
+          "cwe": 643,
+          "tp": 14,
+          "fp": 13,
+          "fn": 1,
+          "tn": 7,
+          "tpr": 93.33,
+          "fpr": 65,
+          "precision": 51.85,
+          "f1": 66.67,
+          "youden": 28.33
+        },
+        {
+          "category": "xss",
+          "cwe": 79,
+          "tp": 202,
+          "fp": 108,
+          "fn": 44,
+          "tn": 101,
+          "tpr": 82.11,
+          "fpr": 51.67,
+          "precision": 65.16,
+          "f1": 72.66,
+          "youden": 30.44
+        }
+      ]
     }
   ],
   "planned_tools": [
-    "codeql",
-    "semgrep",
     "sonarqube-community",
     "spotbugs-findsecbugs"
   ],
-  "relation_to_static_snapshot": "results/2026-04-22 reports OWASP Benchmark as 1,415 cases / 100% TPR / 0% FPR from the historical harness. That harness is not public and no combination of whole OWASP categories yields 1,415 cases with 708 vulnerable, so its case selection cannot be reconstructed. The row here is the reproducible, official-rule, full-suite number and is the one to use for any comparison.",
+  "relation_to_static_snapshot": "results/2026-04-22 reports OWASP Benchmark as 1,415 cases / 100% TPR / 0% FPR from the historical harness. That harness is not public and no combination of whole OWASP categories yields 1,415 cases with 708 vulnerable, so its case selection cannot be reconstructed. The cognium-dev row here is the reproducible, official-rule, full-suite number and is the one to use for any comparison.",
   "limitations": [
-    "Single tool so far; competitor rows are added as they are run with the same scorer, dataset revision and rule.",
-    "XSS: 192 of 209 safe cases are flagged (FPR 91.9%) — the engine does not credit OWASP's output-encoding controls; this is the dominant source of the 231 false positives. cmdi FPR 31.2% is the other.",
-    "Findings without a CWE (code-quality passes) are ignored by the rule and cannot help or hurt the score.",
+    "Each tool is at its best standard configuration by Youden; other configurations tried are recorded, not hidden.",
+    "cognium-dev: XSS FPR 91.9% (192 of 209 safe cases; output-encoding controls not credited) and cmdi FPR 31.2% account for all 231 false positives.",
+    "CodeQL: java-security-extended reaches 100% recall at 40.1% FPR; sqli FPR 89.2%. The literal BenchmarkUtils first-CWE-tag rule would score it 53.3 (hash category lost on a tagging technicality); this result set credits every CWE a rule declares.",
+    "Semgrep OSS: registry packs are versioned by resolution date, not pinned; the SARIF records the exact rules that fired. CWE normalization per OWASP SemgrepReader.translate() (crypto rules tag CWE-326).",
+    "SonarQube Community and SpotBugs + Find-Sec-Bugs are not yet run (need Docker / a compiled build respectively).",
+    "Findings without a CWE are ignored by the rule and cannot help or hurt any tool.",
     "Static analysis only; the cognium-ai SAST + LLM lane is published separately."
   ]
 }

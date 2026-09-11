@@ -202,7 +202,9 @@ node scripts/score-owasp-benchmark.mjs --tool codeql --tool-version 2.x \
 | `--sarif <file>` | — | SARIF 2.1.0; the CWE is read from the rule's `properties.tags` (`external/cwe/cwe-089`, `CWE-89`), `properties.cwe`, taxonomy `relationships`, or the rule id |
 | `--findings <file>` | — | pre-normalized `[{ file, cwe, line, rule }]` for tools without a SARIF export |
 | `--expected <csv>` | committed v1.2 ground truth | OWASP `expectedresults-1.2.csv` |
-| `--tool <name>` / `--tool-version <v>` | `unknown-tool` / `unknown` | recorded in every output file name and row |
+| `--tool <name>` / `--tool-version <v>` | `unknown-tool` / `unknown` | recorded in every output file name and row; also selects the default `--cwe-map` |
+| `--cwe-map none\|semgrep\|codeql` | from `--tool` | tool-reported CWE → Benchmark category CWE, copied from OWASP BenchmarkUtils (`SemgrepReader.translate`: 23/35→22, 80→79, 326/329/696→327, 338→330; `sarif/CodeQLReader.mapCwe`: 94→78, 335→330). cognium-dev needs none |
+| `--multi-cwe all\|first` | `all` | a SARIF rule declaring several CWEs counts for each (`all`) or only its first tag (`first`, the literal BenchmarkUtils SarifReader behaviour) |
 | `--out <dir>` | `results/<today>/owasp-java` | writes `<tool>.scorecard.json`, `<tool>.scorecard.md`, `<tool>.per-cwe.csv`, `<tool>.normalized-findings.json` |
 
 The scorecard JSON records how many findings were mapped to cases, how many

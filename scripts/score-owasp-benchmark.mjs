@@ -39,6 +39,15 @@ const tool = args.get('tool') || 'unknown-tool';
 const toolVersion = args.get('tool-version') || 'unknown';
 const outDir = args.get('out') || `results/${new Date().toISOString().slice(0, 10)}/owasp-java`;
 const TEST_RE = /(BenchmarkTest\d{5})/;
+// --multi-cwe all   (default) a finding whose rule declares several CWEs counts
+//                   for each of them, e.g. CodeQL's java/weak-cryptographic-
+//                   algorithm (CWE-327 + CWE-328) can satisfy both the crypto
+//                   and the hash category. This reflects what the tool claims.
+// --multi-cwe first only the rule's first CWE tag counts — the literal
+//                   OWASP BenchmarkUtils SarifReader behaviour; recorded for
+//                   reference, stricter for multi-tag tools only.
+const multiCwe = args.get('multi-cwe') || 'all';
+if (!['all', 'first'].includes(multiCwe)) { console.error('--multi-cwe must be all|first'); process.exit(1); }
 
 // ---------- ground truth ----------
 const cases = new Map(); // name -> { category, cwe, vulnerable }
@@ -73,19 +82,21 @@ function fromSarif(file) {
     const extRules = (run.tool?.extensions || []).flatMap((e) => e.rules || []);
     for (const rule of [...driverRules, ...extRules]) {
       const tags = rule.properties?.tags || [];
-      let cwe = null;
-      for (const t of tags) { const m = String(t).match(/cwe[-_/ ]?0*(\d+)/i); if (m) { cwe = Number(m[1]); break; } }
-      if (cwe === null && rule.properties?.cwe) cwe = cweNum(Array.isArray(rule.properties.cwe) ? rule.properties.cwe[0] : rule.properties.cwe);
-      if (cwe === null) for (const rel of rule.relationships || []) { const m = String(rel.target?.id ?? '').match(/^0*(\d+)$/); if (m) { cwe = Number(m[1]); break; } }
-      rules.set(rule.id, cwe);
+      const cwes = [];
+      for (const t of tags) { const m = String(t).match(/cwe[-_/ ]?0*(\d+)/i); if (m) cwes.push(Number(m[1])); }
+      if (cwes.length === 0 && rule.properties?.cwe) for (const c of [].concat(rule.properties.cwe)) { const n = cweNum(c); if (n !== null) cwes.push(n); }
+      if (cwes.length === 0) for (const rel of rule.relationships || []) { const m = String(rel.target?.id ?? '').match(/^0*(\d+)$/); if (m) cwes.push(Number(m[1])); }
+      rules.set(rule.id, cwes.length ? [...new Set(cwes)] : null);
     }
     for (const res of run.results || []) {
       const loc = res.locations?.[0]?.physicalLocation;
       const uri = loc?.artifactLocation?.uri || '';
-      let cwe = rules.has(res.ruleId) ? rules.get(res.ruleId) : null;
-      if (cwe === null) { const m = String(res.ruleId ?? '').match(/cwe[-_/ ]?0*(\d+)/i); if (m) cwe = Number(m[1]); }
-      if (cwe === null && res.properties?.cwe) cwe = cweNum(res.properties.cwe);
-      out.push({ file: uri, cwe, line: loc?.region?.startLine ?? null, rule: res.ruleId ?? null });
+      let cwes = rules.has(res.ruleId) ? rules.get(res.ruleId) : null;
+      if (cwes === null) { const m = String(res.ruleId ?? '').match(/cwe[-_/ ]?0*(\d+)/i); if (m) cwes = [Number(m[1])]; }
+      if (cwes === null && res.properties?.cwe) { const n = cweNum(res.properties.cwe); if (n !== null) cwes = [n]; }
+      // One normalized finding per declared CWE (see --multi-cwe below).
+      const list = multiCwe === 'first' ? (cwes ? cwes.slice(0, 1) : [null]) : (cwes ?? [null]);
+      for (const cwe of list) out.push({ file: uri, cwe, line: loc?.region?.startLine ?? null, rule: res.ruleId ?? null, cwe_tags: cwes ? cwes.length : 0 });
     }
   }
   return out;
@@ -96,6 +107,29 @@ if (args.get('cognium-dev-json')) findings = fromCogniumDev(args.get('cognium-de
 else if (args.get('sarif')) findings = fromSarif(args.get('sarif'));
 else if (args.get('findings')) findings = JSON.parse(fs.readFileSync(args.get('findings'), 'utf8'));
 else { console.error('need --cognium-dev-json, --sarif or --findings'); process.exit(1); }
+
+// ---------- per-tool CWE normalization, identical to OWASP BenchmarkUtils ----------
+// The official scorecard translates a few tool-reported CWEs onto the Benchmark
+// category CWE before matching (e.g. Semgrep tags DES as CWE-326, the crypto
+// category is CWE-327). These tables are copied from
+// https://github.com/OWASP-Benchmark/BenchmarkUtils, plugin/src/main/java/org/owasp/benchmarkutils/score/parsers/
+//   SemgrepReader.translate()        (used by sarif/SemgrepSarifReader)
+//   sarif/CodeQLReader.mapCwe()
+// cognium-dev's JSON already carries the category CWE (sarif/CogniumReader maps
+// sink type -> the same numbers), so it needs no translation. Use --cwe-map to
+// pick a preset explicitly; the default is chosen from --tool.
+const CWE_MAPS = {
+  none: {},
+  semgrep: { 23: 22, 35: 22, 80: 79, 326: 327, 329: 327, 696: 327, 338: 330 },
+  codeql: { 94: 78, 335: 330 },
+};
+const mapName = args.get('cwe-map') || (/^semgrep|^opengrep/i.test(tool) ? 'semgrep' : /^codeql/i.test(tool) ? 'codeql' : 'none');
+if (!(mapName in CWE_MAPS)) { console.error(`unknown --cwe-map ${mapName}; one of ${Object.keys(CWE_MAPS).join(', ')}`); process.exit(1); }
+const cweMap = CWE_MAPS[mapName];
+let translated = 0;
+for (const f of findings) {
+  if (f.cwe !== null && f.cwe !== undefined && cweMap[f.cwe] !== undefined) { f.cwe_reported = f.cwe; f.cwe = cweMap[f.cwe]; translated += 1; }
+}
 
 // ---------- scoring ----------
 const flagged = new Map(); // case -> Set(cwe)
@@ -143,6 +177,7 @@ const scorecard = {
   findings_mapped_to_cases: matched,
   findings_outside_test_cases: unmapped,
   findings_without_cwe: noCwe,
+  cwe_map: mapName, findings_cwe_translated: translated, multi_cwe: multiCwe,
   totals, overall: Object.fromEntries(Object.entries(overall).map(([k, v]) => [k, Number(v.toFixed(2))])),
   per_category: rows.map((r) => ({ ...r, tpr: +r.tpr.toFixed(2), fpr: +r.fpr.toFixed(2), precision: +r.precision.toFixed(2), f1: +r.f1.toFixed(2), youden: +r.youden.toFixed(2) })),
   fn_cases: lists.fn, fp_cases: lists.fp,
@@ -161,7 +196,7 @@ Scoring rule: a test case is flagged when at least one finding lands in its file
 | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | ${cases.size} | ${totals.tp} | ${totals.fp} | ${totals.fn} | ${totals.tn} | ${f1(overall.tpr)} | ${f1(overall.fpr)} | ${f1(overall.precision)} | ${f1(overall.f1)} | ${f1(overall.youden)} |
 
-Findings: ${findings.length} total, ${matched} inside test cases with a CWE, ${noCwe} without a CWE (ignored), ${unmapped} outside test-case files (ignored).
+Findings: ${findings.length} total, ${matched} inside test cases with a CWE, ${noCwe} without a CWE (ignored), ${unmapped} outside test-case files (ignored). CWE normalization preset "${mapName}" (${translated} findings translated, per OWASP BenchmarkUtils); multi-CWE rules: ${multiCwe}.
 
 ## By category
 
