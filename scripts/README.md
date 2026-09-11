@@ -11,6 +11,7 @@ explicitly.
 | `import-tier1-java-targets.mjs` | Rebuild `datasets/top-java-github/` from the curated tier-1 CSV | only with `--enrich` | `datasets/top-java-github/` (or `OUT_DIR`) |
 | `select-top-java-projects.mjs` | Legacy star-ranked GitHub Search selector | yes (GitHub Search API) | `datasets/top-java-github-search/` (or `OUT_DIR`) |
 | `run-cognium-ai-java-corpus.mjs` | Clone a corpus slice, run `cognium-ai`, publish a sanitized summary | yes (git clone, optional LLM) | `--public-out` (default `results/<today>/`), private raw dir |
+| `score-owasp-benchmark.mjs` | Score any tool's output on OWASP Benchmark Java v1.2 with the official rule (all 2,740 cases, exact CWE) | no | `--out` (default `results/<today>/owasp-java/`) |
 
 Last verified working: 2026-09-11 (Node 25.9, macOS) — see "Verification" at the
 bottom.
@@ -169,6 +170,44 @@ capture it.
 
 ---
 
+## `score-owasp-benchmark.mjs`
+
+Scores one tool's findings against `datasets/owasp-benchmark-java/expectedresults-1.2.csv`
+with the official OWASP Benchmark scorecard rule, so different tools are
+directly comparable: a test case is **flagged** when at least one finding lands
+in its file (`BenchmarkTestNNNNN`) with **exactly** the case's CWE; all 2,740
+cases are scored, no category subsetting. TP / FP / FN / TN per case, then
+TPR, FPR, precision, F1 and Youden (`TPR − FPR`, the OWASP "score") overall
+and per category.
+
+```sh
+# cognium-dev: scan the test cases, then score
+cognium-dev scan owasp-java/src/main/java/org/owasp/benchmark/testcode -l java -f json -q -o raw/<date>/cognium-dev-owasp-java.json
+node scripts/score-owasp-benchmark.mjs --tool cognium-dev --tool-version 4.9.13 \
+  --cognium-dev-json raw/<date>/cognium-dev-owasp-java.json --out results/<date>/owasp-java
+
+# any SARIF producer (CodeQL, Semgrep --sarif, SpotBugs/Find-Sec-Bugs, ...)
+node scripts/score-owasp-benchmark.mjs --tool codeql --tool-version 2.x \
+  --sarif raw/<date>/codeql-owasp-java.sarif --out results/<date>/owasp-java
+```
+
+| Option | Default | Meaning |
+| --- | --- | --- |
+| `--cognium-dev-json <file>` | — | cognium-dev `scan -f json` output (`results[].vulnerabilities[]`); findings without a CWE are ignored |
+| `--sarif <file>` | — | SARIF 2.1.0; the CWE is read from the rule's `properties.tags` (`external/cwe/cwe-089`, `CWE-89`), `properties.cwe`, taxonomy `relationships`, or the rule id |
+| `--findings <file>` | — | pre-normalized `[{ file, cwe, line, rule }]` for tools without a SARIF export |
+| `--expected <csv>` | committed v1.2 ground truth | OWASP `expectedresults-1.2.csv` |
+| `--tool <name>` / `--tool-version <v>` | `unknown-tool` / `unknown` | recorded in every output file name and row |
+| `--out <dir>` | `results/<today>/owasp-java` | writes `<tool>.scorecard.json`, `<tool>.scorecard.md`, `<tool>.per-cwe.csv`, `<tool>.normalized-findings.json` |
+
+The scorecard JSON records how many findings were mapped to cases, how many
+had no CWE, how many fell outside test-case files, and the full FN / FP case
+lists, so a per-case audit needs nothing else. Findings in `BenchmarkTest`
+files with a CWE that differs from the case's CWE never count — for or
+against — exactly as in the OWASP scorecard.
+
+---
+
 ## Verification (2026-09-11)
 
 All four scripts were exercised from a scratch copy of the repository:
@@ -187,6 +226,11 @@ All four scripts were exercised from a scratch copy of the repository:
   (exit 0, 23 files, 34 findings: 0 critical / 0 high / 2 medium / 29 low,
   `parse_error: false`), kept the 216 KB raw `scan.json` in the private dir and
   wrote the 1 KB sanitized summary to the public dir.
+
+- `score-owasp-benchmark.mjs`: scored a cognium-dev 4.9.13 scan of
+  BenchmarkJava `20cbf3d` (2,740 files, 10,176 CWE-bearing findings mapped,
+  0 unmapped) in under a second; per-category TP+FP+FN+TN sums equal the
+  ground-truth category sizes.
 
 Two defaults were corrected that day: the corpus runner used to default
 `--public-out` to the historical `results/2026-05-03/`, and the selector used
