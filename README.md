@@ -231,6 +231,7 @@ raw/          raw evidence per result set (page snapshot, runner logs)
 methodology/  scoring principles and score definitions
 tools/        per-tool lanes: cognium-dev, cognium-ai, CodeQL, Semgrep
 schemas/      result.schema.json
+LICENSE       MIT; THIRD-PARTY-NOTICES.md lists redistributed material under other terms
 scripts/      validator, OWASP scorer, corpus helpers — every option documented in scripts/README.md
 docs/         publishing workflow, rerun status, disclosure policy
 .github/      issue / discussion templates, CI
@@ -258,7 +259,7 @@ raw outputs we produced, documentation, our ground-truth label files and the
 synthetic test-case sources. Redistributed third-party material keeps its
 own terms (OWASP's `expectedresults-1.2.csv` is GPL-2.0; Juliet is public
 domain; the vulnerable applications are under their own licences); the
-carve-out is listed at the bottom of `LICENSE`.
+carve-out is listed in [`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md).
 
 ## Canonical links
 
