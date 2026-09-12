@@ -15,6 +15,17 @@ repository wins and the page is wrong.
 ![OWASP Benchmark](https://img.shields.io/badge/OWASP_Benchmark_v1.2-2%2C740_cases-blue)
 ![languages](https://img.shields.io/badge/languages-Java_%7C_JS%2FTS_%7C_Python_%7C_Go_%7C_Rust_%7C_C%23_%7C_Bash_%7C_HTML-lightgrey)
 
+**Contents:** [Headline comparison](#headline-owasp-benchmark-java-v12-full-suite-tool-comparison) ·
+[All published rows](#all-published-static-analysis-rows) ·
+[Reading the numbers](#reading-the-numbers) ·
+[Reproduce a number](#reproduce-a-number-yourself) ·
+[Audit](#how-to-audit) · [Add a tool](#add-a-tool-to-the-comparison) ·
+[Layout](#repository-layout) · [Contract](#publishing-contract)
+
+You need nothing but `git` and Node.js 18+ to read, validate and re-score
+everything here. Re-running a tool additionally needs that tool (install
+lines are in each `tools/<tool>/README.md`).
+
 ## Headline: OWASP Benchmark Java v1.2, full suite, tool comparison
 
 All **2,740** test cases (1,415 vulnerable, 1,325 safe), BenchmarkJava
@@ -56,6 +67,38 @@ that is not public and cannot be reconstructed from whole categories; it is
 kept as published, footnoted, and never compared with other tools — the
 full-suite table above is.
 
+### All published static-analysis rows
+
+Every row links to its benchmark definition (what it measures, selection,
+scoring rule, known gaps); the same slug under `datasets/` holds the source,
+revision and ground truth.
+
+| Language | Benchmark | Tests | TP | TN | FP | FN | TPR | FPR | Score | Result set |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| Java | [OWASP Benchmark](benchmarks/owasp-benchmark-java/README.md) | 1415 | 708 | 707 | 0 | 0 | 100% | 0% | 100% | 2026-04-22 |
+| Java | [Juliet Test Suite](benchmarks/juliet-java/README.md) | 243 | 122 | 121 | 0 | 0 | 100% | 0% | 100% | 2026-04-22 |
+| Java | [SecuriBench Micro](benchmarks/securibench-micro/README.md) | 123 | 60 | 60 | 1 | 2 | 96.8% | 1.6% | 97.7% | 2026-04-22 |
+| Java | [CWE-Bench-Java](benchmarks/cwe-bench-java/README.md) | 120 | 61 | — | — | 59 | 50.8% | — | 50.8% | 2026-04-22 |
+| Java | [WebGoat](benchmarks/webgoat/README.md) | 29 | 26 | — | — | 3 | 89.7% | — | 89.3% | 2026-04-22 |
+| Java | [DVJA](benchmarks/dvja/README.md) | 7 | 7 | — | — | 0 | 100% | — | 100% | 2026-04-22 |
+| Node.js / TypeScript | [NodeGoat](benchmarks/nodegoat/README.md) | 14 | 14 | — | — | 0 | 100% | — | 100% | 2026-04-22 |
+| Node.js / TypeScript | [Juice Shop](benchmarks/juice-shop/README.md) | 14 | 14 | — | — | 0 | 100% | — | 100% | 2026-04-22 |
+| Node.js / TypeScript | [NodeJS Synthetic](benchmarks/nodejs-synthetic/README.md) | 25 | 23 | — | — | 2 | 92.0% | — | 92.9% | 2026-04-22 |
+| Python | [PyGoat](benchmarks/pygoat/README.md) | 26 | 23 | — | — | 3 | 88.5% | — | 90.0% | 2026-04-22 |
+| Python | [DVPWA](benchmarks/dvpwa/README.md) | 6 | 6 | — | — | 0 | 100% | — | 100% | 2026-04-22 |
+| Rust | [Rust Synthetic](benchmarks/rust-synthetic/README.md) | 50 | 46 | — | — | 4 | 92.0% | — | 92.3% | 2026-04-22 |
+| Rust | [CWE-Bench-Rust](benchmarks/cwe-bench-rust/README.md) | 30 | 28 | — | — | 2 | 93.3% | — | 94.4% | 2026-04-22 |
+| Bash | [Bash Synthetic](benchmarks/bash-synthetic/README.md) | 31 | 31 | — | — | 0 | 100% | — | 100% | 2026-04-22 |
+| HTML/JS | [HTML/JS Synthetic](benchmarks/html-js-synthetic/README.md) | 30 | 30 | — | — | 0 | 100% | — | 100% | 2026-04-22 |
+| Other | [Firing Range](benchmarks/firing-range/README.md) | 40 | 35 | — | 2 | 3 | 92.1% | — | 92.1% | 2026-04-22 |
+| Go | [Go Synthetic](benchmarks/go-synthetic/README.md) | 29 | 15 | 10 | 0 | 4 | 78.9% | 0.0% | 78.9% | 2026-09-11 |
+| Go | [Vulnerability-goapp](benchmarks/vulnerability-goapp/README.md) | 13 | 3 | 6 | 1 | 3 | 50.0% | 14.3% | 45.0% | 2026-09-11 |
+| C#/.NET | [C# Synthetic](benchmarks/csharp-synthetic/README.md) | 15 | 10 | 3 | 1 | 1 | 90.9% | 25.0% | 65.9% | 2026-09-11 |
+| C#/.NET | [Juliet C# (NIST, baseline _01)](benchmarks/juliet-csharp/README.md) | 123 | 17 | — | — | 106 | 13.8% | — | 13.8% | 2026-09-11 |
+
+`—` means the dataset has no scored negatives for that row (only positives
+are labelled), so TN, FP and FPR cannot be reported. It never means zero.
+
 For each row:
 
 - **what it measures, how it is scored, the published numbers** →
@@ -95,6 +138,58 @@ says so).
 
 Target corpora: `datasets/top-*-github/`. Findings against third-party
 projects follow [`docs/upstream-disclosure-policy.md`](docs/upstream-disclosure-policy.md).
+
+## Reading the numbers
+
+| Term | Meaning |
+| --- | --- |
+| TP / FN | vulnerable case flagged / missed |
+| FP / TN | safe case flagged / correctly left alone |
+| TPR (recall) | TP / (TP + FN) — share of real vulnerabilities found |
+| FPR | FP / (FP + TN) — share of safe cases wrongly flagged |
+| Precision | TP / (TP + FP) — share of flags that are real |
+| Youden | TPR − FPR — the OWASP Benchmark "score"; 100 is perfect, 0 is a coin flip |
+| Score (snapshot tables) | defined per benchmark kind in [`benchmarks/static-analysis-suite/`](benchmarks/static-analysis-suite/README.md): `TPR − FPR` where negatives are scored, recall where only positives exist |
+| Perfect / near-perfect | row score = 100% / ≥ 90% |
+| `—`, `n/a`, `null` | not measurable on that dataset — never zero |
+| "flagged" | a finding in the case's file with **exactly** the expected CWE; a finding of another type never counts, for or against |
+
+Every result set folder has the same shape:
+
+```text
+results/<set>/summary.md        human-readable: setup, tables, how it was run, known gaps
+results/<set>/results.json      machine-readable rows + summary (schemas/result.schema.json)
+results/<set>/results.csv       the same rows, one per line
+results/<set>/*-breakdown.csv   per-CWE detail where the benchmark has it
+results/<set>/comparison.json   (comparison lanes) one entry per tool, with per-category tables
+raw/<set>/                      what the tool actually emitted (gzipped) + normalized findings + logs
+```
+
+## Reproduce a number yourself
+
+The headline cognium-dev row, end to end (≈1 minute on a laptop):
+
+```sh
+git clone https://github.com/cogniumhq/sast-benchmarks && cd sast-benchmarks
+git clone https://github.com/OWASP-Benchmark/BenchmarkJava owasp-java
+git -C owasp-java checkout 20cbf3d11123347e47ed89541e6942836def53f7
+npm install -g cognium-dev@4.9.13
+cognium-dev scan owasp-java/src/main/java/org/owasp/benchmark/testcode -l java -f json -q -o scan.json
+node scripts/score-owasp-benchmark.mjs --tool cognium-dev --tool-version 4.9.13 --cognium-dev-json scan.json --out out
+#  -> out/cognium-dev.scorecard.md : 2740 | 1287 | 231 | 128 | 1094 | 91.0% | 17.4% | 84.8% | 87.8% | 73.5%
+```
+
+The CodeQL and Semgrep rows, and every configuration tried for them, are in
+[`results/2026-09-11-owasp-java-comparison/summary.md`](results/2026-09-11-owasp-java-comparison/summary.md#reproduce)
+with the same copy-paste form. The Go and C#/.NET runs:
+[`tools/cognium/README.md`](tools/cognium/README.md). Anything scored from a
+committed dataset (all synthetic sets, the labelled applications) only needs
+the engine and the files under `datasets/<row>/`.
+
+To re-score a tool's existing output without re-running it, feed the raw
+file from `raw/<set>/` to the scorer — e.g.
+`gzip -dc raw/2026-09-11-owasp-java-comparison/codeql-2.27.0-owasp-java.java-security-extended.sarif.gz > codeql.sarif`
+then `node scripts/score-owasp-benchmark.mjs --tool codeql --tool-version 2.27.0 --sarif codeql.sarif --out out`.
 
 ## How to audit
 
@@ -136,7 +231,7 @@ raw/          raw evidence per result set (page snapshot, runner logs)
 methodology/  scoring principles and score definitions
 tools/        per-tool lanes: cognium-dev, cognium-ai, CodeQL, Semgrep
 schemas/      result.schema.json
-scripts/      validator and corpus helpers
+scripts/      validator, OWASP scorer, corpus helpers — every option documented in scripts/README.md
 docs/         publishing workflow, rerun status, disclosure policy
 .github/      issue / discussion templates, CI
 ```
@@ -149,8 +244,16 @@ limitations, and a link for review. Nothing goes on `cognium.dev/benchmark`
 that does not first exist here. Review happens in GitHub Discussions and
 issues; see [`docs/publishing.md`](docs/publishing.md).
 
+## Questions and challenges
+
+Open a GitHub issue (templates: benchmark run, reproduction problem, scoring
+challenge) or a Discussion. A scoring challenge should name the result set,
+the row, the case id(s) from the published FN / FP lists, and the rule you
+believe was misapplied.
+
 ## Canonical links
 
 - Technical publication: `https://cognium.dev/benchmark`
 - Engine: `https://github.com/cogniumhq/cognium-dev`
+- Official OWASP scorer this repository mirrors: `https://github.com/OWASP-Benchmark/BenchmarkUtils`
 - Commercial summary: `https://cognium.net`
