@@ -31,4 +31,4 @@ Per labelled file+category: a reported flow of the expected sink type in that fi
 
 ## License / redistribution
 
-NodeGoat is Apache-2.0. The label file is ours.
+NodeGoat is Apache-2.0. The label file is ours, MIT (see `LICENSE`).

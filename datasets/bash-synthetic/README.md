@@ -29,4 +29,4 @@ A case is detected when the engine reports an unsanitized taint flow of the expe
 
 ## License / redistribution
 
-Same terms as this repository.
+MIT, same as this repository (see `LICENSE`).

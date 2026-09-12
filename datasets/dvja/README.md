@@ -31,4 +31,4 @@ Per labelled file+category: a reported flow of the expected sink type in that fi
 
 ## License / redistribution
 
-See the upstream repository's LICENSE for the application source. The label file is ours.
+See the upstream repository's LICENSE for the application source. The label file is ours, MIT (see `LICENSE`).

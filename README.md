@@ -251,6 +251,15 @@ challenge) or a Discussion. A scoring challenge should name the result set,
 the row, the case id(s) from the published FN / FP lists, and the rule you
 believe was misapplied.
 
+## Licence
+
+MIT ([`LICENSE`](LICENSE)) for everything authored here — scripts, results,
+raw outputs we produced, documentation, our ground-truth label files and the
+synthetic test-case sources. Redistributed third-party material keeps its
+own terms (OWASP's `expectedresults-1.2.csv` is GPL-2.0; Juliet is public
+domain; the vulnerable applications are under their own licences); the
+carve-out is listed at the bottom of `LICENSE`.
+
 ## Canonical links
 
 - Technical publication: `https://cognium.dev/benchmark`

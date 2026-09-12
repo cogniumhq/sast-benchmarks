@@ -31,4 +31,4 @@ Per labelled file+category: a reported flow of the expected sink type in that fi
 
 ## License / redistribution
 
-Juice Shop is MIT. The label file is ours.
+Juice Shop is MIT. The label file is ours, MIT (see `LICENSE`).

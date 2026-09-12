@@ -1,0 +1,47 @@
+MIT License
+
+Copyright (c) 2026 Cognium Labs
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+Scope of this licence
+
+The MIT licence above covers the material authored for this repository:
+the scripts, the result sets and their summaries, the raw tool outputs we
+produced, the benchmark and dataset documentation, the ground-truth label
+files written for the vulnerable applications (datasets/*/expectedresults.csv
+where the README marks them as ours), and the synthetic test-case sources
+(datasets/*-synthetic/testcode, datasets/cwe-bench-rust/testcode,
+datasets/nodejs-synthetic/testcode).
+
+It does not cover third-party material that is redistributed or referenced
+here, which keeps its own terms:
+
+- datasets/owasp-benchmark-java/expectedresults-1.2.csv — OWASP Benchmark
+  ground truth, GPL-2.0, (c) OWASP Foundation; redistributed unchanged.
+- NIST Juliet Test Suites (Java, C#) — public domain (NIST); not copied here.
+- OWASP WebGoat, DVJA, NodeGoat, Juice Shop, PyGoat, DVPWA,
+  Vulnerability-goapp, Google Firing Range, SecuriBench Micro, CWE-Bench-Java
+  and the GitHub repositories in datasets/top-*-github — each under its own
+  licence; only metadata and our labels are stored here.
+- Tool outputs under raw/ were produced by the named tools (cognium-dev,
+  CodeQL, Semgrep and others) on the material above; the tools' own licences
+  govern the tools, not these result files.
