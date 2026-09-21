@@ -29,6 +29,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import os from 'node:os';
+import crypto from 'node:crypto';
 
 const args = new Map();
 for (let i = 2; i < process.argv.length; i += 1) {
@@ -138,6 +139,54 @@ const FETCHED = [
     scanPath: 'routes',
     groundTruth: 'expectedresults.csv',
   },
+  // Archive-based, ground truth derived from the corpus layout rather than a
+  // vendored CSV. Recall-only: every scored file is a positive, so no FPR.
+  {
+    corpus: 'juliet-csharp',
+    language: 'C#',
+    ext: '.cs',
+    archive: 'https://samate.nist.gov/SARD/downloads/test-suites/2020-08-01-juliet-test-suite-for-csharp-v1-3.zip',
+    sha256: '2e6dbac4741fb020a0b1c2db69e98aed165987df2bd70bd51f7c8c5302c8e8f8',
+    scanPath: 'src/testcases',
+    stripTo: 'src',
+    cases: 'juliet-csharp',
+    recallOnly: true,
+    // Default taint config. The published 13.8% recall for this corpus was
+    // measured with the corpus' own source/sink signatures added (console,
+    // file, env, TCP, WebClient, legacy System.Web; ADO.NET, LDAP, XPath,
+    // Process — see datasets/juliet-csharp/README.md), and that runner is not
+    // public. So this scores far lower and the two numbers are NOT comparable:
+    // most misses here are unrecognised signatures, not propagation gaps.
+    //
+    // Still a valid regression baseline — it catches a drop from whatever the
+    // default config achieves — but it must not be read as the engine's Juliet
+    // C# recall. Recovering the signature list would make it comparable.
+    configNote: 'default taint config; published 13.8% used added corpus signatures',
+  },
+  {
+    corpus: 'securibench-micro',
+    language: 'Java',
+    ext: '.java',
+    repo: 'https://github.com/too4words/securibench-micro',
+    commit: '6a5a72488ea830d99f9464fc1f0562c4f864214b',
+    scanPath: 'src/securibench/micro',
+    cases: 'securibench-micro',
+  },
+  // Not wired, deliberately — the derivers below are kept because the work is
+  // sound; only the corpora are held back:
+  //
+  //   juliet-java   cognium-dev aborts with a V8 heap OOM on its 40,845 files,
+  //                 even at a 12GB heap (cognium-dev#424). Wiring it would make
+  //                 the nightly permanently red, since an errored corpus is
+  //                 correctly treated as a regression.
+  //
+  //   firing-range  the CATEGORY_CWE map here is inferred, not sourced, and
+  //                 matches only 21 of 44 servlets — scoring 0 TP. The dataset
+  //                 README records the original run finding all but 3 cases, so
+  //                 the fault is far more likely this mapping than the engine.
+  //                 It needs the "small vulnerable/safe list in the runner" that
+  //                 the README mentions and that is not public. Baselining 0%
+  //                 would enshrine a number nobody can defend.
   {
     corpus: 'vulnerability-goapp',
     language: 'Go',
@@ -181,7 +230,178 @@ function fetchCorpus({ corpus, repo, commit }) {
   return dir;
 }
 
+/**
+ * Download and unpack a pinned archive, verified by SHA-256.
+ *
+ * The digest is the pin. A git corpus pins a commit; an archive has no such
+ * identifier, so without checking the hash an upstream re-publish would change
+ * the corpus underneath the baseline and read as an engine regression.
+ */
+function fetchArchive({ corpus, url, sha256, stripTo }) {
+  const cacheRoot = process.env.CORPUS_CACHE || path.join(os.tmpdir(), 'sast-benchmarks-corpora');
+  const dir = path.join(cacheRoot, corpus);
+  const stamp = path.join(dir, '.sha256');
+
+  if (fs.existsSync(stamp) && fs.readFileSync(stamp, 'utf8').trim() === sha256) return dir;
+
+  fs.mkdirSync(cacheRoot, { recursive: true });
+  fs.rmSync(dir, { recursive: true, force: true });
+  fs.mkdirSync(dir, { recursive: true });
+
+  const zip = path.join(cacheRoot, `${corpus}.zip`);
+  execFileSync('curl', ['-sSLo', zip, url], { stdio: ['ignore', 'pipe', 'pipe'], timeout: 1_800_000 });
+
+  const actual = crypto.createHash('sha256').update(fs.readFileSync(zip)).digest('hex');
+  if (actual !== sha256) {
+    fs.rmSync(zip, { force: true });
+    throw new Error(`archive digest mismatch: expected ${sha256}, got ${actual}`);
+  }
+
+  execFileSync('unzip', ['-q', '-o', zip, '-d', dir], { stdio: ['ignore', 'pipe', 'pipe'], timeout: 900_000 });
+  fs.rmSync(zip, { force: true });
+  fs.writeFileSync(stamp, sha256);
+
+  const root = stripTo ? path.join(dir, stripTo) : dir;
+  if (!fs.existsSync(root)) throw new Error(`archive unpacked but ${stripTo} is missing`);
+  return dir;
+}
+
 const cweNum = (v) => { const m = String(v ?? '').match(/(\d+)/); return m ? Number(m[1]) : null; };
+
+/**
+ * Derive Juliet C# cases from the corpus layout rather than a CSV.
+ *
+ * Juliet encodes its ground truth in structure: `src/testcases/CWE<N>_.../`
+ * gives the CWE, and every `__..._01.cs` variant carries a `Bad()` method with
+ * a real vulnerability of that CWE. The dataset README records that only `_01`
+ * files are scored and the `Good*()` controls are not, so this corpus yields
+ * recall only — there is no true-negative set and therefore no FPR.
+ *
+ * Scoring a corpus with no negatives as though it had them would report FPR
+ * 0.0% and look like perfect precision, which is why `recall_only` is carried
+ * through to the scorecard.
+ */
+function julietCsharpCases(rootDir) {
+  const cases = new Map();
+  const testcases = path.join(rootDir, 'src', 'testcases');
+  if (!fs.existsSync(testcases)) return cases;
+
+  for (const cweDir of fs.readdirSync(testcases)) {
+    const cwe = cweNum(cweDir.match(/^CWE(\d+)/)?.[1]);
+    if (cwe === null) continue;
+    const walk = (d) => {
+      for (const e of fs.readdirSync(d, { withFileTypes: true })) {
+        const full = path.join(d, e.name);
+        if (e.isDirectory()) { walk(full); continue; }
+        if (!e.name.endsWith('_01.cs')) continue;
+        cases.set(path.basename(e.name, '.cs'), { category: cweDir.split('__')[0], cwe, vulnerable: true });
+      }
+    };
+    walk(path.join(testcases, cweDir));
+  }
+  return cases;
+}
+
+/**
+ * Derive Juliet Java cases from the corpus layout.
+ *
+ * Same convention as the C# suite: `CWE<N>_...` in the filename gives the CWE,
+ * and every test file carries a `bad()` method with a real vulnerability.
+ *
+ * Recall-only, and deliberately so. The dataset README describes scoring the
+ * `good*()` controls as true negatives, but `bad()` and its controls live in
+ * the *same file*, so separating them needs line-level attribution against
+ * parsed method boundaries. Counting a file as a negative because it also
+ * contains safe code would manufacture true negatives the run never
+ * established, so the controls are left unscored and no FPR is reported.
+ */
+function julietJavaCases(rootDir) {
+  const cases = new Map();
+  const walk = (d) => {
+    if (!fs.existsSync(d)) return;
+    for (const e of fs.readdirSync(d, { withFileTypes: true })) {
+      const full = path.join(d, e.name);
+      if (e.isDirectory()) { walk(full); continue; }
+      if (!e.name.endsWith('.java')) continue;
+      const cwe = cweNum(e.name.match(/^CWE(\d+)_/)?.[1]);
+      if (cwe === null) continue;
+      // Skip the shared helpers Juliet ships alongside the cases.
+      if (/Helper|Util|AbstractTestCase/i.test(e.name)) continue;
+      cases.set(path.basename(e.name, '.java'), { category: e.name.split('__')[0], cwe, vulnerable: true });
+    }
+  };
+  walk(rootDir);
+  return cases;
+}
+
+/**
+ * Derive SecuriBench Micro cases from each test class.
+ *
+ * Upstream encodes the expected count in the class itself:
+ *
+ *     public int getVulnerabilityCount() {
+ *         return 1;
+ *     }
+ *
+ * A class declaring zero is a genuine negative — the only corpus here besides
+ * the synthetics that supplies its own controls — so this one does yield an
+ * FPR. Classes with no such method are helpers and are skipped rather than
+ * defaulted to zero, which would invent negatives.
+ */
+function securibenchCases(rootDir) {
+  const cases = new Map();
+  const walk = (d) => {
+    if (!fs.existsSync(d)) return;
+    for (const e of fs.readdirSync(d, { withFileTypes: true })) {
+      const full = path.join(d, e.name);
+      if (e.isDirectory()) { walk(full); continue; }
+      if (!e.name.endsWith('.java')) continue;
+      const src = fs.readFileSync(full, 'utf8');
+      const m = src.match(/getVulnerabilityCount\s*\(\s*\)\s*\{\s*return\s+(\d+)\s*;/);
+      if (!m) continue;
+      const expected = Number(m[1]);
+      // XSS and SQLi dominate the suite; the category directory names the kind.
+      const dirName = path.basename(path.dirname(full));
+      cases.set(path.basename(e.name, '.java'), {
+        category: dirName,
+        cwe: /sql/i.test(dirName) ? 89 : 79,
+        vulnerable: expected > 0,
+      });
+    }
+  };
+  walk(rootDir);
+  return cases;
+}
+
+/**
+ * Derive Firing Range cases from its directory layout.
+ *
+ * Category per directory under the test tree. The dataset README also mentions
+ * "a small vulnerable/safe list in the runner" that is not public, so the safe
+ * cases cannot be reconstructed — every derived case is treated as a positive
+ * and no FPR is reported. The README's 2 known false positives in `escape/`
+ * therefore cannot be reproduced here; that needs the original list.
+ */
+function firingRangeCases(rootDir) {
+  // src/tests holds the vulnerable servlets; src/unit-tests holds the app's
+  // own tests. Deriving cases from the latter would score test code as though
+  // it were the corpus.
+  const CATEGORY_CWE = { reflected: 79, dom: 79, escape: 79, redirect: 601, cors: 942, remoteinclude: 98, urldom: 79 };
+  const cases = new Map();
+  const walk = (d, category) => {
+    if (!fs.existsSync(d)) return;
+    for (const e of fs.readdirSync(d, { withFileTypes: true })) {
+      const full = path.join(d, e.name);
+      if (e.isDirectory()) { walk(full, category ?? e.name.toLowerCase()); continue; }
+      if (!/\.(java|html)$/.test(e.name)) continue;
+      const cwe = CATEGORY_CWE[category ?? ''] ?? null;
+      if (cwe === null) continue;
+      cases.set(path.basename(e.name).replace(/\.[^.]+$/, ''), { category, cwe, vulnerable: true });
+    }
+  };
+  walk(rootDir, undefined);
+  return cases;
+}
 
 /**
  * Parse an expectedresults CSV.
@@ -273,10 +493,17 @@ function normalize(report) {
   return out;
 }
 
-function scoreCorpus({ corpus, language, ext, repo, commit, scanPath, groundTruth, match = 'basename' }) {
+function scoreCorpus({ corpus, language, ext, repo, commit, archive, sha256, stripTo, cases: caseSource, recallOnly, configNote, scanPath, groundTruth, match = 'basename' }) {
   let dir;
   let repoRoot;
-  if (repo) {
+  if (archive) {
+    try {
+      repoRoot = fetchArchive({ corpus, url: archive, sha256, stripTo });
+      dir = path.join(repoRoot, scanPath ?? '.');
+    } catch (e) {
+      return { corpus, language, error: `fetch failed: ${String(e.message ?? e).slice(0, 300)}` };
+    }
+  } else if (repo) {
     try {
       repoRoot = fetchCorpus({ corpus, repo, commit });
       dir = path.join(repoRoot, scanPath ?? '.');
@@ -288,7 +515,14 @@ function scoreCorpus({ corpus, language, ext, repo, commit, scanPath, groundTrut
   }
   if (!fs.existsSync(dir)) return { corpus, language, skipped: `scan path missing: ${dir}` };
 
-  const cases = readCases(corpus, groundTruth);
+  const DERIVERS = {
+    'juliet-csharp': () => julietCsharpCases(repoRoot),
+    'juliet-java': () => julietJavaCases(dir),
+    'securibench-micro': () => securibenchCases(dir),
+    'firing-range': () => firingRangeCases(dir),
+  };
+  const cases = caseSource ? DERIVERS[caseSource]() : readCases(corpus, groundTruth);
+  if (cases.size === 0) return { corpus, language, error: 'no cases derived — ground truth missing or layout changed' };
   const started = Date.now();
   let report;
   try {
@@ -344,6 +578,11 @@ function scoreCorpus({ corpus, language, ext, repo, commit, scanPath, groundTrut
     language,
     benchmark: corpus,
     ...(commit ? { dataset_revision: commit } : {}),
+    ...(sha256 ? { dataset_revision: `sha256:${sha256}` } : {}),
+    // A recall-only corpus has no negatives; reporting FPR 0.0% for it would
+    // read as perfect precision rather than "not measured".
+    ...(recallOnly ? { recall_only: true } : {}),
+    ...(configNote ? { config_note: configNote } : {}),
     tests: cases.size,
     tp, tn, fp, fn,
     tpr: pct(tpr),
