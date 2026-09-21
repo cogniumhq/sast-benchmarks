@@ -1,0 +1,108 @@
+{
+  "corpus": "html-js-synthetic",
+  "language": "HTML/JS",
+  "benchmark": "html-js-synthetic",
+  "tests": 30,
+  "tp": 12,
+  "tn": 11,
+  "fp": 0,
+  "fn": 7,
+  "tpr": "63.2%",
+  "fpr": "0.0%",
+  "score": "63.2%",
+  "score_rule": "tpr - fpr",
+  "elapsed_ms": 143,
+  "categories": [
+    {
+      "category": "css_injection",
+      "cwe": "CWE-79",
+      "tp": 1,
+      "tn": 1,
+      "fp": 0,
+      "fn": 1
+    },
+    {
+      "category": "doc_write",
+      "cwe": "CWE-79",
+      "tp": 2,
+      "tn": 1,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "dom_xss",
+      "cwe": "CWE-79",
+      "tp": 2,
+      "tn": 2,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "eval_xss",
+      "cwe": "CWE-94",
+      "tp": 3,
+      "tn": 1,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "event_handler",
+      "cwe": "CWE-79",
+      "tp": 1,
+      "tn": 1,
+      "fp": 0,
+      "fn": 1
+    },
+    {
+      "category": "jquery",
+      "cwe": "CWE-79",
+      "tp": 2,
+      "tn": 1,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "postmessage",
+      "cwe": "CWE-79",
+      "tp": 0,
+      "tn": 1,
+      "fp": 0,
+      "fn": 1
+    },
+    {
+      "category": "script_src",
+      "cwe": "CWE-79",
+      "tp": 0,
+      "tn": 1,
+      "fp": 0,
+      "fn": 2
+    },
+    {
+      "category": "template",
+      "cwe": "CWE-79",
+      "tp": 1,
+      "tn": 1,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "url_manipulation",
+      "cwe": "CWE-79",
+      "tp": 0,
+      "tn": 1,
+      "fp": 0,
+      "fn": 2
+    }
+  ],
+  "missed_cases": [
+    "xss_anchor_href",
+    "xss_css_stylesheet",
+    "xss_event_onerror_img",
+    "xss_location_href",
+    "xss_postmessage_no_origin",
+    "xss_script_src_injection",
+    "xss_script_src_jsonp"
+  ],
+  "spurious_cases": [],
+  "scan_report": "html-js-synthetic.scan.json"
+}

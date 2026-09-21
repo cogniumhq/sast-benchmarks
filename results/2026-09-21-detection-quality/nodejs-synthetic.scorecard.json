@@ -1,0 +1,78 @@
+{
+  "corpus": "nodejs-synthetic",
+  "language": "JavaScript",
+  "benchmark": "nodejs-synthetic",
+  "tests": 25,
+  "tp": 16,
+  "tn": 8,
+  "fp": 1,
+  "fn": 0,
+  "tpr": "100.0%",
+  "fpr": "11.1%",
+  "score": "88.9%",
+  "score_rule": "tpr - fpr",
+  "elapsed_ms": 152,
+  "categories": [
+    {
+      "category": "cmdi",
+      "cwe": "CWE-78",
+      "tp": 3,
+      "tn": 2,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "codeinj",
+      "cwe": "CWE-94",
+      "tp": 2,
+      "tn": 1,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "nosqli",
+      "cwe": "CWE-943",
+      "tp": 1,
+      "tn": 0,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "pathtraver",
+      "cwe": "CWE-22",
+      "tp": 3,
+      "tn": 2,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "sqli",
+      "cwe": "CWE-89",
+      "tp": 3,
+      "tn": 1,
+      "fp": 1,
+      "fn": 0
+    },
+    {
+      "category": "ssrf",
+      "cwe": "CWE-918",
+      "tp": 1,
+      "tn": 0,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "xss",
+      "cwe": "CWE-79",
+      "tp": 3,
+      "tn": 2,
+      "fp": 0,
+      "fn": 0
+    }
+  ],
+  "missed_cases": [],
+  "spurious_cases": [
+    "NodeTest00004"
+  ],
+  "scan_report": "nodejs-synthetic.scan.json"
+}

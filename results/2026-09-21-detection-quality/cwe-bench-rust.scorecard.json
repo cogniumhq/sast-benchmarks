@@ -1,0 +1,78 @@
+{
+  "corpus": "cwe-bench-rust",
+  "language": "Rust",
+  "benchmark": "cwe-bench-rust",
+  "tests": 30,
+  "tp": 12,
+  "tn": 10,
+  "fp": 2,
+  "fn": 6,
+  "tpr": "66.7%",
+  "fpr": "16.7%",
+  "score": "50.0%",
+  "score_rule": "tpr - fpr",
+  "elapsed_ms": 142,
+  "categories": [
+    {
+      "category": "cmdi",
+      "cwe": "CWE-78",
+      "tp": 2,
+      "tn": 2,
+      "fp": 0,
+      "fn": 1
+    },
+    {
+      "category": "deser",
+      "cwe": "CWE-502",
+      "tp": 2,
+      "tn": 1,
+      "fp": 1,
+      "fn": 1
+    },
+    {
+      "category": "pathtraver",
+      "cwe": "CWE-22",
+      "tp": 3,
+      "tn": 2,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "sqli",
+      "cwe": "CWE-89",
+      "tp": 2,
+      "tn": 2,
+      "fp": 0,
+      "fn": 1
+    },
+    {
+      "category": "ssrf",
+      "cwe": "CWE-918",
+      "tp": 1,
+      "tn": 1,
+      "fp": 1,
+      "fn": 2
+    },
+    {
+      "category": "xss",
+      "cwe": "CWE-79",
+      "tp": 2,
+      "tn": 2,
+      "fp": 0,
+      "fn": 1
+    }
+  ],
+  "missed_cases": [
+    "RustTest00010",
+    "RustTest00013",
+    "RustTest00018",
+    "RustTest00023",
+    "RustTest00025",
+    "RustTest00030"
+  ],
+  "spurious_cases": [
+    "RustTest00017",
+    "RustTest00024"
+  ],
+  "scan_report": "cwe-bench-rust.scan.json"
+}
