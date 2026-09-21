@@ -1,0 +1,29 @@
+{
+  "_comment": "Corpora that cannot currently be scored because cognium-dev fails on them. Each entry suppresses the regression this failure would otherwise raise, and ONLY that failure — a different error, or any other corpus failing, still fails the run. An entry whose corpus starts working also fails the run, so the list cannot quietly rot into a permanent amnesty. This is an exemption register, not a way to make a red gate green.",
+  "failures": [
+    {
+      "corpus": "pygoat",
+      "issue": "cogniumhq/cognium-dev#420",
+      "kind": "corpus-errored",
+      "expect": "Invalid regular expression",
+      "since": "2026-09-21",
+      "note": "Cross-file regex crash: an identifier is interpolated into a pattern unescaped, so Python's *args yields /\\b*args\\b/ and the whole scan aborts with exit 2. Reproduces only on a directory, never on any single file."
+    },
+    {
+      "corpus": "nodegoat",
+      "issue": "cogniumhq/cognium-dev#421",
+      "kind": "corpus-errored",
+      "expect": "killed by SIGTERM",
+      "since": "2026-09-21",
+      "note": "Cross-file scan hangs on 25 JavaScript files. Every file scans fine individually; only the directory scan never returns."
+    },
+    {
+      "corpus": "vulnerability-goapp",
+      "issue": "cogniumhq/cognium-dev#421",
+      "kind": "corpus-errored",
+      "expect": "killed by SIGTERM",
+      "since": "2026-09-21",
+      "note": "Same hang as nodegoat, on 11 Go files."
+    }
+  ]
+}

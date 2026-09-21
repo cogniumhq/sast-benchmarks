@@ -44,6 +44,7 @@ const root = path.resolve(new URL('..', import.meta.url).pathname);
 const runPath = args.get('run');
 const baselinePath = path.resolve(root, args.get('baseline') || 'baseline/detection-quality.json');
 const fprTolerance = Number(args.get('fpr-tolerance') || 0);
+const knownPath = path.resolve(root, args.get('known-failures') || 'baseline/known-failures.json');
 
 if (!runPath) {
   console.error('usage: compare-baseline.mjs --run <run-summary.json> [--baseline <file>] [--fpr-tolerance <pp>] [--markdown <out.md>]');
@@ -59,6 +60,30 @@ const read = (p, label) => {
 
 const run = read(runPath, 'run summary');
 const base = read(baselinePath, 'baseline');
+
+/**
+ * Corpora cognium-dev currently fails on, each tied to an open defect.
+ *
+ * An entry suppresses exactly one failure: that corpus, that kind, and an
+ * error matching `expect`. A different error on the same corpus still fails,
+ * because "pygoat is broken" must not become cover for pygoat breaking in a
+ * new way.
+ *
+ * An entry whose corpus has started working is itself a failure. Otherwise the
+ * register rots into a permanent amnesty: the engine gets fixed, nobody
+ * notices, and the corpus silently stops being gated.
+ */
+const known = new Map();
+if (fs.existsSync(knownPath)) {
+  try {
+    for (const f of JSON.parse(fs.readFileSync(knownPath, 'utf8')).failures ?? []) known.set(f.corpus, f);
+  } catch (e) {
+    console.error(`known-failures file is not valid JSON: ${e.message}`);
+    process.exit(2);
+  }
+}
+const suppressed = [];
+const staleExemptions = [];
 
 const num = (pct) => Number(String(pct ?? '0').replace('%', ''));
 const byCorpus = (summary) => new Map((summary.results ?? []).map(r => [r.corpus, r]));
@@ -80,8 +105,28 @@ for (const corpus of baseRows.keys()) {
 
 for (const [corpus, cur] of runRows) {
   if (cur.error) {
-    regressions.push({ corpus, kind: 'corpus-errored', detail: cur.error });
+    const k = known.get(corpus);
+    // Match on the recorded signature, not merely the corpus name.
+    if (k && k.kind === 'corpus-errored' && (!k.expect || cur.error.includes(k.expect))) {
+      suppressed.push({ corpus, issue: k.issue, detail: cur.error.slice(0, 160) });
+    } else if (k) {
+      regressions.push({
+        corpus, kind: 'corpus-errored-differently',
+        detail: `known failure is "${k.expect}" (${k.issue}) but this run failed with: ${cur.error.slice(0, 200)}`,
+      });
+    } else {
+      regressions.push({ corpus, kind: 'corpus-errored', detail: cur.error });
+    }
     continue;
+  }
+
+  // Listed as broken but it scored — the exemption is stale and must be
+  // removed, or the corpus silently stops being gated.
+  if (known.has(corpus)) {
+    staleExemptions.push({
+      corpus, kind: 'exemption-stale',
+      detail: `listed in known-failures (${known.get(corpus).issue}) but scored ${cur.tpr}/${cur.fpr} — remove the entry so this corpus is gated again`,
+    });
   }
   if (cur.skipped) { notes.push(`${corpus}: skipped (${cur.skipped})`); continue; }
 
@@ -126,12 +171,19 @@ for (const [corpus, cur] of runRows) {
   }
 }
 
+regressions.push(...staleExemptions);
+
 const fmt = (e) => `  ${e.corpus} [${e.kind}] ${e.detail}` + (e.cases?.length ? `\n      cases: ${e.cases.join(', ')}` : '');
 
 console.log(`baseline: ${path.relative(root, baselinePath)}  (cognium-dev ${base.tool?.version ?? '?'})`);
 console.log(`run:      ${runPath}  (cognium-dev ${run.tool?.version ?? '?'})`);
 console.log('');
 
+if (suppressed.length) {
+  console.log(`known failures, not gated (${suppressed.length}):`);
+  for (const e of suppressed) console.log(`  ${e.corpus} — ${e.issue} — ${e.detail}`);
+  console.log('');
+}
 if (improvements.length) {
   console.log(`improvements (${improvements.length}):`);
   for (const e of improvements) console.log(fmt(e));
@@ -156,6 +208,14 @@ if (args.get('markdown')) {
   md.push('');
   md.push(`Baseline: cognium-dev ${base.tool?.version ?? '?'} · overall TPR ${run.summary?.overall_tpr} / FPR ${run.summary?.overall_fpr}`);
   md.push('');
+  if (suppressed.length) {
+    md.push(`### Known failures, not gated (${suppressed.length})`);
+    md.push('');
+    md.push('| Corpus | Issue | Error |');
+    md.push('|---|---|---|');
+    for (const e of suppressed) md.push(`| ${e.corpus} | ${e.issue} | ${e.detail.replace(/\|/g, ' ')} |`);
+    md.push('');
+  }
   if (regressions.length) {
     md.push(`### Regressions (${regressions.length})`);
     md.push('');

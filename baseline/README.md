@@ -38,3 +38,26 @@ Promote a verified run deliberately:
 acceptable — a deliberate precision/recall trade, say — record that reasoning
 in the promoting PR. A baseline edited to silence a failure is worse than no
 baseline, because it looks like the gate is working.
+
+## Known failures
+
+`known-failures.json` registers corpora cognium-dev currently fails on, each
+tied to an open defect. It exists so three broken corpora cannot hold the whole
+gate red — a gate that is red every night stops being read.
+
+It is an **exemption register, not a way to make a red gate green.** Four rules
+keep it honest, all covered by tests:
+
+| Situation | Outcome |
+|---|---|
+| Listed corpus fails with the recorded error | suppressed, reported under "known failures, not gated" |
+| Listed corpus fails with a **different** error | **fails** — "pygoat is broken" must not cover pygoat breaking in a new way |
+| Unlisted corpus fails | **fails** |
+| Listed corpus **starts working** | **fails** — the exemption is stale and must be removed, or that corpus silently stops being gated |
+
+That last rule is the important one. Without it the register rots: the engine
+gets fixed, nobody notices, and the corpus quietly drops out of the gate while
+every run stays green.
+
+Adding an entry requires an open issue. Removing one is the expected outcome of
+fixing that issue — the gate will tell you when it is time.
