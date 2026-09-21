@@ -2,10 +2,9 @@
   "run_at": "2026-09-21T00:47:42.045Z",
   "tool": {
     "name": "cognium-dev",
-    "version": "4.9.20",
-    "cli": "/b/cognium-dev/packages/cli/dist/cli.js"
+    "version": "4.9.20"
   },
-  "scope": "vendored synthetic corpora only — fetch-based corpora are not included",
+  "scope": "vendored synthetic corpora only \u2014 fetch-based corpora are not included",
   "summary": {
     "total_cases": 210,
     "true_positives": 116,

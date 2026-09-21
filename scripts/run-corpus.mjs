@@ -248,7 +248,10 @@ try {
 
 const summary = {
   run_at: new Date().toISOString(),
-  tool: { name: 'cognium-dev', version, cli },
+  // Only the version is recorded. The CLI path is a throwaway build location
+  // that varies per run and carries no information for a reader of a published
+  // report — this repository is public, so artifacts stay free of local paths.
+  tool: { name: 'cognium-dev', version },
   scope: 'vendored synthetic corpora only — fetch-based corpora are not included',
   summary: {
     ...totals,
