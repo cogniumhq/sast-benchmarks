@@ -9,6 +9,15 @@ name: detection-quality
 # land then.
 
 on:
+  # The sweep exercises itself whenever its own code changes, so a broken
+  # harness is caught on the PR that breaks it rather than at the next manual
+  # run. Scoped to these two paths — it is not a gate on ordinary changes.
+  pull_request:
+    paths:
+      - 'scripts/run-corpus.mjs'
+      - '.github/workflows/detection-quality.yml'
+      - 'datasets/**/expectedresults.csv'
+
   workflow_dispatch:
     inputs:
       cognium_dev_ref:
