@@ -24,6 +24,9 @@ on:
       - 'scripts/run-corpus.mjs'
       - '.github/workflows/detection-quality.yml'
       - 'datasets/**/expectedresults.csv'
+      # A baseline change is exactly when a verification run matters most —
+      # it is the only way to see what the new reference actually scores.
+      - 'baseline/**'
 
   workflow_dispatch:
     inputs:
