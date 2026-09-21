@@ -1,0 +1,614 @@
+{
+  "_comment": "Reference point for scripts/compare-baseline.mjs. A run scoring below this on any corpus is a regression and files a defect. Update ONLY by deliberately promoting a verified run (see baseline/README.md) — never to make a failing run pass.",
+  "established": "2026-09-21",
+  "established_by": "https://github.com/cogniumhq/sast-benchmarks/pull/2",
+  "verified": "Identical scorecards produced on two hosts against cognium-dev 4.9.20 and 4.9.21 — these corpora showed zero measurement variance, which is why the TPR policy is zero-tolerance.",
+  "run_at": "2026-09-21T00:47:42.045Z",
+  "tool": {
+    "name": "cognium-dev",
+    "version": "4.9.20"
+  },
+  "scope": "vendored synthetic corpora only — fetch-based corpora are not included",
+  "summary": {
+    "total_cases": 210,
+    "true_positives": 116,
+    "true_negatives_known": 63,
+    "false_positives": 5,
+    "false_negatives": 26,
+    "total_benchmarks": 7,
+    "errored_benchmarks": 0,
+    "overall_tpr": "81.7%",
+    "overall_fpr": "7.4%",
+    "total_elapsed_ms": 1094
+  },
+  "results": [
+    {
+      "corpus": "bash-synthetic",
+      "language": "Bash",
+      "benchmark": "bash-synthetic",
+      "tests": 31,
+      "tp": 18,
+      "tn": 9,
+      "fp": 0,
+      "fn": 4,
+      "tpr": "81.8%",
+      "fpr": "0.0%",
+      "score": "81.8%",
+      "score_rule": "tpr - fpr",
+      "elapsed_ms": 229,
+      "categories": [
+        {
+          "category": "cmdi",
+          "cwe": "CWE-78",
+          "tp": 5,
+          "tn": 2,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "codeinj",
+          "cwe": "CWE-94",
+          "tp": 4,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "pathtraver",
+          "cwe": "CWE-22",
+          "tp": 4,
+          "tn": 2,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "sqli",
+          "cwe": "CWE-89",
+          "tp": 1,
+          "tn": 2,
+          "fp": 0,
+          "fn": 3
+        },
+        {
+          "category": "ssrf",
+          "cwe": "CWE-918",
+          "tp": 4,
+          "tn": 2,
+          "fp": 0,
+          "fn": 0
+        }
+      ],
+      "missed_cases": [
+        "pathtraver_read_to_rm",
+        "sqli_curl_to_mysql",
+        "sqli_read_to_mysql",
+        "sqli_read_to_psql"
+      ],
+      "spurious_cases": [],
+      "scan_report": "bash-synthetic.scan.json"
+    },
+    {
+      "corpus": "csharp-synthetic",
+      "language": "C#",
+      "benchmark": "csharp-synthetic",
+      "tests": 15,
+      "tp": 10,
+      "tn": 4,
+      "fp": 0,
+      "fn": 1,
+      "tpr": "90.9%",
+      "fpr": "0.0%",
+      "score": "90.9%",
+      "score_rule": "tpr - fpr",
+      "elapsed_ms": 121,
+      "categories": [
+        {
+          "category": "cmdi",
+          "cwe": "CWE-78",
+          "tp": 1,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "codeinj",
+          "cwe": "CWE-94",
+          "tp": 1,
+          "tn": 0,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "deser",
+          "cwe": "CWE-502",
+          "tp": 1,
+          "tn": 0,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "ldap",
+          "cwe": "CWE-90",
+          "tp": 1,
+          "tn": 0,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "pathtraver",
+          "cwe": "CWE-22",
+          "tp": 1,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "sqli",
+          "cwe": "CWE-89",
+          "tp": 2,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "ssrf",
+          "cwe": "CWE-918",
+          "tp": 1,
+          "tn": 0,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "xpath",
+          "cwe": "CWE-643",
+          "tp": 1,
+          "tn": 0,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "xss",
+          "cwe": "CWE-79",
+          "tp": 0,
+          "tn": 1,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "xxe",
+          "cwe": "CWE-611",
+          "tp": 1,
+          "tn": 0,
+          "fp": 0,
+          "fn": 0
+        }
+      ],
+      "missed_cases": [
+        "xss_response_write_concat"
+      ],
+      "spurious_cases": [],
+      "scan_report": "csharp-synthetic.scan.json"
+    },
+    {
+      "corpus": "cwe-bench-rust",
+      "language": "Rust",
+      "benchmark": "cwe-bench-rust",
+      "tests": 30,
+      "tp": 12,
+      "tn": 10,
+      "fp": 2,
+      "fn": 6,
+      "tpr": "66.7%",
+      "fpr": "16.7%",
+      "score": "50.0%",
+      "score_rule": "tpr - fpr",
+      "elapsed_ms": 142,
+      "categories": [
+        {
+          "category": "cmdi",
+          "cwe": "CWE-78",
+          "tp": 2,
+          "tn": 2,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "deser",
+          "cwe": "CWE-502",
+          "tp": 2,
+          "tn": 1,
+          "fp": 1,
+          "fn": 1
+        },
+        {
+          "category": "pathtraver",
+          "cwe": "CWE-22",
+          "tp": 3,
+          "tn": 2,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "sqli",
+          "cwe": "CWE-89",
+          "tp": 2,
+          "tn": 2,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "ssrf",
+          "cwe": "CWE-918",
+          "tp": 1,
+          "tn": 1,
+          "fp": 1,
+          "fn": 2
+        },
+        {
+          "category": "xss",
+          "cwe": "CWE-79",
+          "tp": 2,
+          "tn": 2,
+          "fp": 0,
+          "fn": 1
+        }
+      ],
+      "missed_cases": [
+        "RustTest00010",
+        "RustTest00013",
+        "RustTest00018",
+        "RustTest00023",
+        "RustTest00025",
+        "RustTest00030"
+      ],
+      "spurious_cases": [
+        "RustTest00017",
+        "RustTest00024"
+      ],
+      "scan_report": "cwe-bench-rust.scan.json"
+    },
+    {
+      "corpus": "go-synthetic",
+      "language": "Go",
+      "benchmark": "go-synthetic",
+      "tests": 29,
+      "tp": 17,
+      "tn": 10,
+      "fp": 0,
+      "fn": 2,
+      "tpr": "89.5%",
+      "fpr": "0.0%",
+      "score": "89.5%",
+      "score_rule": "tpr - fpr",
+      "elapsed_ms": 128,
+      "categories": [
+        {
+          "category": "cmdi",
+          "cwe": "CWE-78",
+          "tp": 3,
+          "tn": 2,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "pathtraver",
+          "cwe": "CWE-22",
+          "tp": 4,
+          "tn": 2,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "sqli",
+          "cwe": "CWE-89",
+          "tp": 4,
+          "tn": 2,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "ssrf",
+          "cwe": "CWE-918",
+          "tp": 4,
+          "tn": 2,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "xss",
+          "cwe": "CWE-79",
+          "tp": 2,
+          "tn": 2,
+          "fp": 0,
+          "fn": 1
+        }
+      ],
+      "missed_cases": [
+        "cmdi_exec_stdin_to_sh",
+        "xss_writestring_form"
+      ],
+      "spurious_cases": [],
+      "scan_report": "go-synthetic.scan.json"
+    },
+    {
+      "corpus": "html-js-synthetic",
+      "language": "HTML/JS",
+      "benchmark": "html-js-synthetic",
+      "tests": 30,
+      "tp": 12,
+      "tn": 11,
+      "fp": 0,
+      "fn": 7,
+      "tpr": "63.2%",
+      "fpr": "0.0%",
+      "score": "63.2%",
+      "score_rule": "tpr - fpr",
+      "elapsed_ms": 143,
+      "categories": [
+        {
+          "category": "css_injection",
+          "cwe": "CWE-79",
+          "tp": 1,
+          "tn": 1,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "doc_write",
+          "cwe": "CWE-79",
+          "tp": 2,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "dom_xss",
+          "cwe": "CWE-79",
+          "tp": 2,
+          "tn": 2,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "eval_xss",
+          "cwe": "CWE-94",
+          "tp": 3,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "event_handler",
+          "cwe": "CWE-79",
+          "tp": 1,
+          "tn": 1,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "jquery",
+          "cwe": "CWE-79",
+          "tp": 2,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "postmessage",
+          "cwe": "CWE-79",
+          "tp": 0,
+          "tn": 1,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "script_src",
+          "cwe": "CWE-79",
+          "tp": 0,
+          "tn": 1,
+          "fp": 0,
+          "fn": 2
+        },
+        {
+          "category": "template",
+          "cwe": "CWE-79",
+          "tp": 1,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "url_manipulation",
+          "cwe": "CWE-79",
+          "tp": 0,
+          "tn": 1,
+          "fp": 0,
+          "fn": 2
+        }
+      ],
+      "missed_cases": [
+        "xss_anchor_href",
+        "xss_css_stylesheet",
+        "xss_event_onerror_img",
+        "xss_location_href",
+        "xss_postmessage_no_origin",
+        "xss_script_src_injection",
+        "xss_script_src_jsonp"
+      ],
+      "spurious_cases": [],
+      "scan_report": "html-js-synthetic.scan.json"
+    },
+    {
+      "corpus": "nodejs-synthetic",
+      "language": "JavaScript",
+      "benchmark": "nodejs-synthetic",
+      "tests": 25,
+      "tp": 16,
+      "tn": 8,
+      "fp": 1,
+      "fn": 0,
+      "tpr": "100.0%",
+      "fpr": "11.1%",
+      "score": "88.9%",
+      "score_rule": "tpr - fpr",
+      "elapsed_ms": 152,
+      "categories": [
+        {
+          "category": "cmdi",
+          "cwe": "CWE-78",
+          "tp": 3,
+          "tn": 2,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "codeinj",
+          "cwe": "CWE-94",
+          "tp": 2,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "nosqli",
+          "cwe": "CWE-943",
+          "tp": 1,
+          "tn": 0,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "pathtraver",
+          "cwe": "CWE-22",
+          "tp": 3,
+          "tn": 2,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "sqli",
+          "cwe": "CWE-89",
+          "tp": 3,
+          "tn": 1,
+          "fp": 1,
+          "fn": 0
+        },
+        {
+          "category": "ssrf",
+          "cwe": "CWE-918",
+          "tp": 1,
+          "tn": 0,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "xss",
+          "cwe": "CWE-79",
+          "tp": 3,
+          "tn": 2,
+          "fp": 0,
+          "fn": 0
+        }
+      ],
+      "missed_cases": [],
+      "spurious_cases": [
+        "NodeTest00004"
+      ],
+      "scan_report": "nodejs-synthetic.scan.json"
+    },
+    {
+      "corpus": "rust-synthetic",
+      "language": "Rust",
+      "benchmark": "rust-synthetic",
+      "tests": 50,
+      "tp": 31,
+      "tn": 11,
+      "fp": 2,
+      "fn": 6,
+      "tpr": "83.8%",
+      "fpr": "15.4%",
+      "score": "68.4%",
+      "score_rule": "tpr - fpr",
+      "elapsed_ms": 179,
+      "categories": [
+        {
+          "category": "cmdi",
+          "cwe": "CWE-78",
+          "tp": 5,
+          "tn": 2,
+          "fp": 0,
+          "fn": 2
+        },
+        {
+          "category": "deser",
+          "cwe": "CWE-502",
+          "tp": 4,
+          "tn": 0,
+          "fp": 1,
+          "fn": 2
+        },
+        {
+          "category": "log_injection",
+          "cwe": "CWE-117",
+          "tp": 2,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "open_redirect",
+          "cwe": "CWE-601",
+          "tp": 2,
+          "tn": 0,
+          "fp": 1,
+          "fn": 0
+        },
+        {
+          "category": "pathtraver",
+          "cwe": "CWE-22",
+          "tp": 6,
+          "tn": 2,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "sqli",
+          "cwe": "CWE-89",
+          "tp": 5,
+          "tn": 2,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "ssrf",
+          "cwe": "CWE-918",
+          "tp": 4,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "xss",
+          "cwe": "CWE-79",
+          "tp": 3,
+          "tn": 3,
+          "fp": 0,
+          "fn": 1
+        }
+      ],
+      "missed_cases": [
+        "cmdi_axum_body_to_command",
+        "cmdi_stdin_to_command",
+        "deser_bincode_network",
+        "deser_msgpack_network",
+        "sqli_concat_in_loop",
+        "xss_tera_template"
+      ],
+      "spurious_cases": [
+        "deser_safe_validated",
+        "open_redirect_safe_relative"
+      ],
+      "scan_report": "rust-synthetic.scan.json"
+    }
+  ]
+}
