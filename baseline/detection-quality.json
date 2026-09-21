@@ -1,5 +1,5 @@
 {
-  "_comment": "TEMPORARY — doctored to force a regression and verify defect filing. Reverted before merge.",
+  "_comment": "Reference point for scripts/compare-baseline.mjs. A run scoring below this on any corpus is a regression and files a defect. Update ONLY by deliberately promoting a verified run (see baseline/README.md) — never to make a failing run pass.",
   "established": "2026-09-21",
   "established_by": "https://github.com/cogniumhq/sast-benchmarks/pull/2",
   "verified": "Identical scorecards produced on two hosts against cognium-dev 4.9.20 and 4.9.21 — these corpora showed zero measurement variance, which is why the TPR policy is zero-tolerance.",
@@ -272,11 +272,11 @@
       "language": "Go",
       "benchmark": "go-synthetic",
       "tests": 29,
-      "tp": 19,
+      "tp": 17,
       "tn": 10,
       "fp": 0,
-      "fn": 0,
-      "tpr": "100.0%",
+      "fn": 2,
+      "tpr": "89.5%",
       "fpr": "0.0%",
       "score": "89.5%",
       "score_rule": "tpr - fpr",
@@ -323,7 +323,10 @@
           "fn": 1
         }
       ],
-      "missed_cases": [],
+      "missed_cases": [
+        "cmdi_exec_stdin_to_sh",
+        "xss_writestring_form"
+      ],
       "spurious_cases": [],
       "scan_report": "go-synthetic.scan.json"
     },
