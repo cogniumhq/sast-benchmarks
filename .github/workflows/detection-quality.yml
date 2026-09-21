@@ -2,13 +2,20 @@ name: detection-quality
 
 # Runs cognium-dev against every vendored corpus and publishes a scored report.
 #
-# Manual for now, deliberately. The gate becomes useful only once we know its
-# noise floor — whether identical inputs produce identical scores run to run —
-# so it measures and reports first, and starts failing builds or filing issues
-# after a few runs have been watched. `schedule:` and the baseline comparison
-# land then.
+# Nightly, plus on demand. Every run is scored against
+# baseline/detection-quality.json; a corpus scoring below it files a defect.
+#
+# The zero-tolerance TPR policy is measured, not assumed: two runs on different
+# hosts against cognium-dev 4.9.20 and 4.9.21 produced byte-identical
+# scorecards, so these corpora carry no run-to-run noise and any recall loss is
+# a real engine change.
 
 on:
+  schedule:
+    # 03:00 UTC daily. The sweep itself is ~1s; the cognium-dev build is the
+    # cost, so nightly is ample to catch a regression within a day of landing.
+    - cron: '0 3 * * *'
+
   # The sweep exercises itself whenever its own code changes, so a broken
   # harness is caught on the PR that breaks it rather than at the next manual
   # run. Scoped to these two paths — it is not a gate on ordinary changes.
@@ -36,6 +43,7 @@ concurrency:
 
 permissions:
   contents: read
+  issues: write
 
 jobs:
   sweep:
@@ -110,10 +118,25 @@ jobs:
           retention-days: 90
           if-no-files-found: error
 
-      - name: Summary
+      # The verdict. run-corpus.mjs always exits 0 so a measurement can never be
+      # mistaken for a pass; this step alone decides regression or not.
+      - name: Compare against baseline
+        id: compare
         if: ${{ !cancelled() }}
         run: |
           f=$(ls results/*-detection-quality/run-summary.json | head -1)
+          echo "summary_file=$f" >> "$GITHUB_OUTPUT"
+          if node scripts/compare-baseline.mjs --run "$f" --markdown /tmp/report.md; then
+            echo "regressed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "regressed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Summary
+        if: ${{ !cancelled() }}
+        run: |
+          cat /tmp/report.md >> "$GITHUB_STEP_SUMMARY"
+          f=${{ steps.compare.outputs.summary_file }}
           node -e "
             const s = require('$PWD/' + process.argv[1]);
             const m = s.summary;
@@ -134,5 +157,77 @@ jobs:
               if (r.error) { console.log('| ' + r.corpus + ' | — | | | | | ERROR | |'); continue; }
               console.log('| ' + [r.corpus, r.tests, r.tp, r.fn, r.fp, r.tn, r.tpr, r.fpr].join(' | ') + ' |');
             }
-          " "$f" >> "$GITHUB_STEP_SUMMARY"
-          cat "$GITHUB_STEP_SUMMARY"
+          " "$f" > /dev/null
+          cat /tmp/report.md
+
+      # One issue per ongoing regression, not one per run: a nightly that opens
+      # a fresh issue every night is muted within a week. The marker below is
+      # searched for; an existing open issue is commented on instead.
+      - name: File or update defect
+        if: ${{ steps.compare.outputs.regressed == 'true' }}
+        env:
+          GH_TOKEN: ${{ secrets.COGNIUM_DEV_ISSUES_TOKEN || github.token }}
+          # Defects belong where the fix lands. Falls back to this repository
+          # when no cross-repo token is configured, so the run still reports
+          # rather than silently dropping the finding.
+          TARGET_REPO: ${{ secrets.COGNIUM_DEV_ISSUES_TOKEN && 'cogniumhq/cognium-dev' || github.repository }}
+          MARKER: '<!-- detection-quality-regression -->'
+        run: |
+          set -euo pipefail
+          existing=$(gh issue list --repo "$TARGET_REPO" --state open --search "\"$MARKER\" in:body" --json number --jq '.[0].number // empty' || true)
+
+          {
+            echo "$MARKER"
+            echo ""
+            cat /tmp/report.md
+            echo ""
+            echo "Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            echo "Measured: cognium-dev \`${{ steps.meta.outputs.sha }}\`"
+            echo "Baseline: \`baseline/detection-quality.json\`"
+            echo ""
+            echo "Scored by \`scripts/run-corpus.mjs\`, compared by \`scripts/compare-baseline.mjs\`."
+            echo "Named cases come from the per-corpus scorecards in the run artifact."
+          } > /tmp/issue.md
+
+          if [ -n "$existing" ]; then
+            echo "updating existing defect #$existing on $TARGET_REPO"
+            gh issue comment "$existing" --repo "$TARGET_REPO" --body-file /tmp/issue.md
+          else
+            echo "filing new defect on $TARGET_REPO"
+            gh issue create --repo "$TARGET_REPO" \
+              --title "Detection-quality regression against baseline" \
+              --body-file /tmp/issue.md
+          fi
+
+      # A nightly that goes green again should say so on the open defect rather
+      # than leaving it looking current.
+      - name: Note recovery on an open defect
+        if: ${{ steps.compare.outputs.regressed == 'false' }}
+        env:
+          GH_TOKEN: ${{ secrets.COGNIUM_DEV_ISSUES_TOKEN || github.token }}
+          TARGET_REPO: ${{ secrets.COGNIUM_DEV_ISSUES_TOKEN && 'cogniumhq/cognium-dev' || github.repository }}
+          MARKER: '<!-- detection-quality-regression -->'
+        run: |
+          set -euo pipefail
+          existing=$(gh issue list --repo "$TARGET_REPO" --state open --search "\"$MARKER\" in:body" --json number --jq '.[0].number // empty' || true)
+          [ -z "$existing" ] && { echo "no open defect"; exit 0; }
+          {
+            echo "$MARKER"
+            echo ""
+            echo "Back at or above baseline as of cognium-dev \`${{ steps.meta.outputs.sha }}\`."
+            echo ""
+            cat /tmp/report.md
+            echo ""
+            echo "Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            echo ""
+            echo "Closing is a human call — the baseline may warrant updating if this reflects intended new behaviour."
+          } > /tmp/recovered.md
+          gh issue comment "$existing" --repo "$TARGET_REPO" --body-file /tmp/recovered.md
+
+      # Fail the run last, so the report, the artifact and the defect all land
+      # first. A red nightly with no artifact is not diagnosable.
+      - name: Fail on regression
+        if: ${{ steps.compare.outputs.regressed == 'true' }}
+        run: |
+          echo "detection quality regressed against baseline/detection-quality.json"
+          exit 1

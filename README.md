@@ -191,12 +191,46 @@ file from `raw/<set>/` to the scorer — e.g.
 `gzip -dc raw/2026-09-11-owasp-java-comparison/codeql-2.27.0-owasp-java.java-security-extended.sarif.gz > codeql.sarif`
 then `node scripts/score-owasp-benchmark.mjs --tool codeql --tool-version 2.27.0 --sarif codeql.sarif --out out`.
 
+## Nightly regression sweep
+
+Published benchmark rows above are point-in-time measurements, taken by hand.
+Separately, a nightly job scores cognium-dev against every corpus whose source
+is vendored here and fails — and files a defect — if any corpus drops below
+`baseline/detection-quality.json`.
+
+```sh
+# the same sweep the nightly runs, against a local build
+node scripts/run-corpus.mjs --cli ../cognium-dev/packages/cli/dist/cli.js --all --out results/$(date -u +%F)-detection-quality
+node scripts/compare-baseline.mjs --run results/$(date -u +%F)-detection-quality/run-summary.json
+```
+
+`run-corpus.mjs` measures and always exits 0; `compare-baseline.mjs` is the
+verdict. Keeping those separate means a measurement run can never be mistaken
+for a pass.
+
+**Scope.** The seven vendored corpora only — `bash-synthetic`,
+`csharp-synthetic`, `cwe-bench-rust`, `go-synthetic`, `html-js-synthetic`,
+`nodejs-synthetic`, `rust-synthetic` — 210 cases, about a second to run. The
+fetch-based corpora (OWASP Benchmark Java, Juliet, SecuriBench, CWE-Bench-Java,
+WebGoat) are **not** in the sweep yet. Its numbers are therefore not comparable
+to the headline rows above: different corpora, far smaller, synthetic.
+
+**Policy.** TPR may not drop at all, and FPR may not rise (tolerance
+configurable). That is measured rather than assumed: two runs on different
+hosts against cognium-dev 4.9.20 and 4.9.21 produced byte-identical
+scorecards, so these corpora carry no run-to-run noise and any movement is a
+real engine change.
+
+**Updating the baseline** is a deliberate promotion of a verified run, never a
+way to make a failing run pass — see [`baseline/README.md`](baseline/README.md).
+
 ## How to audit
 
 ```sh
 git clone https://github.com/cogniumhq/sast-benchmarks
 cd sast-benchmarks
 node scripts/validate-results.mjs      # schema, sums, artifact paths, folder per row, comparison arithmetic
+node scripts/compare-baseline.mjs --run results/<date>-detection-quality/run-summary.json   # nightly sweep vs baseline
 ls results/2026-04-22 results/2026-09-11 results/2026-09-11-owasp-java-comparison raw datasets benchmarks
 ```
 
@@ -227,12 +261,13 @@ published claims may be quoted only as quoted, with the source.
 benchmarks/   one folder per published benchmark row + the track overview
 datasets/     one folder per dataset: source, revision, acquisition, ground truth
 results/      dated result sets: summary.md, results.json, results.csv, breakdowns
+baseline/     the regression reference the nightly sweep scores against
 raw/          raw evidence per result set (page snapshot, runner logs)
 methodology/  scoring principles and score definitions
 tools/        per-tool lanes: cognium-dev, cognium-ai, CodeQL, Semgrep
 schemas/      result.schema.json
 LICENSE       MIT; THIRD-PARTY-NOTICES.md lists redistributed material under other terms
-scripts/      validator, OWASP scorer, corpus helpers — every option documented in scripts/README.md
+scripts/      validator, OWASP scorer, nightly sweep runner + baseline comparator, corpus helpers
 docs/         publishing workflow, rerun status, disclosure policy
 .github/      issue / discussion templates, CI
 ```
