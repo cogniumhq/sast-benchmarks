@@ -115,7 +115,17 @@ for (const [corpus, cur] of runRows) {
         detail: `known failure is "${k.expect}" (${k.issue}) but this run failed with: ${cur.error.slice(0, 200)}`,
       });
     } else {
-      regressions.push({ corpus, kind: 'corpus-errored', detail: cur.error });
+      // A corpus absent from the baseline has never scored, so its failure is
+      // not a regression from anything — it is a corpus that has never worked.
+      // Still gated (an unscannable corpus is a failure, per the policy note
+      // at the top), but named for what it is: reporting it as a regression
+      // sends whoever picks it up looking for the change that broke it, and
+      // there isn't one.
+      regressions.push({
+        corpus,
+        kind: baseRows.has(corpus) ? 'corpus-errored' : 'corpus-errored-unbaselined',
+        detail: cur.error,
+      });
     }
     continue;
   }
