@@ -1,0 +1,102 @@
+{
+  "corpus": "csharp-synthetic",
+  "language": "C#",
+  "benchmark": "csharp-synthetic",
+  "tests": 15,
+  "tp": 10,
+  "tn": 4,
+  "fp": 0,
+  "fn": 1,
+  "tpr": "90.9%",
+  "fpr": "0.0%",
+  "score": "90.9%",
+  "score_rule": "tpr - fpr",
+  "elapsed_ms": 121,
+  "categories": [
+    {
+      "category": "cmdi",
+      "cwe": "CWE-78",
+      "tp": 1,
+      "tn": 1,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "codeinj",
+      "cwe": "CWE-94",
+      "tp": 1,
+      "tn": 0,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "deser",
+      "cwe": "CWE-502",
+      "tp": 1,
+      "tn": 0,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "ldap",
+      "cwe": "CWE-90",
+      "tp": 1,
+      "tn": 0,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "pathtraver",
+      "cwe": "CWE-22",
+      "tp": 1,
+      "tn": 1,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "sqli",
+      "cwe": "CWE-89",
+      "tp": 2,
+      "tn": 1,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "ssrf",
+      "cwe": "CWE-918",
+      "tp": 1,
+      "tn": 0,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "xpath",
+      "cwe": "CWE-643",
+      "tp": 1,
+      "tn": 0,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "xss",
+      "cwe": "CWE-79",
+      "tp": 0,
+      "tn": 1,
+      "fp": 0,
+      "fn": 1
+    },
+    {
+      "category": "xxe",
+      "cwe": "CWE-611",
+      "tp": 1,
+      "tn": 0,
+      "fp": 0,
+      "fn": 0
+    }
+  ],
+  "missed_cases": [
+    "xss_response_write_concat"
+  ],
+  "spurious_cases": [],
+  "scan_report": "csharp-synthetic.scan.json"
+}

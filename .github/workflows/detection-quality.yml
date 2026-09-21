@@ -1,0 +1,138 @@
+name: detection-quality
+
+# Runs cognium-dev against every vendored corpus and publishes a scored report.
+#
+# Manual for now, deliberately. The gate becomes useful only once we know its
+# noise floor — whether identical inputs produce identical scores run to run —
+# so it measures and reports first, and starts failing builds or filing issues
+# after a few runs have been watched. `schedule:` and the baseline comparison
+# land then.
+
+on:
+  # The sweep exercises itself whenever its own code changes, so a broken
+  # harness is caught on the PR that breaks it rather than at the next manual
+  # run. Scoped to these two paths — it is not a gate on ordinary changes.
+  pull_request:
+    paths:
+      - 'scripts/run-corpus.mjs'
+      - '.github/workflows/detection-quality.yml'
+      - 'datasets/**/expectedresults.csv'
+
+  workflow_dispatch:
+    inputs:
+      cognium_dev_ref:
+        description: 'cognium-dev ref to build and measure (branch, tag or SHA)'
+        required: false
+        default: main
+      publish:
+        description: 'Commit the report under results/ instead of only uploading it as an artifact'
+        type: boolean
+        required: false
+        default: false
+
+concurrency:
+  group: detection-quality-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  sweep:
+    name: detection quality sweep
+    # Self-hosted: the fetch-based corpora this will grow to include (OWASP
+    # Benchmark's 2,740 cases, Juliet) are far heavier than the vendored set,
+    # and grace has the cores for them. The vendored sweep itself takes ~1s.
+    runs-on: [self-hosted, grace]
+    # Containerised like the other cogniumhq jobs: the runner is persistent, so
+    # without this the job shares ~/.npm and leftover node_modules with every
+    # other repo on the box. Must stay glibc — actions/checkout runs on the
+    # node binary the runner mounts in, and that binary is glibc-linked.
+    container:
+      image: node:22-bookworm
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout sast-benchmarks
+        uses: actions/checkout@v4
+
+      # Read-only consumption of the engine repo: this workflow builds
+      # cognium-dev to measure it and never writes to it.
+      - name: Checkout cognium-dev
+        uses: actions/checkout@v4
+        with:
+          repository: cogniumhq/cognium-dev
+          ref: ${{ inputs.cognium_dev_ref || 'main' }}
+          path: .cognium-dev
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # packages/cli builds through `bun build` (scripts/build.mjs), so the bun
+      # runtime is required even though nothing here runs `bun test`.
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.3.11'
+
+      - name: Build cognium-dev
+        working-directory: .cognium-dev
+        run: |
+          npm ci
+          # `build:all`, not `build`: plain `build` is tsc only and leaves
+          # circle-ir/dist/wasm empty, so every scan aborts on a missing
+          # web-tree-sitter.wasm. The browser step is what copies the grammars.
+          npm run build:all
+
+      - name: Record what was measured
+        id: meta
+        run: |
+          cd .cognium-dev
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo "short=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+          node packages/cli/dist/cli.js --version | head -1
+
+      - name: Run all vendored corpora
+        run: |
+          node scripts/run-corpus.mjs \
+            --cli "$GITHUB_WORKSPACE/.cognium-dev/packages/cli/dist/cli.js" \
+            --all \
+            --out "results/$(date -u +%Y-%m-%d)-detection-quality"
+
+      # The scorecards carry missed_cases / spurious_cases by name, so a drop is
+      # diagnosable from the artifact alone without re-running anything.
+      - name: Upload report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: detection-quality-${{ steps.meta.outputs.short }}
+          path: results/*-detection-quality/
+          retention-days: 90
+          if-no-files-found: error
+
+      - name: Summary
+        if: ${{ !cancelled() }}
+        run: |
+          f=$(ls results/*-detection-quality/run-summary.json | head -1)
+          node -e "
+            const s = require('$PWD/' + process.argv[1]);
+            const m = s.summary;
+            const line = (a, b) => console.log('| ' + a + ' | ' + b + ' |');
+            console.log('## Detection quality — cognium-dev ' + s.tool.version);
+            console.log('');
+            console.log('| | |'); console.log('|---|---|');
+            line('Cases', m.total_cases);
+            line('TP / FN', m.true_positives + ' / ' + m.false_negatives);
+            line('FP / TN', m.false_positives + ' / ' + m.true_negatives_known);
+            line('Overall TPR', m.overall_tpr);
+            line('Overall FPR', m.overall_fpr);
+            line('Elapsed', (m.total_elapsed_ms / 1000).toFixed(1) + 's');
+            console.log('');
+            console.log('| Corpus | Cases | TP | FN | FP | TN | TPR | FPR |');
+            console.log('|---|---|---|---|---|---|---|---|');
+            for (const r of s.results) {
+              if (r.error) { console.log('| ' + r.corpus + ' | — | | | | | ERROR | |'); continue; }
+              console.log('| ' + [r.corpus, r.tests, r.tp, r.fn, r.fp, r.tn, r.tpr, r.fpr].join(' | ') + ' |');
+            }
+          " "$f" >> "$GITHUB_STEP_SUMMARY"
+          cat "$GITHUB_STEP_SUMMARY"
