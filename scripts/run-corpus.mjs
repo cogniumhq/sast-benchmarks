@@ -603,6 +603,15 @@ function scoreCorpus({ corpus, language, ext, repo, commit, archive, sha256, str
 // --all stays the vendored set so the fast path keeps working offline;
 // --all-corpora adds the pinned fetch-based ones.
 const ALL = [...VENDORED, ...FETCHED];
+// `--list` prints the corpus names as JSON so CI can build its matrix from
+// this manifest. A hand-copied list in the workflow would drift the moment a
+// corpus is added here, and the drift would look like a corpus that stopped
+// being measured.
+if (args.get('list') === 'true') {
+  console.log(JSON.stringify(ALL.map(v => v.corpus)));
+  process.exit(0);
+}
+
 const selected = args.get('all-corpora') === 'true'
   ? ALL
   : args.get('all') === 'true'

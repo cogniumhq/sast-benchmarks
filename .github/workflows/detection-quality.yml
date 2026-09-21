@@ -1,6 +1,7 @@
 name: detection-quality
 
-# Runs cognium-dev against every vendored corpus and publishes a scored report.
+# Runs cognium-dev against every corpus and scores it against
+# baseline/detection-quality.json. A corpus below baseline files a defect.
 #
 # Nightly, plus on demand. Every run is scored against
 # baseline/detection-quality.json; a corpus scoring below it files a defect.
@@ -9,6 +10,11 @@ name: detection-quality
 # hosts against cognium-dev 4.9.20 and 4.9.21 produced byte-identical
 # scorecards, so these corpora carry no run-to-run noise and any recall loss is
 # a real engine change.
+
+# Split into build -> per-corpus matrix -> report so each corpus is its own
+# check. One job for everything meant a corpus that hangs (cognium-dev#421)
+# burned the whole run's clock, and a crash in one was indistinguishable from
+# a bad run at a glance.
 
 on:
   schedule:
@@ -49,28 +55,24 @@ permissions:
   issues: write
 
 jobs:
-  sweep:
-    name: detection quality sweep
-    # Self-hosted: the fetch-based corpora this will grow to include (OWASP
-    # Benchmark's 2,740 cases, Juliet) are far heavier than the vendored set,
-    # and grace has the cores for them. The vendored sweep itself takes ~1s.
+  build:
+    name: build cognium-dev
     runs-on: [self-hosted, grace]
-    # Containerised like the other cogniumhq jobs: the runner is persistent, so
-    # without this the job shares ~/.npm and leftover node_modules with every
-    # other repo on the box. Must stay glibc — actions/checkout runs on the
-    # node binary the runner mounts in, and that binary is glibc-linked.
     container:
       image: node:22-bookworm
-    timeout-minutes: 45
+    timeout-minutes: 20
+    outputs:
+      sha: ${{ steps.meta.outputs.sha }}
+      short: ${{ steps.meta.outputs.short }}
+      version: ${{ steps.meta.outputs.version }}
+      corpora: ${{ steps.matrix.outputs.corpora }}
 
     steps:
-      - name: Checkout sast-benchmarks
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      # Read-only consumption of the engine repo: this workflow builds
-      # cognium-dev to measure it and never writes to it.
-      - name: Checkout cognium-dev
-        uses: actions/checkout@v4
+      # Read-only consumption of the engine repo: this builds cognium-dev to
+      # measure it and never writes to it.
+      - uses: actions/checkout@v4
         with:
           repository: cogniumhq/cognium-dev
           ref: ${{ inputs.cognium_dev_ref || 'main' }}
@@ -80,19 +82,19 @@ jobs:
         with:
           node-version: '22'
 
-      # packages/cli builds through `bun build` (scripts/build.mjs), so the bun
-      # runtime is required even though nothing here runs `bun test`.
+      # packages/cli builds through `bun build` (scripts/build.mjs), so bun is
+      # required even though nothing here runs `bun test`.
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: '1.3.11'
 
-      - name: Build cognium-dev
+      - name: Build
         working-directory: .cognium-dev
         run: |
           npm ci
           # `build:all`, not `build`: plain `build` is tsc only and leaves
           # circle-ir/dist/wasm empty, so every scan aborts on a missing
-          # web-tree-sitter.wasm. The browser step is what copies the grammars.
+          # web-tree-sitter.wasm. The browser step copies the grammars.
           npm run build:all
 
       - name: Record what was measured
@@ -101,25 +103,109 @@ jobs:
           cd .cognium-dev
           echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
           echo "short=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
-          node packages/cli/dist/cli.js --version | head -1
+          echo "version=$(node packages/cli/dist/cli.js --version | head -1 | grep -oE '[0-9]+[.][0-9]+[.][0-9]+')" >> "$GITHUB_OUTPUT"
 
-      - name: Run all vendored corpora
+      # The matrix comes from the harness manifest, not a list copied into this
+      # file. A copy drifts the moment a corpus is added, and that drift looks
+      # like a corpus quietly no longer being measured.
+      - name: Derive corpus matrix
+        id: matrix
+        run: echo "corpora=$(node scripts/run-corpus.mjs --cli .cognium-dev/packages/cli/dist/cli.js --list)" >> "$GITHUB_OUTPUT"
+
+      # Shared with every matrix job rather than rebuilt once per corpus.
+      - name: Upload built engine
+        uses: actions/upload-artifact@v4
+        with:
+          name: cognium-dev-dist
+          path: |
+            .cognium-dev/packages/*/dist/
+            .cognium-dev/node_modules/
+          retention-days: 1
+          include-hidden-files: true
+
+  scan:
+    name: ${{ matrix.corpus }}
+    needs: build
+    runs-on: [self-hosted, grace]
+    container:
+      image: node:22-bookworm
+    # Bounded on purpose: cognium-dev#421 hangs indefinitely on two corpora, and
+    # an unbounded job would hold a runner until the workflow timeout instead of
+    # reporting one red check.
+    timeout-minutes: 25
+    strategy:
+      # A corpus that crashes or hangs must not stop the others reporting —
+      # the entire reason for splitting.
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        corpus: ${{ fromJSON(needs.build.outputs.corpora) }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: cognium-dev-dist
+          path: .cognium-dev
+
+      - name: Scan and score
+        env:
+          # Cached across jobs on the persistent runner, so a pinned clone is
+          # fetched once rather than once per corpus per night.
+          CORPUS_CACHE: /tmp/sast-benchmarks-corpora
         run: |
           node scripts/run-corpus.mjs \
             --cli "$GITHUB_WORKSPACE/.cognium-dev/packages/cli/dist/cli.js" \
-            --all \
-            --out "results/$(date -u +%Y-%m-%d)-detection-quality"
+            --corpus "${{ matrix.corpus }}" \
+            --out "results/run/${{ matrix.corpus }}"
 
-      # The scorecards carry missed_cases / spurious_cases by name, so a drop is
-      # diagnosable from the artifact alone without re-running anything.
-      - name: Upload report
+      - name: Upload scorecard
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
-          name: detection-quality-${{ steps.meta.outputs.short }}
-          path: results/*-detection-quality/
+          name: scorecard-${{ matrix.corpus }}
+          path: results/run/${{ matrix.corpus }}/
           retention-days: 90
           if-no-files-found: error
+
+  report:
+    name: report
+    needs: [build, scan]
+    # always(): a corpus that crashed or hung must still reach the comparison,
+    # because an errored corpus IS a regression. Skipping the report on a failed
+    # matrix would turn the loudest failures into silence.
+    if: ${{ always() }}
+    runs-on: [self-hosted, grace]
+    container:
+      image: node:22-bookworm
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: scorecard-*
+          path: /tmp/scorecards
+
+      # merge-scorecards records a baseline corpus with no scorecard as an
+      # error, so a job killed before writing its artifact reads as a failure
+      # rather than quietly shrinking the run.
+      - name: Merge scorecards
+        run: |
+          node scripts/merge-scorecards.mjs \
+            --in /tmp/scorecards \
+            --version "${{ needs.build.outputs.version }}" \
+            --out "results/$(date -u +%Y-%m-%d)-detection-quality"
 
       # The verdict. run-corpus.mjs always exits 0 so a measurement can never be
       # mistaken for a pass; this step alone decides regression or not.
@@ -183,7 +269,7 @@ jobs:
             const regressed = '${{ steps.compare.outputs.regressed }}' === 'true';
             const report = fs.readFileSync('/tmp/report.md', 'utf8');
             const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
-            const sha = '${{ steps.meta.outputs.sha }}';
+            const sha = '${{ needs.build.outputs.sha }}';
 
             const crossRepo = Boolean('${{ secrets.COGNIUM_DEV_ISSUES_TOKEN }}');
             const target = crossRepo
