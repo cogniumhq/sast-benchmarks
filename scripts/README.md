@@ -8,6 +8,7 @@ explicitly.
 | Script | Purpose | Touches the network? | Writes to |
 | --- | --- | --- | --- |
 | `validate-results.mjs` | Gate: checks every `results/*/results.json` | no | nothing (exit code only) |
+| `publish-run.mjs` | Turn a detection-quality `run-summary.json` into `results/<date>/` | no | `results/<date>/`, `raw/<date>/`, `results/README.md` with `--index` |
 | `import-tier1-java-targets.mjs` | Rebuild `datasets/top-java-github/` from the curated tier-1 CSV | only with `--enrich` | `datasets/top-java-github/` (or `OUT_DIR`) |
 | `select-top-java-projects.mjs` | Legacy star-ranked GitHub Search selector | yes (GitHub Search API) | `datasets/top-java-github-search/` (or `OUT_DIR`) |
 | `run-cognium-ai-java-corpus.mjs` | Clone a corpus slice, run `cognium-ai`, publish a sanitized summary | yes (git clone, optional LLM) | `--public-out` (default `results/<today>/`), private raw dir |
