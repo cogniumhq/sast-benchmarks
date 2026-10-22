@@ -1,0 +1,2050 @@
+{
+  "published_at": "2026-10-22",
+  "run_at": "2026-10-22T21:51:09.741Z",
+  "source_url": "https://github.com/cogniumhq/sast-benchmarks/tree/main/results/2026-10-22",
+  "benchmark": {
+    "name": "cognium-dev SAST Benchmarks — detection-quality sweep",
+    "source_url": "https://cognium.dev/benchmark/",
+    "revision": "scripts/run-corpus.mjs --all-corpora"
+  },
+  "dataset": {
+    "name": "Vendored synthetic corpora plus pinned fetch-based corpora (16)",
+    "revision": "owasp-benchmark-java 20cbf3d11123347e47ed89541e6942836def53f7; securibench-micro 6a5a72488ea830d99f9464fc1f0562c4f864214b; webgoat 872d6149d4ef29e4929c2f4eda279f7fbedc52e8; dvja 597ece1ab79ffffea7289d49b0c443bb2ebcbd16; nodegoat c5cb68a7084e4ae7dcc60e6a98768720a81841e8; juice-shop 1618a611b173b4bf114028e6e02549950606e29d; pygoat 19d17cc8874861142b330636d068bbde54e86b85; vulnerability-goapp 6e51a892d449958074f216bb10e55e122d99440c; juliet-csharp sha256:2e6dbac4741fb020a0b1c2db69e98aed165987df2bd70bd51f7c8c5302c8e8f8; vendored synthetic corpora are the copies committed under datasets/",
+    "source_url": "https://github.com/cogniumhq/sast-benchmarks"
+  },
+  "tool": {
+    "name": "cognium-dev",
+    "package": "cognium-dev",
+    "version": "4.17.0",
+    "source_url": "https://github.com/cogniumhq/cognium-dev",
+    "release_commit": "d95544f9334ef9a72d1a453cfb2dd66a0d862d04",
+    "configuration": "static analysis only; default taint config; no LLM. Juliet C# is recall-only under that default config.",
+    "command": "node scripts/run-corpus.mjs --cli <cognium-dev packages/cli/dist/cli.js built from d95544f> --all-corpora --out results/2026-10-22-detection-quality",
+    "runtime": "Node.js v25.9.0, Darwin arm64"
+  },
+  "summary": {
+    "total_cases": 4065,
+    "true_positives": 1567,
+    "true_negatives_known": 1180,
+    "false_positives": 265,
+    "false_negatives": 1053,
+    "total_benchmarks": 16,
+    "perfect_benchmarks": 1,
+    "benchmarks_at_or_above_90_percent": 1,
+    "languages": 8,
+    "overall_tpr": "59.8%",
+    "overall_fpr": "18.3%"
+  },
+  "results": [
+    {
+      "language": "Java",
+      "benchmark": "OWASP Benchmark",
+      "corpus": "owasp-benchmark-java",
+      "tests": 2740,
+      "tp": 1311,
+      "tn": 1064,
+      "fp": 261,
+      "fn": 104,
+      "tpr": "92.7%",
+      "fpr": "19.7%",
+      "score": "73.0%",
+      "score_rule": "tpr - fpr",
+      "categories": [
+        {
+          "category": "cmdi",
+          "cwe": "CWE-78",
+          "tp": 121,
+          "tn": 51,
+          "fp": 74,
+          "fn": 5
+        },
+        {
+          "category": "crypto",
+          "cwe": "CWE-327",
+          "tp": 130,
+          "tn": 116,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "hash",
+          "cwe": "CWE-328",
+          "tp": 89,
+          "tn": 107,
+          "fp": 0,
+          "fn": 40
+        },
+        {
+          "category": "ldapi",
+          "cwe": "CWE-90",
+          "tp": 24,
+          "tn": 32,
+          "fp": 0,
+          "fn": 3
+        },
+        {
+          "category": "pathtraver",
+          "cwe": "CWE-22",
+          "tp": 121,
+          "tn": 110,
+          "fp": 25,
+          "fn": 12
+        },
+        {
+          "category": "securecookie",
+          "cwe": "CWE-614",
+          "tp": 36,
+          "tn": 27,
+          "fp": 4,
+          "fn": 0
+        },
+        {
+          "category": "sqli",
+          "cwe": "CWE-89",
+          "tp": 261,
+          "tn": 154,
+          "fp": 78,
+          "fn": 11
+        },
+        {
+          "category": "trustbound",
+          "cwe": "CWE-501",
+          "tp": 66,
+          "tn": 32,
+          "fp": 11,
+          "fn": 17
+        },
+        {
+          "category": "weakrand",
+          "cwe": "CWE-330",
+          "tp": 218,
+          "tn": 275,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "xpathi",
+          "cwe": "CWE-643",
+          "tp": 14,
+          "tn": 20,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "xss",
+          "cwe": "CWE-79",
+          "tp": 231,
+          "tn": 140,
+          "fp": 69,
+          "fn": 15
+        }
+      ],
+      "dataset_revision": "20cbf3d11123347e47ed89541e6942836def53f7"
+    },
+    {
+      "language": "Java",
+      "benchmark": "SecuriBench Micro",
+      "corpus": "securibench-micro",
+      "tests": 122,
+      "tp": 90,
+      "tn": 9,
+      "fp": 1,
+      "fn": 22,
+      "tpr": "80.4%",
+      "fpr": "10.0%",
+      "score": "70.4%",
+      "score_rule": "tpr - fpr",
+      "categories": [
+        {
+          "category": "aliasing",
+          "cwe": "CWE-79",
+          "tp": 4,
+          "tn": 0,
+          "fp": 0,
+          "fn": 2
+        },
+        {
+          "category": "arrays",
+          "cwe": "CWE-79",
+          "tp": 7,
+          "tn": 1,
+          "fp": 0,
+          "fn": 2
+        },
+        {
+          "category": "basic",
+          "cwe": "CWE-79",
+          "tp": 32,
+          "tn": 0,
+          "fp": 0,
+          "fn": 10
+        },
+        {
+          "category": "collections",
+          "cwe": "CWE-79",
+          "tp": 11,
+          "tn": 0,
+          "fp": 0,
+          "fn": 3
+        },
+        {
+          "category": "datastructures",
+          "cwe": "CWE-79",
+          "tp": 6,
+          "tn": 0,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "factories",
+          "cwe": "CWE-79",
+          "tp": 3,
+          "tn": 0,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "inter",
+          "cwe": "CWE-79",
+          "tp": 14,
+          "tn": 0,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "pred",
+          "cwe": "CWE-79",
+          "tp": 5,
+          "tn": 3,
+          "fp": 1,
+          "fn": 0
+        },
+        {
+          "category": "reflection",
+          "cwe": "CWE-79",
+          "tp": 2,
+          "tn": 0,
+          "fp": 0,
+          "fn": 2
+        },
+        {
+          "category": "sanitizers",
+          "cwe": "CWE-79",
+          "tp": 2,
+          "tn": 1,
+          "fp": 0,
+          "fn": 3
+        },
+        {
+          "category": "session",
+          "cwe": "CWE-79",
+          "tp": 3,
+          "tn": 0,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "strong_updates",
+          "cwe": "CWE-79",
+          "tp": 1,
+          "tn": 4,
+          "fp": 0,
+          "fn": 0
+        }
+      ],
+      "dataset_revision": "6a5a72488ea830d99f9464fc1f0562c4f864214b"
+    },
+    {
+      "language": "Java",
+      "benchmark": "WebGoat",
+      "corpus": "webgoat",
+      "tests": 29,
+      "tp": 16,
+      "tn": 8,
+      "fp": 0,
+      "fn": 5,
+      "tpr": "76.2%",
+      "fpr": "0.0%",
+      "score": "76.2%",
+      "score_rule": "tpr - fpr",
+      "categories": [
+        {
+          "category": "deserialization",
+          "cwe": "CWE-502",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "pathtraver",
+          "cwe": "CWE-22",
+          "tp": 2,
+          "tn": 1,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "sqli",
+          "cwe": "CWE-89",
+          "tp": 12,
+          "tn": 5,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "ssrf",
+          "cwe": "CWE-918",
+          "tp": 1,
+          "tn": 2,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "xss",
+          "cwe": "CWE-79",
+          "tp": 1,
+          "tn": 0,
+          "fp": 0,
+          "fn": 2
+        }
+      ],
+      "dataset_revision": "872d6149d4ef29e4929c2f4eda279f7fbedc52e8"
+    },
+    {
+      "language": "Java",
+      "benchmark": "DVJA",
+      "corpus": "dvja",
+      "tests": 7,
+      "tp": 1,
+      "tn": 4,
+      "fp": 0,
+      "fn": 2,
+      "tpr": "33.3%",
+      "fpr": "0.0%",
+      "score": "33.3%",
+      "score_rule": "tpr - fpr",
+      "categories": [
+        {
+          "category": "cmdi",
+          "cwe": "CWE-78",
+          "tp": 0,
+          "tn": 1,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "idor",
+          "cwe": "CWE-639",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "sqli",
+          "cwe": "CWE-89",
+          "tp": 1,
+          "tn": 3,
+          "fp": 0,
+          "fn": 0
+        }
+      ],
+      "dataset_revision": "597ece1ab79ffffea7289d49b0c443bb2ebcbd16"
+    },
+    {
+      "language": "Node.js / TypeScript",
+      "benchmark": "NodeGoat",
+      "corpus": "nodegoat",
+      "tests": 13,
+      "tp": 1,
+      "tn": 9,
+      "fp": 0,
+      "fn": 3,
+      "tpr": "25.0%",
+      "fpr": "0.0%",
+      "score": "25.0%",
+      "score_rule": "tpr - fpr",
+      "categories": [
+        {
+          "category": "codeinj",
+          "cwe": "CWE-94",
+          "tp": 1,
+          "tn": 3,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "nosqli",
+          "cwe": "CWE-943",
+          "tp": 0,
+          "tn": 3,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "xss",
+          "cwe": "CWE-79",
+          "tp": 0,
+          "tn": 3,
+          "fp": 0,
+          "fn": 2
+        }
+      ],
+      "dataset_revision": "c5cb68a7084e4ae7dcc60e6a98768720a81841e8"
+    },
+    {
+      "language": "Node.js / TypeScript",
+      "benchmark": "Juice Shop",
+      "corpus": "juice-shop",
+      "tests": 14,
+      "tp": 5,
+      "tn": 4,
+      "fp": 0,
+      "fn": 5,
+      "tpr": "50.0%",
+      "fpr": "0.0%",
+      "score": "50.0%",
+      "score_rule": "tpr - fpr",
+      "categories": [
+        {
+          "category": "codeinj",
+          "cwe": "CWE-94",
+          "tp": 1,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "nosqli",
+          "cwe": "CWE-943",
+          "tp": 1,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "pathtraver",
+          "cwe": "CWE-22",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "redirect",
+          "cwe": "CWE-601",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "sqli",
+          "cwe": "CWE-89",
+          "tp": 2,
+          "tn": 4,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "ssrf",
+          "cwe": "CWE-918",
+          "tp": 1,
+          "tn": 0,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "xss",
+          "cwe": "CWE-79",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        }
+      ],
+      "dataset_revision": "1618a611b173b4bf114028e6e02549950606e29d"
+    },
+    {
+      "language": "Node.js / TypeScript",
+      "benchmark": "NodeJS Synthetic",
+      "corpus": "nodejs-synthetic",
+      "tests": 25,
+      "tp": 16,
+      "tn": 8,
+      "fp": 1,
+      "fn": 0,
+      "tpr": "100.0%",
+      "fpr": "11.1%",
+      "score": "88.9%",
+      "score_rule": "tpr - fpr",
+      "categories": [
+        {
+          "category": "cmdi",
+          "cwe": "CWE-78",
+          "tp": 3,
+          "tn": 2,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "codeinj",
+          "cwe": "CWE-94",
+          "tp": 2,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "nosqli",
+          "cwe": "CWE-943",
+          "tp": 1,
+          "tn": 0,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "pathtraver",
+          "cwe": "CWE-22",
+          "tp": 3,
+          "tn": 2,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "sqli",
+          "cwe": "CWE-89",
+          "tp": 3,
+          "tn": 1,
+          "fp": 1,
+          "fn": 0
+        },
+        {
+          "category": "ssrf",
+          "cwe": "CWE-918",
+          "tp": 1,
+          "tn": 0,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "xss",
+          "cwe": "CWE-79",
+          "tp": 3,
+          "tn": 2,
+          "fp": 0,
+          "fn": 0
+        }
+      ]
+    },
+    {
+      "language": "Python",
+      "benchmark": "PyGoat",
+      "corpus": "pygoat",
+      "tests": 26,
+      "tp": 0,
+      "tn": 11,
+      "fp": 0,
+      "fn": 15,
+      "tpr": "0.0%",
+      "fpr": "0.0%",
+      "score": "0.0%",
+      "score_rule": "tpr - fpr",
+      "categories": [
+        {
+          "category": "cmdi",
+          "cwe": "CWE-78",
+          "tp": 0,
+          "tn": 1,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "codeinj",
+          "cwe": "CWE-94",
+          "tp": 0,
+          "tn": 3,
+          "fp": 0,
+          "fn": 2
+        },
+        {
+          "category": "deserialization",
+          "cwe": "CWE-502",
+          "tp": 0,
+          "tn": 1,
+          "fp": 0,
+          "fn": 2
+        },
+        {
+          "category": "pathtraver",
+          "cwe": "CWE-22",
+          "tp": 0,
+          "tn": 2,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "sqli",
+          "cwe": "CWE-89",
+          "tp": 0,
+          "tn": 2,
+          "fp": 0,
+          "fn": 2
+        },
+        {
+          "category": "ssrf",
+          "cwe": "CWE-918",
+          "tp": 0,
+          "tn": 1,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "ssti",
+          "cwe": "CWE-1336",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "weakcrypto",
+          "cwe": "CWE-327",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "xss",
+          "cwe": "CWE-79",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 3
+        },
+        {
+          "category": "xxe",
+          "cwe": "CWE-611",
+          "tp": 0,
+          "tn": 1,
+          "fp": 0,
+          "fn": 1
+        }
+      ],
+      "dataset_revision": "19d17cc8874861142b330636d068bbde54e86b85"
+    },
+    {
+      "language": "Rust",
+      "benchmark": "Rust Synthetic",
+      "corpus": "rust-synthetic",
+      "tests": 50,
+      "tp": 32,
+      "tn": 12,
+      "fp": 1,
+      "fn": 5,
+      "tpr": "86.5%",
+      "fpr": "7.7%",
+      "score": "78.8%",
+      "score_rule": "tpr - fpr",
+      "categories": [
+        {
+          "category": "cmdi",
+          "cwe": "CWE-78",
+          "tp": 5,
+          "tn": 2,
+          "fp": 0,
+          "fn": 2
+        },
+        {
+          "category": "deser",
+          "cwe": "CWE-502",
+          "tp": 4,
+          "tn": 1,
+          "fp": 0,
+          "fn": 2
+        },
+        {
+          "category": "log_injection",
+          "cwe": "CWE-117",
+          "tp": 2,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "open_redirect",
+          "cwe": "CWE-601",
+          "tp": 2,
+          "tn": 0,
+          "fp": 1,
+          "fn": 0
+        },
+        {
+          "category": "pathtraver",
+          "cwe": "CWE-22",
+          "tp": 6,
+          "tn": 2,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "sqli",
+          "cwe": "CWE-89",
+          "tp": 5,
+          "tn": 2,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "ssrf",
+          "cwe": "CWE-918",
+          "tp": 4,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "xss",
+          "cwe": "CWE-79",
+          "tp": 4,
+          "tn": 3,
+          "fp": 0,
+          "fn": 0
+        }
+      ]
+    },
+    {
+      "language": "Rust",
+      "benchmark": "CWE-Bench-Rust",
+      "corpus": "cwe-bench-rust",
+      "tests": 30,
+      "tp": 12,
+      "tn": 11,
+      "fp": 1,
+      "fn": 6,
+      "tpr": "66.7%",
+      "fpr": "8.3%",
+      "score": "58.3%",
+      "score_rule": "tpr - fpr",
+      "categories": [
+        {
+          "category": "cmdi",
+          "cwe": "CWE-78",
+          "tp": 2,
+          "tn": 2,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "deser",
+          "cwe": "CWE-502",
+          "tp": 2,
+          "tn": 2,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "pathtraver",
+          "cwe": "CWE-22",
+          "tp": 3,
+          "tn": 2,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "sqli",
+          "cwe": "CWE-89",
+          "tp": 2,
+          "tn": 2,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "ssrf",
+          "cwe": "CWE-918",
+          "tp": 1,
+          "tn": 1,
+          "fp": 1,
+          "fn": 2
+        },
+        {
+          "category": "xss",
+          "cwe": "CWE-79",
+          "tp": 2,
+          "tn": 2,
+          "fp": 0,
+          "fn": 1
+        }
+      ]
+    },
+    {
+      "language": "Bash",
+      "benchmark": "Bash Synthetic",
+      "corpus": "bash-synthetic",
+      "tests": 31,
+      "tp": 18,
+      "tn": 9,
+      "fp": 0,
+      "fn": 4,
+      "tpr": "81.8%",
+      "fpr": "0.0%",
+      "score": "81.8%",
+      "score_rule": "tpr - fpr",
+      "categories": [
+        {
+          "category": "cmdi",
+          "cwe": "CWE-78",
+          "tp": 5,
+          "tn": 2,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "codeinj",
+          "cwe": "CWE-94",
+          "tp": 4,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "pathtraver",
+          "cwe": "CWE-22",
+          "tp": 4,
+          "tn": 2,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "sqli",
+          "cwe": "CWE-89",
+          "tp": 1,
+          "tn": 2,
+          "fp": 0,
+          "fn": 3
+        },
+        {
+          "category": "ssrf",
+          "cwe": "CWE-918",
+          "tp": 4,
+          "tn": 2,
+          "fp": 0,
+          "fn": 0
+        }
+      ]
+    },
+    {
+      "language": "HTML/JS",
+      "benchmark": "HTML/JS Synthetic",
+      "corpus": "html-js-synthetic",
+      "tests": 30,
+      "tp": 12,
+      "tn": 11,
+      "fp": 0,
+      "fn": 7,
+      "tpr": "63.2%",
+      "fpr": "0.0%",
+      "score": "63.2%",
+      "score_rule": "tpr - fpr",
+      "categories": [
+        {
+          "category": "css_injection",
+          "cwe": "CWE-79",
+          "tp": 1,
+          "tn": 1,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "doc_write",
+          "cwe": "CWE-79",
+          "tp": 2,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "dom_xss",
+          "cwe": "CWE-79",
+          "tp": 2,
+          "tn": 2,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "eval_xss",
+          "cwe": "CWE-94",
+          "tp": 3,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "event_handler",
+          "cwe": "CWE-79",
+          "tp": 1,
+          "tn": 1,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "jquery",
+          "cwe": "CWE-79",
+          "tp": 2,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "postmessage",
+          "cwe": "CWE-79",
+          "tp": 0,
+          "tn": 1,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "script_src",
+          "cwe": "CWE-79",
+          "tp": 0,
+          "tn": 1,
+          "fp": 0,
+          "fn": 2
+        },
+        {
+          "category": "template",
+          "cwe": "CWE-79",
+          "tp": 1,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "url_manipulation",
+          "cwe": "CWE-79",
+          "tp": 0,
+          "tn": 1,
+          "fp": 0,
+          "fn": 2
+        }
+      ]
+    },
+    {
+      "language": "Go",
+      "benchmark": "Go Synthetic",
+      "corpus": "go-synthetic",
+      "tests": 29,
+      "tp": 17,
+      "tn": 10,
+      "fp": 0,
+      "fn": 2,
+      "tpr": "89.5%",
+      "fpr": "0.0%",
+      "score": "89.5%",
+      "score_rule": "tpr - fpr",
+      "categories": [
+        {
+          "category": "cmdi",
+          "cwe": "CWE-78",
+          "tp": 3,
+          "tn": 2,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "pathtraver",
+          "cwe": "CWE-22",
+          "tp": 4,
+          "tn": 2,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "sqli",
+          "cwe": "CWE-89",
+          "tp": 4,
+          "tn": 2,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "ssrf",
+          "cwe": "CWE-918",
+          "tp": 4,
+          "tn": 2,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "xss",
+          "cwe": "CWE-79",
+          "tp": 2,
+          "tn": 2,
+          "fp": 0,
+          "fn": 1
+        }
+      ]
+    },
+    {
+      "language": "Go",
+      "benchmark": "Vulnerability-goapp",
+      "corpus": "vulnerability-goapp",
+      "tests": 10,
+      "tp": 0,
+      "tn": 6,
+      "fp": 0,
+      "fn": 4,
+      "tpr": "0.0%",
+      "fpr": "0.0%",
+      "score": "0.0%",
+      "score_rule": "tpr - fpr",
+      "categories": [
+        {
+          "category": "cmdi",
+          "cwe": "CWE-0",
+          "tp": 0,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "pathtraver",
+          "cwe": "CWE-22",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "sqli",
+          "cwe": "CWE-89",
+          "tp": 0,
+          "tn": 4,
+          "fp": 0,
+          "fn": 2
+        },
+        {
+          "category": "xss",
+          "cwe": "CWE-79",
+          "tp": 0,
+          "tn": 1,
+          "fp": 0,
+          "fn": 1
+        }
+      ],
+      "dataset_revision": "6e51a892d449958074f216bb10e55e122d99440c"
+    },
+    {
+      "language": "C#/.NET",
+      "benchmark": "C# Synthetic",
+      "corpus": "csharp-synthetic",
+      "tests": 15,
+      "tp": 11,
+      "tn": 4,
+      "fp": 0,
+      "fn": 0,
+      "tpr": "100.0%",
+      "fpr": "0.0%",
+      "score": "100.0%",
+      "score_rule": "tpr - fpr",
+      "categories": [
+        {
+          "category": "cmdi",
+          "cwe": "CWE-78",
+          "tp": 1,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "codeinj",
+          "cwe": "CWE-94",
+          "tp": 1,
+          "tn": 0,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "deser",
+          "cwe": "CWE-502",
+          "tp": 1,
+          "tn": 0,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "ldap",
+          "cwe": "CWE-90",
+          "tp": 1,
+          "tn": 0,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "pathtraver",
+          "cwe": "CWE-22",
+          "tp": 1,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "sqli",
+          "cwe": "CWE-89",
+          "tp": 2,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "ssrf",
+          "cwe": "CWE-918",
+          "tp": 1,
+          "tn": 0,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "xpath",
+          "cwe": "CWE-643",
+          "tp": 1,
+          "tn": 0,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "xss",
+          "cwe": "CWE-79",
+          "tp": 1,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0
+        },
+        {
+          "category": "xxe",
+          "cwe": "CWE-611",
+          "tp": 1,
+          "tn": 0,
+          "fp": 0,
+          "fn": 0
+        }
+      ]
+    },
+    {
+      "language": "C#/.NET",
+      "benchmark": "Juliet C# (NIST, default config)",
+      "corpus": "juliet-csharp",
+      "tests": 894,
+      "tp": 25,
+      "tn": null,
+      "fp": null,
+      "fn": 869,
+      "tpr": "2.8%",
+      "fpr": null,
+      "score": "2.8%",
+      "score_rule": "recall only; default taint config; every scored file is a positive",
+      "categories": [
+        {
+          "category": "CWE113_HTTP_Response_Splitting",
+          "cwe": "CWE-113",
+          "tp": 18,
+          "tn": 0,
+          "fp": 0,
+          "fn": 9
+        },
+        {
+          "category": "CWE114_Process_Control",
+          "cwe": "CWE-114",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE117_Improper_Output_Neutralization_for_Logs",
+          "cwe": "CWE-117",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 10
+        },
+        {
+          "category": "CWE129_Improper_Validation_of_Array_Index",
+          "cwe": "CWE-129",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 62
+        },
+        {
+          "category": "CWE134_Externally_Controlled_Format_String",
+          "cwe": "CWE-134",
+          "tp": 7,
+          "tn": 0,
+          "fp": 0,
+          "fn": 7
+        },
+        {
+          "category": "CWE15_External_Control_of_System_or_Configuration_Setting",
+          "cwe": "CWE-15",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 10
+        },
+        {
+          "category": "CWE190_Integer_Overflow",
+          "cwe": "CWE-190",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 99
+        },
+        {
+          "category": "CWE191_Integer_Underflow",
+          "cwe": "CWE-191",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 66
+        },
+        {
+          "category": "CWE193_Off_by_One_Error",
+          "cwe": "CWE-193",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 3
+        },
+        {
+          "category": "CWE197_Numeric_Truncation_Error",
+          "cwe": "CWE-197",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 135
+        },
+        {
+          "category": "CWE209_Information_Leak_Error",
+          "cwe": "CWE-209",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 2
+        },
+        {
+          "category": "CWE226_Sensitive_Information_Uncleared_Before_Release",
+          "cwe": "CWE-226",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE23_Relative_Path_Traversal",
+          "cwe": "CWE-23",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 10
+        },
+        {
+          "category": "CWE248_Uncaught_Exception",
+          "cwe": "CWE-248",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE252_Unchecked_Return_Value",
+          "cwe": "CWE-252",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE253_Incorrect_Check_of_Function_Return_Value",
+          "cwe": "CWE-253",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE256_Unprotected_Storage_of_Credentials",
+          "cwe": "CWE-256",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE259_Hard_Coded_Password",
+          "cwe": "CWE-259",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 2
+        },
+        {
+          "category": "CWE261_Weak_Cryptography_for_Passwords",
+          "cwe": "CWE-261",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE284_Improper_Access_Control",
+          "cwe": "CWE-284",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 2
+        },
+        {
+          "category": "CWE313_Cleartext_Storage_in_a_File_or_on_Disk",
+          "cwe": "CWE-313",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 10
+        },
+        {
+          "category": "CWE314_Cleartext_Storage_in_the_Registry",
+          "cwe": "CWE-314",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 10
+        },
+        {
+          "category": "CWE315_Cleartext_Storage_in_Cookie",
+          "cwe": "CWE-315",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE319_Cleartext_Tx_Sensitive_Info",
+          "cwe": "CWE-319",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 4
+        },
+        {
+          "category": "CWE321_Hard_Coded_Cryptographic_Key",
+          "cwe": "CWE-321",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE325_Missing_Required_Cryptographic_Step",
+          "cwe": "CWE-325",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 2
+        },
+        {
+          "category": "CWE327_Use_Broken_Crypto",
+          "cwe": "CWE-327",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 2
+        },
+        {
+          "category": "CWE328_Reversible_One_Way_Hash",
+          "cwe": "CWE-328",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 2
+        },
+        {
+          "category": "CWE329_Not_Using_Random_IV_with_CBC_Mode",
+          "cwe": "CWE-329",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE336_Same_Seed_in_PRNG",
+          "cwe": "CWE-336",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE338_Weak_PRNG",
+          "cwe": "CWE-338",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE350_Reliance_on_Reverse_DNS_Resolution_for_Security_Action",
+          "cwe": "CWE-350",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE36_Absolute_Path_Traversal",
+          "cwe": "CWE-36",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 10
+        },
+        {
+          "category": "CWE366_Race_Condition_within_a_Thread",
+          "cwe": "CWE-366",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE369_Divide_by_Zero",
+          "cwe": "CWE-369",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 42
+        },
+        {
+          "category": "CWE378_Temporary_File_Creation_With_Insecure_Perms",
+          "cwe": "CWE-378",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE379_Temporary_File_Creation_in_Insecure_Dir",
+          "cwe": "CWE-379",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE390_Error_Without_Action",
+          "cwe": "CWE-390",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 2
+        },
+        {
+          "category": "CWE395_Catch_NullPointerException",
+          "cwe": "CWE-395",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE396_Catch_Generic_Exception",
+          "cwe": "CWE-396",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE397_Throw_Generic_Exception",
+          "cwe": "CWE-397",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE398_Code_Quality",
+          "cwe": "CWE-398",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 9
+        },
+        {
+          "category": "CWE400_Uncontrolled_Resource_Consumption",
+          "cwe": "CWE-400",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 33
+        },
+        {
+          "category": "CWE404_Improper_Resource_Shutdown",
+          "cwe": "CWE-404",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 4
+        },
+        {
+          "category": "CWE426_Untrusted_Search_Path",
+          "cwe": "CWE-426",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE427_Uncontrolled_Search_Path_Element",
+          "cwe": "CWE-427",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 10
+        },
+        {
+          "category": "CWE440_Expected_Behavior_Violation",
+          "cwe": "CWE-440",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE459_Incomplete_Cleanup",
+          "cwe": "CWE-459",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE470_Unsafe_Reflection",
+          "cwe": "CWE-470",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 9
+        },
+        {
+          "category": "CWE476_NULL_Pointer_Dereference",
+          "cwe": "CWE-476",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 7
+        },
+        {
+          "category": "CWE477_Obsolete_Functions",
+          "cwe": "CWE-477",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 3
+        },
+        {
+          "category": "CWE478_Missing_Default_Case_in_Switch",
+          "cwe": "CWE-478",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE481_Assigning_Instead_of_Comparing",
+          "cwe": "CWE-481",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE482_Comparing_Instead_of_Assigning",
+          "cwe": "CWE-482",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE483_Incorrect_Block_Delimitation",
+          "cwe": "CWE-483",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 3
+        },
+        {
+          "category": "CWE486_Compare_Classes_by_Name",
+          "cwe": "CWE-486",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE506_Embedded_Malicious_Code",
+          "cwe": "CWE-506",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 6
+        },
+        {
+          "category": "CWE510_Trapdoor",
+          "cwe": "CWE-510",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 4
+        },
+        {
+          "category": "CWE511_Logic_Time_Bomb",
+          "cwe": "CWE-511",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 3
+        },
+        {
+          "category": "CWE523_Unprotected_Cred_Transport",
+          "cwe": "CWE-523",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE526_Info_Exposure_Environment_Variables",
+          "cwe": "CWE-526",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE532_Inclusion_of_Sensitive_Info_in_Log",
+          "cwe": "CWE-532",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE535_Info_Exposure_Shell_Error",
+          "cwe": "CWE-535",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE539_Information_Exposure_Through_Persistent_Cookie",
+          "cwe": "CWE-539",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE546_Suspicious_Comment",
+          "cwe": "CWE-546",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 5
+        },
+        {
+          "category": "CWE549_Missing_Password_Masking",
+          "cwe": "CWE-549",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE563_Assign_to_Variable_Without_Use",
+          "cwe": "CWE-563",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 12
+        },
+        {
+          "category": "CWE566_Authorization_Bypass_Through_SQL_Primary",
+          "cwe": "CWE-566",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE570_Expression_Always_False",
+          "cwe": "CWE-570",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 16
+        },
+        {
+          "category": "CWE571_Expression_Always_True",
+          "cwe": "CWE-571",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 16
+        },
+        {
+          "category": "CWE598_Information_Exposure_QueryString",
+          "cwe": "CWE-598",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE601_Open_Redirect",
+          "cwe": "CWE-601",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 9
+        },
+        {
+          "category": "CWE605_Multiple_Binds_Same_Port",
+          "cwe": "CWE-605",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE606_Unchecked_Loop_Condition",
+          "cwe": "CWE-606",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 10
+        },
+        {
+          "category": "CWE609_Double_Checked_Locking",
+          "cwe": "CWE-609",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE613_Insufficient_Session_Expiration",
+          "cwe": "CWE-613",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE614_Sensitive_Cookie_Without_Secure",
+          "cwe": "CWE-614",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE615_Info_Exposure_by_Comment",
+          "cwe": "CWE-615",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE617_Reachable_Assertion",
+          "cwe": "CWE-617",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 2
+        },
+        {
+          "category": "CWE643_Xpath_Injection",
+          "cwe": "CWE-643",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 10
+        },
+        {
+          "category": "CWE667_Improper_Locking",
+          "cwe": "CWE-667",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE674_Uncontrolled_Recursion",
+          "cwe": "CWE-674",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 2
+        },
+        {
+          "category": "CWE675_Duplicate_Operations_on_Resource",
+          "cwe": "CWE-675",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 2
+        },
+        {
+          "category": "CWE681_Incorrect_Conversion_Between_Numeric_Types",
+          "cwe": "CWE-681",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 3
+        },
+        {
+          "category": "CWE690_NULL_Deref_From_Return",
+          "cwe": "CWE-690",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 4
+        },
+        {
+          "category": "CWE698_Execution_After_Redirect",
+          "cwe": "CWE-698",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE759_Unsalted_One_Way_Hash",
+          "cwe": "CWE-759",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE760_Predictable_Salt_One_Way_Hash",
+          "cwe": "CWE-760",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE764_Multiple_Locks",
+          "cwe": "CWE-764",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE765_Multiple_Unlocks",
+          "cwe": "CWE-765",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE772_Missing_Release_of_Resource",
+          "cwe": "CWE-772",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 2
+        },
+        {
+          "category": "CWE775_Missing_Release_of_File_Descriptor_or_Handle",
+          "cwe": "CWE-775",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE78_OS_Command_Injection",
+          "cwe": "CWE-78",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 10
+        },
+        {
+          "category": "CWE789_Uncontrolled_Mem_Alloc",
+          "cwe": "CWE-789",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 37
+        },
+        {
+          "category": "CWE80_XSS",
+          "cwe": "CWE-80",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 18
+        },
+        {
+          "category": "CWE81_XSS_Error_Message",
+          "cwe": "CWE-81",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 9
+        },
+        {
+          "category": "CWE83_XSS_Attribute",
+          "cwe": "CWE-83",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 9
+        },
+        {
+          "category": "CWE832_Unlock_Not_Locked",
+          "cwe": "CWE-832",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE833_Deadlock",
+          "cwe": "CWE-833",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        {
+          "category": "CWE835_Infinite_Loop",
+          "cwe": "CWE-835",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 6
+        },
+        {
+          "category": "CWE89_SQL_Injection",
+          "cwe": "CWE-89",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 27
+        },
+        {
+          "category": "CWE90_LDAP_Injection",
+          "cwe": "CWE-90",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 10
+        },
+        {
+          "category": "CWE94_Improper_Control_of_Generation_of_Code",
+          "cwe": "CWE-94",
+          "tp": 0,
+          "tn": 0,
+          "fp": 0,
+          "fn": 10
+        }
+      ],
+      "dataset_revision": "sha256:2e6dbac4741fb020a0b1c2db69e98aed165987df2bd70bd51f7c8c5302c8e8f8",
+      "config_note": "default taint config; published 13.8% used added corpus signatures"
+    }
+  ],
+  "language_summary": [
+    {
+      "language": "Java",
+      "perfect_100": 0,
+      "at_or_above_90": 0,
+      "total_benchmarks": 4
+    },
+    {
+      "language": "Node.js / TypeScript",
+      "perfect_100": 0,
+      "at_or_above_90": 0,
+      "total_benchmarks": 3
+    },
+    {
+      "language": "Python",
+      "perfect_100": 0,
+      "at_or_above_90": 0,
+      "total_benchmarks": 1
+    },
+    {
+      "language": "Rust",
+      "perfect_100": 0,
+      "at_or_above_90": 0,
+      "total_benchmarks": 2
+    },
+    {
+      "language": "Bash",
+      "perfect_100": 0,
+      "at_or_above_90": 0,
+      "total_benchmarks": 1
+    },
+    {
+      "language": "HTML/JS",
+      "perfect_100": 0,
+      "at_or_above_90": 0,
+      "total_benchmarks": 1
+    },
+    {
+      "language": "Go",
+      "perfect_100": 0,
+      "at_or_above_90": 0,
+      "total_benchmarks": 2
+    },
+    {
+      "language": "C#/.NET",
+      "perfect_100": 1,
+      "at_or_above_90": 1,
+      "total_benchmarks": 2
+    },
+    {
+      "language": "Total",
+      "perfect_100": 1,
+      "at_or_above_90": 1,
+      "total_benchmarks": 16
+    }
+  ],
+  "artifacts": {
+    "raw_output": "raw/2026-10-22/",
+    "summary_markdown": "results/2026-10-22/summary.md",
+    "summary_csv": "results/2026-10-22/results.csv",
+    "scorecards": "results/2026-10-22-detection-quality/"
+  },
+  "limitations": [
+    "Static analysis only, default taint configuration, no LLM in detection or verification.",
+    "A case counts as flagged when at least one finding lands in its file with exactly the expected CWE. Findings without a CWE are dropped.",
+    "The frozen regression baseline (baseline/detection-quality.json, cognium-dev 4.9.20, seven vendored corpora, 210 cases) is unchanged. This folder is a published measurement, not a new gate.",
+    "Juliet C# in this set is the full src/testcases tree: 894 files, recall only, default taint config. The 2026-09-11 Juliet row is the _01 variant, 123 files, with the corpus source and sink signatures loaded. The two recalls answer different questions.",
+    "OWASP Benchmark Java is all 2,740 cases at BenchmarkJava 20cbf3d. This run: TPR 92.7%, FPR 19.7%, precision 83.4%, Youden 73.0. The 2026-09-11 comparison row on cognium-dev 4.9.13, same commit and the same flag rule: TPR 91.0%, FPR 17.4%, precision 84.8%, Youden 73.5.",
+    "PyGoat scores TPR 0% (0 of 15 vulnerable files) and FPR 0% (11 safe files). Vulnerability-goapp scores TPR 0% (0 of 4) and FPR 0% (6 safe files). NodeGoat scores TPR 25% (1 of 4).",
+    "Aggregate TPR 59.8% and FPR 18.3% add every corpus together, including Juliet C# (869 misses). Read the per-benchmark rows for a rate that belongs to one dataset.",
+    "cognium-ai main at this publish is 4.22.0 (commit a5598319) and depends on circle-ir 4.16.1. These rows are the cognium-dev 4.17.0 CLI. The cognium-ai lane remains results/2026-05-*."
+  ]
+}

@@ -36,3 +36,10 @@ A file counts as detected only on an unsanitized taint flow of the expected sink
 - `../../results/2026-09-11/results.json` (row `benchmark: "Juliet C# (NIST, baseline _01)"`)
 - `../../results/2026-09-11/summary.md`
 - `../../raw/2026-09-11/`
+
+## Later measurement (2026-10-22)
+
+`results/2026-10-22/` scores the whole `src/testcases` tree with the default
+taint config: 894 files, recall only, TPR 2.8% (25/894). That row is
+`Juliet C# (NIST, default config)`. It does not replace the `_01` result above.
+The corpus source and sink signatures used for the 13.8% figure are not loaded.

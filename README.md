@@ -11,7 +11,7 @@ this repository. If the page and this repository ever disagree, this
 repository wins and the page is wrong.
 
 [![validate-results](https://github.com/cogniumhq/sast-benchmarks/actions/workflows/validate-results.yml/badge.svg)](https://github.com/cogniumhq/sast-benchmarks/actions/workflows/validate-results.yml)
-![engine](https://img.shields.io/badge/cognium--dev-4.9.13-orange)
+![engine](https://img.shields.io/badge/cognium--dev-4.17.0-orange)
 ![OWASP Benchmark](https://img.shields.io/badge/OWASP_Benchmark_v1.2-2%2C740_cases-blue)
 ![languages](https://img.shields.io/badge/languages-Java_%7C_JS%2FTS_%7C_Python_%7C_Go_%7C_Rust_%7C_C%23_%7C_Bash_%7C_HTML-lightgrey)
 
@@ -55,17 +55,19 @@ Reproduce any row with
 ## The static-analysis snapshots (what `cognium.dev/benchmark` shows)
 
 Static engine only — default configuration, no LLM anywhere in detection or
-verification. Two dated snapshots, never merged:
+verification. Three dated snapshots, each standing on its own:
 
 | Result set | Engine | Rows | Language groups | Headline |
 | --- | --- | ---: | --- | --- |
 | [`results/2026-04-22/`](results/2026-04-22/summary.md) | cognium-dev 3.19.4 (published then as `circle-ir`) | 16 | Java, Node.js/TS, Python, Rust, Bash, HTML/JS (+ Firing Range) | 8 rows at 100%, 14 at ≥ 90%; CWE-Bench-Java 50.8% (61/120, IRIS-strict) |
 | [`results/2026-09-11/`](results/2026-09-11/summary.md) | cognium-dev 4.9.13 | 4 | Go, C#/.NET (preview) | Go Synthetic 78.9%; Vulnerability-goapp TPR 50.0% / FPR 14.3%; C# Synthetic TPR 90.9% / FPR 25.0%; Juliet C# recall 13.8% |
+| [`results/2026-10-22/`](results/2026-10-22/summary.md) | cognium-dev 4.17.0 (`d95544f`) | 16 | Java, Node.js/TS, Python, Rust, Bash, HTML/JS, Go, C#/.NET | OWASP Benchmark TPR 92.7% / FPR 19.7% / Youden 73.0 (2,740 cases); vendored seven TPR 83.1% / FPR 4.4% |
 
 The April snapshot's OWASP row (1,415 cases, 100% / 0%) came from a harness
 that is not public and cannot be reconstructed from whole categories; it is
 kept as published, footnoted, and never compared with other tools — the
-full-suite table above is.
+full-suite table above is. The 2026-10-22 OWASP row is the same 2,740-case
+scorecard rule on cognium-dev 4.17.0 (TPR 92.7%, FPR 19.7%, Youden 73.0).
 
 ### All published static-analysis rows
 
@@ -95,6 +97,22 @@ revision and ground truth.
 | Go | [Vulnerability-goapp](benchmarks/vulnerability-goapp/README.md) | 13 | 3 | 6 | 1 | 3 | 50.0% | 14.3% | 45.0% | 2026-09-11 |
 | C#/.NET | [C# Synthetic](benchmarks/csharp-synthetic/README.md) | 15 | 10 | 3 | 1 | 1 | 90.9% | 25.0% | 65.9% | 2026-09-11 |
 | C#/.NET | [Juliet C# (NIST, baseline _01)](benchmarks/juliet-csharp/README.md) | 123 | 17 | — | — | 106 | 13.8% | — | 13.8% | 2026-09-11 |
+| Java | [OWASP Benchmark](benchmarks/owasp-benchmark-java/README.md) | 2740 | 1311 | 1064 | 261 | 104 | 92.7% | 19.7% | 73.0% | 2026-10-22 |
+| Java | [SecuriBench Micro](benchmarks/securibench-micro/README.md) | 122 | 90 | 9 | 1 | 22 | 80.4% | 10.0% | 70.4% | 2026-10-22 |
+| Java | [WebGoat](benchmarks/webgoat/README.md) | 29 | 16 | 8 | 0 | 5 | 76.2% | 0.0% | 76.2% | 2026-10-22 |
+| Java | [DVJA](benchmarks/dvja/README.md) | 7 | 1 | 4 | 0 | 2 | 33.3% | 0.0% | 33.3% | 2026-10-22 |
+| Node.js / TypeScript | [NodeGoat](benchmarks/nodegoat/README.md) | 13 | 1 | 9 | 0 | 3 | 25.0% | 0.0% | 25.0% | 2026-10-22 |
+| Node.js / TypeScript | [Juice Shop](benchmarks/juice-shop/README.md) | 14 | 5 | 4 | 0 | 5 | 50.0% | 0.0% | 50.0% | 2026-10-22 |
+| Node.js / TypeScript | [NodeJS Synthetic](benchmarks/nodejs-synthetic/README.md) | 25 | 16 | 8 | 1 | 0 | 100.0% | 11.1% | 88.9% | 2026-10-22 |
+| Python | [PyGoat](benchmarks/pygoat/README.md) | 26 | 0 | 11 | 0 | 15 | 0.0% | 0.0% | 0.0% | 2026-10-22 |
+| Rust | [Rust Synthetic](benchmarks/rust-synthetic/README.md) | 50 | 32 | 12 | 1 | 5 | 86.5% | 7.7% | 78.8% | 2026-10-22 |
+| Rust | [CWE-Bench-Rust](benchmarks/cwe-bench-rust/README.md) | 30 | 12 | 11 | 1 | 6 | 66.7% | 8.3% | 58.3% | 2026-10-22 |
+| Bash | [Bash Synthetic](benchmarks/bash-synthetic/README.md) | 31 | 18 | 9 | 0 | 4 | 81.8% | 0.0% | 81.8% | 2026-10-22 |
+| HTML/JS | [HTML/JS Synthetic](benchmarks/html-js-synthetic/README.md) | 30 | 12 | 11 | 0 | 7 | 63.2% | 0.0% | 63.2% | 2026-10-22 |
+| Go | [Go Synthetic](benchmarks/go-synthetic/README.md) | 29 | 17 | 10 | 0 | 2 | 89.5% | 0.0% | 89.5% | 2026-10-22 |
+| Go | [Vulnerability-goapp](benchmarks/vulnerability-goapp/README.md) | 10 | 0 | 6 | 0 | 4 | 0.0% | 0.0% | 0.0% | 2026-10-22 |
+| C#/.NET | [C# Synthetic](benchmarks/csharp-synthetic/README.md) | 15 | 11 | 4 | 0 | 0 | 100.0% | 0.0% | 100.0% | 2026-10-22 |
+| C#/.NET | [Juliet C# (NIST, default config)](benchmarks/juliet-csharp/README.md) | 894 | 25 | — | — | 869 | 2.8% | — | 2.8% | 2026-10-22 |
 
 `—` means the dataset has no scored negatives for that row (only positives
 are labelled), so TN, FP and FPR cannot be reported. It never means zero.
@@ -193,14 +211,15 @@ then `node scripts/score-owasp-benchmark.mjs --tool codeql --tool-version 2.27.0
 
 ## Nightly regression sweep
 
-Published benchmark rows above are point-in-time measurements, taken by hand.
-Separately, a nightly job scores cognium-dev against every corpus whose source
-is vendored here and fails — and files a defect — if any corpus drops below
+Published benchmark rows above are point-in-time measurements.
+Separately, a nightly job scores cognium-dev with `scripts/run-corpus.mjs` and
+fails — and files a defect — if any baselined corpus drops below
 `baseline/detection-quality.json`.
 
 ```sh
-# the same sweep the nightly runs, against a local build
+# offline vendored subset, and the full sweep the nightly runs
 node scripts/run-corpus.mjs --cli ../cognium-dev/packages/cli/dist/cli.js --all --out results/$(date -u +%F)-detection-quality
+node scripts/run-corpus.mjs --cli ../cognium-dev/packages/cli/dist/cli.js --all-corpora --out results/$(date -u +%F)-detection-quality
 node scripts/compare-baseline.mjs --run results/$(date -u +%F)-detection-quality/run-summary.json
 ```
 
@@ -208,12 +227,12 @@ node scripts/compare-baseline.mjs --run results/$(date -u +%F)-detection-quality
 verdict. Keeping those separate means a measurement run can never be mistaken
 for a pass.
 
-**Scope.** The seven vendored corpora only — `bash-synthetic`,
-`csharp-synthetic`, `cwe-bench-rust`, `go-synthetic`, `html-js-synthetic`,
-`nodejs-synthetic`, `rust-synthetic` — 210 cases, about a second to run. The
-fetch-based corpora (OWASP Benchmark Java, Juliet, SecuriBench, CWE-Bench-Java,
-WebGoat) are **not** in the sweep yet. Its numbers are therefore not comparable
-to the headline rows above: different corpora, far smaller, synthetic.
+**Scope.** `--all-corpora` scores the seven vendored corpora and the pinned
+fetch-based corpora. The published 2026-10-22 set is that full run (16 corpora,
+4,065 cases) on cognium-dev 4.17.0. `--all` is the offline vendored subset
+(210 cases). The frozen baseline still covers only those seven vendored
+corpora at cognium-dev 4.9.20. Fetch-based corpora are recorded on each run
+and stay ungated until a baseline promotion.
 
 **Policy.** TPR may not drop at all, and FPR may not rise (tolerance
 configurable). That is measured rather than assumed: two runs on different
@@ -231,7 +250,7 @@ git clone https://github.com/cogniumhq/sast-benchmarks
 cd sast-benchmarks
 node scripts/validate-results.mjs      # schema, sums, artifact paths, folder per row, comparison arithmetic
 node scripts/compare-baseline.mjs --run results/<date>-detection-quality/run-summary.json   # nightly sweep vs baseline
-ls results/2026-04-22 results/2026-09-11 results/2026-09-11-owasp-java-comparison raw datasets benchmarks
+ls results/2026-04-22 results/2026-09-11 results/2026-09-11-owasp-java-comparison results/2026-10-22 raw datasets benchmarks
 ```
 
 `scripts/validate-results.mjs` runs in CI on every push and pull request. It

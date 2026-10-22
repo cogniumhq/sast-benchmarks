@@ -16,6 +16,7 @@ rename.
 | `results/2026-04-22/` | cognium-dev 3.19.4 (as `circle-ir`) | Imported from the live page. The one-command harness that produced it is not in the public source tree; the set is auditable, not reproducible from a single published command. |
 | `results/2026-09-11/` | circle-ir 4.9.13 (npm, same engine as cognium-dev 4.9.13) | Go and C#/.NET suites run through the benchmark runners recorded in `results/2026-09-11/summary.md`, against the published npm package. Raw logs in `raw/2026-09-11/`. |
 | `results/2026-09-11-owasp-java-comparison/` | cognium-dev 4.9.13 CLI (npm) | `cognium-dev scan <testcode> -l java -f json`, default config, scored on all 2,740 OWASP cases by `scripts/score-owasp-benchmark.mjs`. Raw scan JSON in `raw/2026-09-11-owasp-java-comparison/`. |
+| `results/2026-10-22/` | cognium-dev 4.17.0 CLI, commit `d95544f` | `node scripts/run-corpus.mjs --cli packages/cli/dist/cli.js --all-corpora --out results/2026-10-22-detection-quality`. Default taint config, no LLM. Raw scan JSON in `raw/2026-10-22/`. |
 
 ## Reproducing the 2026-09-11 Go / C# runs
 

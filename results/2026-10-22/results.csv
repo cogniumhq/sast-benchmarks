@@ -1,0 +1,17 @@
+published_at,source_url,tool,tool_version,mode,llm_verification,language,benchmark,tests,tp,tn,fp,fn,tpr,fpr,score
+2026-10-22,https://github.com/cogniumhq/sast-benchmarks/tree/main/results/2026-10-22,cognium-dev,4.17.0,static-analysis,false,Java,OWASP Benchmark,2740,1311,1064,261,104,92.7%,19.7%,73.0%
+2026-10-22,https://github.com/cogniumhq/sast-benchmarks/tree/main/results/2026-10-22,cognium-dev,4.17.0,static-analysis,false,Java,SecuriBench Micro,122,90,9,1,22,80.4%,10.0%,70.4%
+2026-10-22,https://github.com/cogniumhq/sast-benchmarks/tree/main/results/2026-10-22,cognium-dev,4.17.0,static-analysis,false,Java,WebGoat,29,16,8,0,5,76.2%,0.0%,76.2%
+2026-10-22,https://github.com/cogniumhq/sast-benchmarks/tree/main/results/2026-10-22,cognium-dev,4.17.0,static-analysis,false,Java,DVJA,7,1,4,0,2,33.3%,0.0%,33.3%
+2026-10-22,https://github.com/cogniumhq/sast-benchmarks/tree/main/results/2026-10-22,cognium-dev,4.17.0,static-analysis,false,Node.js / TypeScript,NodeGoat,13,1,9,0,3,25.0%,0.0%,25.0%
+2026-10-22,https://github.com/cogniumhq/sast-benchmarks/tree/main/results/2026-10-22,cognium-dev,4.17.0,static-analysis,false,Node.js / TypeScript,Juice Shop,14,5,4,0,5,50.0%,0.0%,50.0%
+2026-10-22,https://github.com/cogniumhq/sast-benchmarks/tree/main/results/2026-10-22,cognium-dev,4.17.0,static-analysis,false,Node.js / TypeScript,NodeJS Synthetic,25,16,8,1,0,100.0%,11.1%,88.9%
+2026-10-22,https://github.com/cogniumhq/sast-benchmarks/tree/main/results/2026-10-22,cognium-dev,4.17.0,static-analysis,false,Python,PyGoat,26,0,11,0,15,0.0%,0.0%,0.0%
+2026-10-22,https://github.com/cogniumhq/sast-benchmarks/tree/main/results/2026-10-22,cognium-dev,4.17.0,static-analysis,false,Rust,Rust Synthetic,50,32,12,1,5,86.5%,7.7%,78.8%
+2026-10-22,https://github.com/cogniumhq/sast-benchmarks/tree/main/results/2026-10-22,cognium-dev,4.17.0,static-analysis,false,Rust,CWE-Bench-Rust,30,12,11,1,6,66.7%,8.3%,58.3%
+2026-10-22,https://github.com/cogniumhq/sast-benchmarks/tree/main/results/2026-10-22,cognium-dev,4.17.0,static-analysis,false,Bash,Bash Synthetic,31,18,9,0,4,81.8%,0.0%,81.8%
+2026-10-22,https://github.com/cogniumhq/sast-benchmarks/tree/main/results/2026-10-22,cognium-dev,4.17.0,static-analysis,false,HTML/JS,HTML/JS Synthetic,30,12,11,0,7,63.2%,0.0%,63.2%
+2026-10-22,https://github.com/cogniumhq/sast-benchmarks/tree/main/results/2026-10-22,cognium-dev,4.17.0,static-analysis,false,Go,Go Synthetic,29,17,10,0,2,89.5%,0.0%,89.5%
+2026-10-22,https://github.com/cogniumhq/sast-benchmarks/tree/main/results/2026-10-22,cognium-dev,4.17.0,static-analysis,false,Go,Vulnerability-goapp,10,0,6,0,4,0.0%,0.0%,0.0%
+2026-10-22,https://github.com/cogniumhq/sast-benchmarks/tree/main/results/2026-10-22,cognium-dev,4.17.0,static-analysis,false,C#/.NET,C# Synthetic,15,11,4,0,0,100.0%,0.0%,100.0%
+2026-10-22,https://github.com/cogniumhq/sast-benchmarks/tree/main/results/2026-10-22,cognium-dev,4.17.0,static-analysis,false,C#/.NET,"Juliet C# (NIST, default config)",894,25,n/a,n/a,869,2.8%,n/a,2.8%

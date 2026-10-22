@@ -27,6 +27,10 @@ Static-analysis snapshots (mirrored by `https://cognium.dev/benchmark`):
   cases, official scorecard rule**, one scorer for every tool — the lane for
   comparing cognium-dev with CodeQL, Semgrep, SonarQube, SpotBugs. cognium-dev
   4.9.13: TPR 91.0% / FPR 17.4% / Youden 73.5. Competitor rows follow.
+- `2026-10-22`: cognium-dev 4.17.0 (`d95544f`) detection-quality sweep,
+  16 corpora, 4,065 cases, via `scripts/run-corpus.mjs --all-corpora`.
+  OWASP Benchmark TPR 92.7% / FPR 19.7% / Youden 73.0. Scorecards in
+  `2026-10-22-detection-quality/`. The frozen baseline is unchanged.
 
 cognium-ai (SAST + LLM) runs:
 

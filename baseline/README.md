@@ -42,8 +42,14 @@ baseline, because it looks like the gate is working.
 ## Known failures
 
 `known-failures.json` registers corpora cognium-dev currently fails on, each
-tied to an open defect. It exists so three broken corpora cannot hold the whole
+tied to an open defect. It exists so a corpus that aborts cannot hold the whole
 gate red — a gate that is red every night stops being read.
+
+The register is empty as of 2026-10-22. The three 2026-09-21 entries (PyGoat
+regex crash, NodeGoat hang, Vulnerability-goapp hang) were removed because
+cognium-dev 4.17.0 finishes those scans. Their scores are in
+`results/2026-10-22/` and are not in `detection-quality.json`, so the nightly
+records them and does not gate them.
 
 It is an **exemption register, not a way to make a red gate green.** Four rules
 keep it honest, all covered by tests:
