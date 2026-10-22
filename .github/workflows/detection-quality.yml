@@ -54,10 +54,15 @@ permissions:
   contents: read
   issues: write
 
+# Fork PRs never reach the self-hosted `grace` runner: this repo is public, and
+# a fork PR's code would otherwise run on a persistent box we own. They run the
+# same jobs on ubuntu-latest instead (skipping them would let required checks
+# pass without running).
+
 jobs:
   build:
     name: build cognium-dev
-    runs-on: [self-hosted, grace]
+    runs-on: ${{ github.event.pull_request.head.repo.fork && 'ubuntu-latest' || fromJSON('["self-hosted", "grace"]') }}
     container:
       image: node:22-bookworm
     timeout-minutes: 20
@@ -126,7 +131,7 @@ jobs:
   scan:
     name: ${{ matrix.corpus }}
     needs: build
-    runs-on: [self-hosted, grace]
+    runs-on: ${{ github.event.pull_request.head.repo.fork && 'ubuntu-latest' || fromJSON('["self-hosted", "grace"]') }}
     container:
       image: node:22-bookworm
     # Bounded on purpose: cognium-dev#421 hangs indefinitely on two corpora, and
@@ -180,7 +185,7 @@ jobs:
     # because an errored corpus IS a regression. Skipping the report on a failed
     # matrix would turn the loudest failures into silence.
     if: ${{ always() }}
-    runs-on: [self-hosted, grace]
+    runs-on: ${{ github.event.pull_request.head.repo.fork && 'ubuntu-latest' || fromJSON('["self-hosted", "grace"]') }}
     container:
       image: node:22-bookworm
     timeout-minutes: 15
