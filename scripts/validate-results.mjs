@@ -39,6 +39,7 @@ const SLUG = {
   'Vulnerability-goapp': 'vulnerability-goapp',
   'C# Synthetic': 'csharp-synthetic',
   'Juliet C# (NIST, baseline _01)': 'juliet-csharp',
+  'Juliet C# (NIST, default config)': 'juliet-csharp',
 };
 
 const schema = JSON.parse(fs.readFileSync(path.join(root, 'schemas/result.schema.json'), 'utf8'));

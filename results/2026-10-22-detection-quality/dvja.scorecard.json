@@ -1,0 +1,48 @@
+{
+  "corpus": "dvja",
+  "language": "Java",
+  "benchmark": "dvja",
+  "dataset_revision": "597ece1ab79ffffea7289d49b0c443bb2ebcbd16",
+  "tests": 7,
+  "tp": 1,
+  "tn": 4,
+  "fp": 0,
+  "fn": 2,
+  "tpr": "33.3%",
+  "fpr": "0.0%",
+  "score": "33.3%",
+  "score_rule": "tpr - fpr",
+  "elapsed_ms": 192,
+  "categories": [
+    {
+      "category": "cmdi",
+      "cwe": "CWE-78",
+      "tp": 0,
+      "tn": 1,
+      "fp": 0,
+      "fn": 1
+    },
+    {
+      "category": "idor",
+      "cwe": "CWE-639",
+      "tp": 0,
+      "tn": 0,
+      "fp": 0,
+      "fn": 1
+    },
+    {
+      "category": "sqli",
+      "cwe": "CWE-89",
+      "tp": 1,
+      "tn": 3,
+      "fp": 0,
+      "fn": 0
+    }
+  ],
+  "missed_cases": [
+    "src/main/java/com/appsecco/dvja/controllers/PingAction.java",
+    "src/main/java/com/appsecco/dvja/controllers/UserAction.java"
+  ],
+  "spurious_cases": [],
+  "scan_report": "dvja.scan.json"
+}

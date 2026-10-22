@@ -1,0 +1,83 @@
+{
+  "corpus": "juice-shop",
+  "language": "TypeScript",
+  "benchmark": "juice-shop",
+  "dataset_revision": "1618a611b173b4bf114028e6e02549950606e29d",
+  "tests": 14,
+  "tp": 5,
+  "tn": 4,
+  "fp": 0,
+  "fn": 5,
+  "tpr": "50.0%",
+  "fpr": "0.0%",
+  "score": "50.0%",
+  "score_rule": "tpr - fpr",
+  "elapsed_ms": 515,
+  "categories": [
+    {
+      "category": "codeinj",
+      "cwe": "CWE-94",
+      "tp": 1,
+      "tn": 0,
+      "fp": 0,
+      "fn": 1
+    },
+    {
+      "category": "nosqli",
+      "cwe": "CWE-943",
+      "tp": 1,
+      "tn": 0,
+      "fp": 0,
+      "fn": 1
+    },
+    {
+      "category": "pathtraver",
+      "cwe": "CWE-22",
+      "tp": 0,
+      "tn": 0,
+      "fp": 0,
+      "fn": 1
+    },
+    {
+      "category": "redirect",
+      "cwe": "CWE-601",
+      "tp": 0,
+      "tn": 0,
+      "fp": 0,
+      "fn": 1
+    },
+    {
+      "category": "sqli",
+      "cwe": "CWE-89",
+      "tp": 2,
+      "tn": 4,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "ssrf",
+      "cwe": "CWE-918",
+      "tp": 1,
+      "tn": 0,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "xss",
+      "cwe": "CWE-79",
+      "tp": 0,
+      "tn": 0,
+      "fp": 0,
+      "fn": 1
+    }
+  ],
+  "missed_cases": [
+    "routes/b2bOrder.ts",
+    "routes/fileServer.ts",
+    "routes/redirect.ts",
+    "routes/updateProductReviews.ts",
+    "routes/videoHandler.ts"
+  ],
+  "spurious_cases": [],
+  "scan_report": "juice-shop.scan.json"
+}

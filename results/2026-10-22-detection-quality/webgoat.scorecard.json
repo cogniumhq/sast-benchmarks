@@ -1,0 +1,67 @@
+{
+  "corpus": "webgoat",
+  "language": "Java",
+  "benchmark": "webgoat",
+  "dataset_revision": "872d6149d4ef29e4929c2f4eda279f7fbedc52e8",
+  "tests": 29,
+  "tp": 16,
+  "tn": 8,
+  "fp": 0,
+  "fn": 5,
+  "tpr": "76.2%",
+  "fpr": "0.0%",
+  "score": "76.2%",
+  "score_rule": "tpr - fpr",
+  "elapsed_ms": 1054,
+  "categories": [
+    {
+      "category": "deserialization",
+      "cwe": "CWE-502",
+      "tp": 0,
+      "tn": 0,
+      "fp": 0,
+      "fn": 1
+    },
+    {
+      "category": "pathtraver",
+      "cwe": "CWE-22",
+      "tp": 2,
+      "tn": 1,
+      "fp": 0,
+      "fn": 1
+    },
+    {
+      "category": "sqli",
+      "cwe": "CWE-89",
+      "tp": 12,
+      "tn": 5,
+      "fp": 0,
+      "fn": 1
+    },
+    {
+      "category": "ssrf",
+      "cwe": "CWE-918",
+      "tp": 1,
+      "tn": 2,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "xss",
+      "cwe": "CWE-79",
+      "tp": 1,
+      "tn": 0,
+      "fp": 0,
+      "fn": 2
+    }
+  ],
+  "missed_cases": [
+    "src/main/java/org/dummy/insecure/framework/VulnerableTaskHolder.java",
+    "src/main/java/org/owasp/webgoat/lessons/pathtraversal/ProfileUpload.java",
+    "src/main/java/org/owasp/webgoat/lessons/sqlinjection/advanced/SqlInjectionChallengeLogin.java",
+    "src/main/java/org/owasp/webgoat/lessons/xss/DOMCrossSiteScripting.java",
+    "src/main/java/org/owasp/webgoat/lessons/xss/stored/StoredXssComments.java"
+  ],
+  "spurious_cases": [],
+  "scan_report": "webgoat.scan.json"
+}

@@ -12,6 +12,9 @@ The repository publishes two static-analysis result sets:
   `raw/2026-04-22/cognium-dev-benchmark.html`.
 - `results/2026-09-11/`: cognium-dev / circle-ir 4.9.13, first scored Go and
   C#/.NET results; runner logs in `raw/2026-09-11/`.
+- `results/2026-10-22/`: cognium-dev 4.17.0 (`d95544f`), 16 corpora via
+  `scripts/run-corpus.mjs --all-corpora`. Scorecards in
+  `results/2026-10-22-detection-quality/`, raw scans in `raw/2026-10-22/`.
 
 The live page no longer advertises a one-command reproduction. The historical
 harness that produced the April 22 set is not present in the public
