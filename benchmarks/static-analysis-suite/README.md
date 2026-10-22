@@ -9,6 +9,8 @@ Published result sets:
 - `results/2026-04-22/` — cognium-dev 3.19.4 (then `circle-ir`), 16 rows, 6
   language groups.
 - `results/2026-09-11/` — cognium-dev 4.9.13, 4 rows adding Go and C#/.NET.
+- `results/2026-10-22/` — cognium-dev 4.17.0, 16 rows. The current suite in
+  the repository README uses this measurement wherever the corpus was re-scored.
 
 ## What each row measures
 

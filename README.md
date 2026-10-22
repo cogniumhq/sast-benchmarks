@@ -16,7 +16,7 @@ repository wins and the page is wrong.
 ![languages](https://img.shields.io/badge/languages-Java_%7C_JS%2FTS_%7C_Python_%7C_Go_%7C_Rust_%7C_C%23_%7C_Bash_%7C_HTML-lightgrey)
 
 **Contents:** [Headline comparison](#headline-owasp-benchmark-java-v12-full-suite-tool-comparison) ·
-[All published rows](#all-published-static-analysis-rows) ·
+[Current suite](#current-suite) ·
 [Reading the numbers](#reading-the-numbers) ·
 [Reproduce a number](#reproduce-a-number-yourself) ·
 [Audit](#how-to-audit) · [Add a tool](#add-a-tool-to-the-comparison) ·
@@ -55,7 +55,9 @@ Reproduce any row with
 ## The static-analysis snapshots (what `cognium.dev/benchmark` shows)
 
 Static engine only — default configuration, no LLM anywhere in detection or
-verification. Three dated snapshots, each standing on its own:
+verification. The current suite below is one row per benchmark: the
+2026-10-22 measurement where that corpus was re-scored, and the earlier row
+where it was not. The dated folders stay as published.
 
 | Result set | Engine | Rows | Language groups | Headline |
 | --- | --- | ---: | --- | --- |
@@ -69,42 +71,31 @@ kept as published, footnoted, and never compared with other tools — the
 full-suite table above is. The 2026-10-22 OWASP row is the same 2,740-case
 scorecard rule on cognium-dev 4.17.0 (TPR 92.7%, FPR 19.7%, Youden 73.0).
 
-### All published static-analysis rows
+### Current suite
 
-Every row links to its benchmark definition (what it measures, selection,
-scoring rule, known gaps); the same slug under `datasets/` holds the source,
-revision and ground truth.
+One row per benchmark. A corpus scored on 2026-10-22 uses that measurement.
+Juliet Java, CWE-Bench-Java, DVPWA and Firing Range have no later run, so the
+April row stays. Juliet C# `_01` (123 files, corpus signatures, 4.9.13) is a
+different selection from the October default-config tree, so both stay.
+
+Earlier full sets: [`results/2026-04-22/`](results/2026-04-22/summary.md)
+(cognium-dev 3.19.4) and [`results/2026-09-11/`](results/2026-09-11/summary.md)
+(cognium-dev 4.9.13). Every row still links to its benchmark definition and
+the same slug under `datasets/`.
 
 | Language | Benchmark | Tests | TP | TN | FP | FN | TPR | FPR | Score | Result set |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
-| Java | [OWASP Benchmark](benchmarks/owasp-benchmark-java/README.md) | 1415 | 708 | 707 | 0 | 0 | 100% | 0% | 100% | 2026-04-22 |
-| Java | [Juliet Test Suite](benchmarks/juliet-java/README.md) | 243 | 122 | 121 | 0 | 0 | 100% | 0% | 100% | 2026-04-22 |
-| Java | [SecuriBench Micro](benchmarks/securibench-micro/README.md) | 123 | 60 | 60 | 1 | 2 | 96.8% | 1.6% | 97.7% | 2026-04-22 |
-| Java | [CWE-Bench-Java](benchmarks/cwe-bench-java/README.md) | 120 | 61 | — | — | 59 | 50.8% | — | 50.8% | 2026-04-22 |
-| Java | [WebGoat](benchmarks/webgoat/README.md) | 29 | 26 | — | — | 3 | 89.7% | — | 89.3% | 2026-04-22 |
-| Java | [DVJA](benchmarks/dvja/README.md) | 7 | 7 | — | — | 0 | 100% | — | 100% | 2026-04-22 |
-| Node.js / TypeScript | [NodeGoat](benchmarks/nodegoat/README.md) | 14 | 14 | — | — | 0 | 100% | — | 100% | 2026-04-22 |
-| Node.js / TypeScript | [Juice Shop](benchmarks/juice-shop/README.md) | 14 | 14 | — | — | 0 | 100% | — | 100% | 2026-04-22 |
-| Node.js / TypeScript | [NodeJS Synthetic](benchmarks/nodejs-synthetic/README.md) | 25 | 23 | — | — | 2 | 92.0% | — | 92.9% | 2026-04-22 |
-| Python | [PyGoat](benchmarks/pygoat/README.md) | 26 | 23 | — | — | 3 | 88.5% | — | 90.0% | 2026-04-22 |
-| Python | [DVPWA](benchmarks/dvpwa/README.md) | 6 | 6 | — | — | 0 | 100% | — | 100% | 2026-04-22 |
-| Rust | [Rust Synthetic](benchmarks/rust-synthetic/README.md) | 50 | 46 | — | — | 4 | 92.0% | — | 92.3% | 2026-04-22 |
-| Rust | [CWE-Bench-Rust](benchmarks/cwe-bench-rust/README.md) | 30 | 28 | — | — | 2 | 93.3% | — | 94.4% | 2026-04-22 |
-| Bash | [Bash Synthetic](benchmarks/bash-synthetic/README.md) | 31 | 31 | — | — | 0 | 100% | — | 100% | 2026-04-22 |
-| HTML/JS | [HTML/JS Synthetic](benchmarks/html-js-synthetic/README.md) | 30 | 30 | — | — | 0 | 100% | — | 100% | 2026-04-22 |
-| Other | [Firing Range](benchmarks/firing-range/README.md) | 40 | 35 | — | 2 | 3 | 92.1% | — | 92.1% | 2026-04-22 |
-| Go | [Go Synthetic](benchmarks/go-synthetic/README.md) | 29 | 15 | 10 | 0 | 4 | 78.9% | 0.0% | 78.9% | 2026-09-11 |
-| Go | [Vulnerability-goapp](benchmarks/vulnerability-goapp/README.md) | 13 | 3 | 6 | 1 | 3 | 50.0% | 14.3% | 45.0% | 2026-09-11 |
-| C#/.NET | [C# Synthetic](benchmarks/csharp-synthetic/README.md) | 15 | 10 | 3 | 1 | 1 | 90.9% | 25.0% | 65.9% | 2026-09-11 |
-| C#/.NET | [Juliet C# (NIST, baseline _01)](benchmarks/juliet-csharp/README.md) | 123 | 17 | — | — | 106 | 13.8% | — | 13.8% | 2026-09-11 |
 | Java | [OWASP Benchmark](benchmarks/owasp-benchmark-java/README.md) | 2740 | 1311 | 1064 | 261 | 104 | 92.7% | 19.7% | 73.0% | 2026-10-22 |
+| Java | [Juliet Test Suite](benchmarks/juliet-java/README.md) | 243 | 122 | 121 | 0 | 0 | 100% | 0% | 100% | 2026-04-22 |
 | Java | [SecuriBench Micro](benchmarks/securibench-micro/README.md) | 122 | 90 | 9 | 1 | 22 | 80.4% | 10.0% | 70.4% | 2026-10-22 |
+| Java | [CWE-Bench-Java](benchmarks/cwe-bench-java/README.md) | 120 | 61 | — | — | 59 | 50.8% | — | 50.8% | 2026-04-22 |
 | Java | [WebGoat](benchmarks/webgoat/README.md) | 29 | 16 | 8 | 0 | 5 | 76.2% | 0.0% | 76.2% | 2026-10-22 |
 | Java | [DVJA](benchmarks/dvja/README.md) | 7 | 1 | 4 | 0 | 2 | 33.3% | 0.0% | 33.3% | 2026-10-22 |
 | Node.js / TypeScript | [NodeGoat](benchmarks/nodegoat/README.md) | 13 | 1 | 9 | 0 | 3 | 25.0% | 0.0% | 25.0% | 2026-10-22 |
 | Node.js / TypeScript | [Juice Shop](benchmarks/juice-shop/README.md) | 14 | 5 | 4 | 0 | 5 | 50.0% | 0.0% | 50.0% | 2026-10-22 |
 | Node.js / TypeScript | [NodeJS Synthetic](benchmarks/nodejs-synthetic/README.md) | 25 | 16 | 8 | 1 | 0 | 100.0% | 11.1% | 88.9% | 2026-10-22 |
 | Python | [PyGoat](benchmarks/pygoat/README.md) | 26 | 0 | 11 | 0 | 15 | 0.0% | 0.0% | 0.0% | 2026-10-22 |
+| Python | [DVPWA](benchmarks/dvpwa/README.md) | 6 | 6 | — | — | 0 | 100% | — | 100% | 2026-04-22 |
 | Rust | [Rust Synthetic](benchmarks/rust-synthetic/README.md) | 50 | 32 | 12 | 1 | 5 | 86.5% | 7.7% | 78.8% | 2026-10-22 |
 | Rust | [CWE-Bench-Rust](benchmarks/cwe-bench-rust/README.md) | 30 | 12 | 11 | 1 | 6 | 66.7% | 8.3% | 58.3% | 2026-10-22 |
 | Bash | [Bash Synthetic](benchmarks/bash-synthetic/README.md) | 31 | 18 | 9 | 0 | 4 | 81.8% | 0.0% | 81.8% | 2026-10-22 |
@@ -112,7 +103,9 @@ revision and ground truth.
 | Go | [Go Synthetic](benchmarks/go-synthetic/README.md) | 29 | 17 | 10 | 0 | 2 | 89.5% | 0.0% | 89.5% | 2026-10-22 |
 | Go | [Vulnerability-goapp](benchmarks/vulnerability-goapp/README.md) | 10 | 0 | 6 | 0 | 4 | 0.0% | 0.0% | 0.0% | 2026-10-22 |
 | C#/.NET | [C# Synthetic](benchmarks/csharp-synthetic/README.md) | 15 | 11 | 4 | 0 | 0 | 100.0% | 0.0% | 100.0% | 2026-10-22 |
+| C#/.NET | [Juliet C# (NIST, baseline _01)](benchmarks/juliet-csharp/README.md) | 123 | 17 | — | — | 106 | 13.8% | — | 13.8% | 2026-09-11 |
 | C#/.NET | [Juliet C# (NIST, default config)](benchmarks/juliet-csharp/README.md) | 894 | 25 | — | — | 869 | 2.8% | — | 2.8% | 2026-10-22 |
+| Other | [Firing Range](benchmarks/firing-range/README.md) | 40 | 35 | — | 2 | 3 | 92.1% | — | 92.1% | 2026-04-22 |
 
 `—` means the dataset has no scored negatives for that row (only positives
 are labelled), so TN, FP and FPR cannot be reported. It never means zero.
