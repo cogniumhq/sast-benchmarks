@@ -3,8 +3,10 @@ name: detection-quality
 # Runs cognium-dev against every corpus and scores it against
 # baseline/detection-quality.json. A corpus below baseline files a defect.
 #
-# Nightly, plus on demand. Every run is scored against
+# Nightly, monthly, plus on demand. Every run is scored against
 # baseline/detection-quality.json; a corpus scoring below it files a defect.
+# The monthly run, and a dispatch with publish=true, also commits the dated
+# result set. The nightly run does not.
 #
 # The zero-tolerance TPR policy is measured, not assumed: two runs on different
 # hosts against cognium-dev 4.9.20 and 4.9.21 produced byte-identical
@@ -20,7 +22,12 @@ on:
   schedule:
     # 03:00 UTC daily. The sweep itself is ~1s; the cognium-dev build is the
     # cost, so nightly is ample to catch a regression within a day of landing.
+    # Artifacts and a defect only — this cron does not commit.
     - cron: '0 3 * * *'
+    # 04:00 UTC on the 1st. Same sweep, then commit results/<date>/ so the
+    # benchmark page has a measurement for the month. An hour after the
+    # nightly so the two runs do not share a clock.
+    - cron: '0 4 1 * *'
 
   # The sweep exercises itself whenever its own code changes, so a broken
   # harness is caught on the PR that breaks it rather than at the next manual
@@ -28,6 +35,8 @@ on:
   pull_request:
     paths:
       - 'scripts/run-corpus.mjs'
+      - 'scripts/merge-scorecards.mjs'
+      - 'scripts/publish-run.mjs'
       - '.github/workflows/detection-quality.yml'
       - 'datasets/**/expectedresults.csv'
       # A baseline change is exactly when a verification run matters most —
@@ -41,7 +50,7 @@ on:
         required: false
         default: main
       publish:
-        description: 'Commit the report under results/ instead of only uploading it as an artifact'
+        description: 'Commit the dated result set under results/ and raw/. The monthly schedule does this without the input.'
         type: boolean
         required: false
         default: false
@@ -185,10 +194,19 @@ jobs:
     # because an errored corpus IS a regression. Skipping the report on a failed
     # matrix would turn the loudest failures into silence.
     if: ${{ always() }}
+    # contents: write is only for the monthly commit. Fork pull requests still
+    # receive a read-only token, and the publish step does not run on a pull request.
+    permissions:
+      contents: write
+      issues: write
     runs-on: ${{ github.event.pull_request.head.repo.fork && 'ubuntu-latest' || fromJSON('["self-hosted", "grace"]') }}
     container:
       image: node:22-bookworm
     timeout-minutes: 15
+    env:
+      # The 1st-of-month cron commits. The daily cron does not. A dispatch
+      # commits only when its publish input is set. Pull requests never do.
+      PUBLISH_RESULTS: ${{ (github.event_name == 'schedule' && github.event.schedule == '0 4 1 * *') || (github.event_name == 'workflow_dispatch' && inputs.publish == true) }}
 
     steps:
       - uses: actions/checkout@v4
@@ -196,6 +214,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+
+      - name: Run date
+        id: date
+        run: echo "day=$(date -u +%Y-%m-%d)" >> "$GITHUB_OUTPUT"
 
       - uses: actions/download-artifact@v4
         with:
@@ -210,7 +232,7 @@ jobs:
           node scripts/merge-scorecards.mjs \
             --in /tmp/scorecards \
             --version "${{ needs.build.outputs.version }}" \
-            --out "results/$(date -u +%Y-%m-%d)-detection-quality"
+            --out "results/${{ steps.date.outputs.day }}-detection-quality"
 
       # The verdict. run-corpus.mjs always exits 0 so a measurement can never be
       # mistaken for a pass; this step alone decides regression or not.
@@ -218,7 +240,7 @@ jobs:
         id: compare
         if: ${{ !cancelled() }}
         run: |
-          f=$(ls results/*-detection-quality/run-summary.json | head -1)
+          f="results/${{ steps.date.outputs.day }}-detection-quality/run-summary.json"
           echo "summary_file=$f" >> "$GITHUB_OUTPUT"
           if node scripts/compare-baseline.mjs --run "$f" --markdown /tmp/report.md; then
             echo "regressed=false" >> "$GITHUB_OUTPUT"
@@ -332,6 +354,58 @@ jobs:
               ].join('\n'),
             });
             core.notice(`noted recovery on #${existing.number}`);
+
+      # Monthly, and an on-demand publish. Writes results/<date>/ from the
+      # merged scorecards and pushes it to main. A corpus that did not score
+      # still commits its scorecards (exit 2) and does not write results.json.
+      # This step is before the regression failure so a red month is still
+      # recorded. Pull requests do not reach it.
+      - name: Publish the dated result set
+        if: ${{ env.PUBLISH_RESULTS == 'true' && !cancelled() }}
+        run: |
+          set -euo pipefail
+          DAY="${{ steps.date.outputs.day }}"
+          if ! command -v git >/dev/null 2>&1; then
+            apt-get update -qq && apt-get install -y -qq git
+          fi
+          code=0
+          node scripts/publish-run.mjs \
+            --run "results/${DAY}-detection-quality/run-summary.json" \
+            --date "$DAY" \
+            --sha "${{ needs.build.outputs.sha }}" \
+            --scans /tmp/scorecards \
+            --index || code=$?
+          if [ "$code" -ne 0 ] && [ "$code" -ne 2 ]; then
+            exit "$code"
+          fi
+          if [ "$code" -eq 0 ]; then
+            node scripts/validate-results.mjs
+          fi
+
+          STAGE=$(mktemp -d)
+          cp -a "results/${DAY}-detection-quality" "$STAGE/sweep"
+          if [ -d "results/${DAY}" ]; then cp -a "results/${DAY}" "$STAGE/dated"; fi
+          if [ -d "raw/${DAY}" ]; then cp -a "raw/${DAY}" "$STAGE/raw"; fi
+          cp results/README.md "$STAGE/README.md"
+
+          git fetch origin main
+          git checkout --force -B main origin/main
+          rm -rf "results/${DAY}" "results/${DAY}-detection-quality" "raw/${DAY}"
+          cp -a "$STAGE/sweep" "results/${DAY}-detection-quality"
+          if [ -d "$STAGE/dated" ]; then cp -a "$STAGE/dated" "results/${DAY}"; fi
+          if [ -d "$STAGE/raw" ]; then cp -a "$STAGE/raw" "raw/${DAY}"; fi
+          cp "$STAGE/README.md" results/README.md
+
+          git add "results/${DAY}-detection-quality" results/README.md
+          if [ -d "results/${DAY}" ]; then git add "results/${DAY}"; fi
+          if [ -d "raw/${DAY}" ]; then git add "raw/${DAY}"; fi
+          if git diff --cached --quiet; then
+            echo "no changes to publish"
+            exit 0
+          fi
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+            commit -m "feat: publish the ${DAY} detection-quality sweep"
+          git push origin HEAD:main
 
       # Fail the run last, so the report, the artifact and the defect all land
       # first. A red nightly with no artifact is not diagnosable.

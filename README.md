@@ -234,6 +234,12 @@ fetch-based corpora. The published 2026-10-22 set is that full run (16 corpora,
 corpora at cognium-dev 4.9.20. Fetch-based corpora are recorded on each run
 and stay ungated until a baseline promotion.
 
+**Monthly publish.** The same workflow runs again at 04:00 UTC on the 1st and
+commits `results/<date>/`, `results/<date>-detection-quality/`, and
+`raw/<date>/` to `main`. A dispatch with `publish` set does the same. The
+03:00 nightly does not commit. Neither run updates
+`baseline/detection-quality.json`.
+
 **Policy.** TPR may not drop at all, and FPR may not rise (tolerance
 configurable). That is measured rather than assumed: two runs on different
 hosts against cognium-dev 4.9.20 and 4.9.21 produced byte-identical

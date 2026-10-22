@@ -32,6 +32,13 @@ Static-analysis snapshots (mirrored by `https://cognium.dev/benchmark`):
   OWASP Benchmark TPR 92.7% / FPR 19.7% / Youden 73.0. Scorecards in
   `2026-10-22-detection-quality/`. The frozen baseline is unchanged.
 
+<!-- automated-sweeps:start -->
+<!-- automated-sweeps:end -->
+
+The block above is rewritten by `scripts/publish-run.mjs` on the monthly run
+(04:00 UTC on the 1st) and on a dispatch with `publish` set. The nightly run
+does not write here.
+
 cognium-ai (SAST + LLM) runs:
 
 - `2026-05-03`: top 100 GitHub Java projects selected and queued for batched
