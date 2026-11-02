@@ -362,6 +362,10 @@ jobs:
       # recorded. Pull requests do not reach it.
       - name: Publish the dated result set
         if: ${{ env.PUBLISH_RESULTS == 'true' && !cancelled() }}
+        # The container's default shell is `sh -e` (dash), which has no pipefail:
+        # without this the step dies on its first line and nothing is published
+        # (2026-11-01 run, job 124835372264: "set: Illegal option -o pipefail").
+        shell: bash
         run: |
           set -euo pipefail
           DAY="${{ steps.date.outputs.day }}"
