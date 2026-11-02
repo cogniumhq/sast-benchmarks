@@ -372,6 +372,10 @@ jobs:
           if ! command -v git >/dev/null 2>&1; then
             apt-get update -qq && apt-get install -y -qq git
           fi
+          # The job runs as root in the container, but the checkout belongs to the
+          # runner's user, so git refuses it ("dubious ownership"); actions/checkout
+          # only trusts it while it runs (2026-11-02 run 41539264850, exit 128).
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
           code=0
           node scripts/publish-run.mjs \
             --run "results/${DAY}-detection-quality/run-summary.json" \
