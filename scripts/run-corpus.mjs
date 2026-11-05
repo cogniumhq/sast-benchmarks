@@ -172,13 +172,28 @@ const FETCHED = [
     scanPath: 'src/securibench/micro',
     cases: 'securibench-micro',
   },
-  // Not wired, deliberately — the derivers below are kept because the work is
-  // sound; only the corpora are held back:
+  // Juliet Java 1.3 via the find-sec-bugs mirror, pinned to a commit so the
+  // corpus cannot move under the baseline. Recall-only, like the C# suite: julietJavaCases() scores every
+  // CWE<N>_ file as a positive, so this corpus reports TPR and per-CWE TP/FN
+  // and never an FPR. Categories are the Juliet directory prefixes, e.g.
+  // CWE23_Relative_Path_Traversal, CWE643_Xpath_Injection.
   //
-  //   juliet-java   cognium-dev aborts with a V8 heap OOM on its 40,845 files,
-  //                 even at a 12GB heap (cognium-dev#424). Wiring it would make
-  //                 the nightly permanently red, since an errored corpus is
-  //                 correctly treated as a regression.
+  // OOM risk: cognium-dev aborted with a V8 heap OOM on these 40,845 files even
+  // at a 12GB heap (cognium-dev#424, since closed). Run it once by hand
+  // (`--corpus juliet-java`) on the current engine before relying on the
+  // nightly; an errored corpus is treated as a regression and turns it red.
+  {
+    corpus: 'juliet-java',
+    language: 'Java',
+    ext: '.java',
+    repo: 'https://github.com/find-sec-bugs/juliet-test-suite',
+    commit: 'b2c6df3733e2176fe7097e4784895c6891632b4c',
+    scanPath: 'src/testcases',
+    cases: 'juliet-java',
+    recallOnly: true,
+  },
+  // Not wired, deliberately — the deriver below is kept because the work is
+  // sound; only the corpus is held back:
   //
   //   firing-range  the CATEGORY_CWE map here is inferred, not sourced, and
   //                 matches only 21 of 44 servlets — scoring 0 TP. The dataset
