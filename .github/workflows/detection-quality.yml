@@ -6,7 +6,11 @@ name: detection-quality
 # Nightly, monthly, plus on demand. Every run is scored against
 # baseline/detection-quality.json; a corpus scoring below it files a defect.
 # The monthly run, and a dispatch with publish=true, also commits the dated
-# result set. The nightly run does not.
+# result set (results/<date>/, raw/<date>/ and the results index). The nightly
+# run commits only its sweep, results/<date>-detection-quality/: that folder is
+# what cogniumhq/loops checks/measurements.py reads, and without a nightly
+# commit a fix merged into cognium-dev went unmeasured until someone dispatched
+# a publish (none ran 2026-11-08 to 11-09).
 #
 # The zero-tolerance TPR policy is measured, not assumed: two runs on different
 # hosts against cognium-dev 4.9.20 and 4.9.21 produced byte-identical
@@ -22,7 +26,7 @@ on:
   schedule:
     # 03:00 UTC daily. The sweep itself is ~1s; the cognium-dev build is the
     # cost, so nightly is ample to catch a regression within a day of landing.
-    # Artifacts and a defect only — this cron does not commit.
+    # Commits the sweep folder only; the dated result set stays monthly.
     - cron: '0 3 * * *'
     # 04:00 UTC on the 1st. Same sweep, then commit results/<date>/ so the
     # benchmark page has a measurement for the month. An hour after the
@@ -194,7 +198,7 @@ jobs:
     # because an errored corpus IS a regression. Skipping the report on a failed
     # matrix would turn the loudest failures into silence.
     if: ${{ always() }}
-    # contents: write is only for the monthly commit. Fork pull requests still
+    # contents: write is only for the nightly and monthly commits. Fork pull requests still
     # receive a read-only token, and the publish step does not run on a pull request.
     permissions:
       contents: write
@@ -204,9 +208,11 @@ jobs:
       image: node:22-bookworm
     timeout-minutes: 15
     env:
-      # The 1st-of-month cron commits. The daily cron does not. A dispatch
-      # commits only when its publish input is set. Pull requests never do.
+      # The 1st-of-month cron commits the dated result set. A dispatch commits
+      # it only when its publish input is set. Pull requests never commit.
       PUBLISH_RESULTS: ${{ (github.event_name == 'schedule' && github.event.schedule == '0 4 1 * *') || (github.event_name == 'workflow_dispatch' && inputs.publish == true) }}
+      # The daily cron commits the sweep folder alone, for measurements.py.
+      PUBLISH_SWEEP: ${{ github.event_name == 'schedule' && github.event.schedule == '0 3 * * *' }}
 
     steps:
       - uses: actions/checkout@v4
@@ -358,10 +364,14 @@ jobs:
       # Monthly, and an on-demand publish. Writes results/<date>/ from the
       # merged scorecards and pushes it to main. A corpus that did not score
       # still commits its scorecards (exit 2) and does not write results.json.
+      # Nightly, only results/<date>-detection-quality/ is pushed, and only
+      # when no dated result set exists for that day: a sweep folder that
+      # disagreed with the results/<date>/ page beside it would be worse than
+      # one day without a nightly sweep.
       # This step is before the regression failure so a red month is still
       # recorded. Pull requests do not reach it.
       - name: Publish the dated result set
-        if: ${{ env.PUBLISH_RESULTS == 'true' && !cancelled() }}
+        if: ${{ (env.PUBLISH_RESULTS == 'true' || env.PUBLISH_SWEEP == 'true') && !cancelled() }}
         # The container's default shell is `sh -e` (dash), which has no pipefail:
         # without this the step dies on its first line and nothing is published
         # (2026-11-01 run, job 124835372264: "set: Illegal option -o pipefail").
@@ -376,43 +386,68 @@ jobs:
           # runner's user, so git refuses it ("dubious ownership"); actions/checkout
           # only trusts it while it runs (2026-11-02 run 41539264850, exit 128).
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
-          code=0
-          node scripts/publish-run.mjs \
-            --run "results/${DAY}-detection-quality/run-summary.json" \
-            --date "$DAY" \
-            --sha "${{ needs.build.outputs.sha }}" \
-            --scans /tmp/scorecards \
-            --index || code=$?
-          if [ "$code" -ne 0 ] && [ "$code" -ne 2 ]; then
-            exit "$code"
-          fi
-          if [ "$code" -eq 0 ]; then
-            node scripts/validate-results.mjs
+          SWEEP="results/${DAY}-detection-quality"
+          if [ "$PUBLISH_RESULTS" = "true" ]; then
+            code=0
+            node scripts/publish-run.mjs \
+              --run "${SWEEP}/run-summary.json" \
+              --date "$DAY" \
+              --sha "${{ needs.build.outputs.sha }}" \
+              --scans /tmp/scorecards \
+              --index || code=$?
+            if [ "$code" -ne 0 ] && [ "$code" -ne 2 ]; then
+              exit "$code"
+            fi
+            if [ "$code" -eq 0 ]; then
+              node scripts/validate-results.mjs
+            fi
+          else
+            # publish-run.mjs writes the sweep README; a nightly sweep gets its own.
+            printf '%s\n' \
+              "# Detection-quality sweep — ${DAY} (nightly)" \
+              "" \
+              "Nightly sweep, not a published result set: there is no \`results/${DAY}/\` page or \`raw/${DAY}/\` for it. cognium-dev ${{ needs.build.outputs.version }}, commit \`${{ needs.build.outputs.short }}\`. Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+              "" \
+              "This folder keeps \`run-summary.json\` and one scorecard per corpus, for cogniumhq/loops \`checks/measurements.py\`." \
+              > "${SWEEP}/README.md"
           fi
 
           STAGE=$(mktemp -d)
-          cp -a "results/${DAY}-detection-quality" "$STAGE/sweep"
-          if [ -d "results/${DAY}" ]; then cp -a "results/${DAY}" "$STAGE/dated"; fi
-          if [ -d "raw/${DAY}" ]; then cp -a "raw/${DAY}" "$STAGE/raw"; fi
-          cp results/README.md "$STAGE/README.md"
+          cp -a "$SWEEP" "$STAGE/sweep"
+          if [ "$PUBLISH_RESULTS" = "true" ]; then
+            if [ -d "results/${DAY}" ]; then cp -a "results/${DAY}" "$STAGE/dated"; fi
+            if [ -d "raw/${DAY}" ]; then cp -a "raw/${DAY}" "$STAGE/raw"; fi
+            cp results/README.md "$STAGE/README.md"
+          fi
 
           git fetch origin main
           git checkout --force -B main origin/main
-          rm -rf "results/${DAY}" "results/${DAY}-detection-quality" "raw/${DAY}"
-          cp -a "$STAGE/sweep" "results/${DAY}-detection-quality"
-          if [ -d "$STAGE/dated" ]; then cp -a "$STAGE/dated" "results/${DAY}"; fi
-          if [ -d "$STAGE/raw" ]; then cp -a "$STAGE/raw" "raw/${DAY}"; fi
-          cp "$STAGE/README.md" results/README.md
-
-          git add "results/${DAY}-detection-quality" results/README.md
-          if [ -d "results/${DAY}" ]; then git add "results/${DAY}"; fi
-          if [ -d "raw/${DAY}" ]; then git add "raw/${DAY}"; fi
+          if [ "$PUBLISH_RESULTS" = "true" ]; then
+            rm -rf "results/${DAY}" "$SWEEP" "raw/${DAY}"
+            cp -a "$STAGE/sweep" "$SWEEP"
+            if [ -d "$STAGE/dated" ]; then cp -a "$STAGE/dated" "results/${DAY}"; fi
+            if [ -d "$STAGE/raw" ]; then cp -a "$STAGE/raw" "raw/${DAY}"; fi
+            cp "$STAGE/README.md" results/README.md
+            git add "$SWEEP" results/README.md
+            if [ -d "results/${DAY}" ]; then git add "results/${DAY}"; fi
+            if [ -d "raw/${DAY}" ]; then git add "raw/${DAY}"; fi
+            MSG="feat: publish the ${DAY} detection-quality sweep"
+          else
+            if [ -d "results/${DAY}" ]; then
+              echo "results/${DAY}/ is already published; leaving its sweep folder as published"
+              exit 0
+            fi
+            rm -rf "$SWEEP"
+            cp -a "$STAGE/sweep" "$SWEEP"
+            git add "$SWEEP"
+            MSG="chore: record the ${DAY} nightly detection-quality sweep"
+          fi
           if git diff --cached --quiet; then
             echo "no changes to publish"
             exit 0
           fi
           git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
-            commit -m "feat: publish the ${DAY} detection-quality sweep"
+            commit -m "$MSG"
           git push origin HEAD:main
 
       # Fail the run last, so the report, the artifact and the defect all land
