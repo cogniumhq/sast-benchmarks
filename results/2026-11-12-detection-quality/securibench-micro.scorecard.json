@@ -1,0 +1,134 @@
+{
+  "corpus": "securibench-micro",
+  "language": "Java",
+  "benchmark": "securibench-micro",
+  "dataset_revision": "6a5a72488ea830d99f9464fc1f0562c4f864214b",
+  "tests": 122,
+  "tp": 99,
+  "tn": 8,
+  "fp": 2,
+  "fn": 13,
+  "tpr": "88.4%",
+  "fpr": "20.0%",
+  "score": "68.4%",
+  "score_rule": "tpr - fpr",
+  "elapsed_ms": 591,
+  "categories": [
+    {
+      "category": "aliasing",
+      "cwe": "CWE-79",
+      "tp": 4,
+      "tn": 0,
+      "fp": 0,
+      "fn": 2
+    },
+    {
+      "category": "arrays",
+      "cwe": "CWE-79",
+      "tp": 9,
+      "tn": 1,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "basic",
+      "cwe": "CWE-79",
+      "tp": 36,
+      "tn": 0,
+      "fp": 0,
+      "fn": 6
+    },
+    {
+      "category": "collections",
+      "cwe": "CWE-79",
+      "tp": 12,
+      "tn": 0,
+      "fp": 0,
+      "fn": 2
+    },
+    {
+      "category": "datastructures",
+      "cwe": "CWE-79",
+      "tp": 6,
+      "tn": 0,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "factories",
+      "cwe": "CWE-79",
+      "tp": 3,
+      "tn": 0,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "inter",
+      "cwe": "CWE-79",
+      "tp": 14,
+      "tn": 0,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "pred",
+      "cwe": "CWE-79",
+      "tp": 5,
+      "tn": 3,
+      "fp": 1,
+      "fn": 0
+    },
+    {
+      "category": "reflection",
+      "cwe": "CWE-79",
+      "tp": 4,
+      "tn": 0,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "sanitizers",
+      "cwe": "CWE-79",
+      "tp": 2,
+      "tn": 1,
+      "fp": 0,
+      "fn": 3
+    },
+    {
+      "category": "session",
+      "cwe": "CWE-79",
+      "tp": 3,
+      "tn": 0,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "strong_updates",
+      "cwe": "CWE-79",
+      "tp": 1,
+      "tn": 3,
+      "fp": 1,
+      "fn": 0
+    }
+  ],
+  "missed_cases": [
+    "Aliasing2",
+    "Aliasing3",
+    "Basic19",
+    "Basic20",
+    "Basic21",
+    "Basic22",
+    "Basic23",
+    "Basic24",
+    "Collections11",
+    "Collections9",
+    "Sanitizers2",
+    "Sanitizers5",
+    "Sanitizers6"
+  ],
+  "spurious_cases": [
+    "Pred3",
+    "StrongUpdates3"
+  ],
+  "scan_report": "securibench-micro.scan.json"
+}
