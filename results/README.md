@@ -37,6 +37,7 @@ Static-analysis snapshots (mirrored by `https://cognium.dev/benchmark`):
 - `2026-11-05`: cognium-dev 4.17.0 (`c45d2e4`) detection-quality sweep, 16 corpora, 4065 cases, TPR 58.7% / FPR 5.1%. Scorecards in `2026-11-05-detection-quality/`.
 - `2026-11-07`: cognium-dev 4.20.0 (`337d9db`) detection-quality sweep, 16 corpora, 4065 cases, TPR 61.8% / FPR 5.0%. Scorecards in `2026-11-07-detection-quality/`.
 - `2026-11-11`: cognium-dev 4.20.0 (`337d9db`) detection-quality sweep, 16 corpora, 4065 cases, TPR 61.8% / FPR 5.0%. Scorecards in `2026-11-11-detection-quality/`.
+- `2026-11-14`: cognium-dev 4.20.0 (`337d9db`) detection-quality sweep, 16 corpora, 4065 cases, TPR 61.8% / FPR 5.0%. Scorecards in `2026-11-14-detection-quality/`.
 <!-- automated-sweeps:end -->
 
 The block above is rewritten by `scripts/publish-run.mjs` on the monthly run
