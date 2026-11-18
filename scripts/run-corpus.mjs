@@ -658,12 +658,13 @@ export function tally(entries, flagged) {
   // both show up as the same filename, and a miss would not say which one.
   const label = (name, c) => (nameCount.get(name) > 1 ? `${name} (${c.category})` : name);
   let tp = 0, tn = 0, fp = 0, fn = 0;
+  const detected = [];
   const missed = [];
   const spurious = [];
   for (const [name, c] of entries) {
     const hit = flagged.get(name)?.has(c.cwe) ?? false;
     const cat = byCategory.get(c.category) ?? { category: c.category, cwe: `CWE-${c.cwe}`, tp: 0, tn: 0, fp: 0, fn: 0 };
-    if (c.vulnerable && hit) { tp += 1; cat.tp += 1; }
+    if (c.vulnerable && hit) { tp += 1; cat.tp += 1; detected.push(label(name, c)); }
     else if (c.vulnerable && !hit) { fn += 1; cat.fn += 1; missed.push(label(name, c)); }
     else if (!c.vulnerable && hit) { fp += 1; cat.fp += 1; spurious.push(label(name, c)); }
     else { tn += 1; cat.tn += 1; }
@@ -672,6 +673,7 @@ export function tally(entries, flagged) {
   return {
     tests: entries.length,
     tp, tn, fp, fn,
+    detected: detected.sort(),
     missed: missed.sort(),
     spurious: spurious.sort(),
     categories: [...byCategory.values()].sort((a, b) => a.category.localeCompare(b.category)),
@@ -748,6 +750,9 @@ function scoreCorpus({ corpus, language, ext, repo, commit, archive, sha256, str
     categories,
     // Named cases, so a regression report can say which case changed rather
     // than only that a number moved. A shared path is qualified with its category.
+    // What this run actually flagged. The daily coverage file unions these in
+    // and never drops one, so a case detected today is still required tomorrow.
+    detected_cases: detected,
     missed_cases: missed,
     spurious_cases: spurious,
     scan_report: `${corpus}.scan.json`,

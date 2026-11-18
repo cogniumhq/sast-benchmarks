@@ -40,6 +40,7 @@ test('file:function labels match the enclosing def and ignore a different CWE', 
   assert.equal(result.fn, 0);
   assert.equal(result.fp, 0);
   assert.equal(result.tn, 2);
+  assert.deepEqual(result.detected, ['introduction/views.py:cmd_lab']);
   assert.deepEqual(result.missed, []);
 });
 
@@ -60,6 +61,7 @@ test('two cases on one path are both scored', () => {
   assert.equal(result.tp, 1);
   assert.equal(result.fn, 1);
   assert.equal(result.tn, 1);
+  assert.deepEqual(result.detected, ['pkg/admin/admin.go (cmdi)']);
   assert.deepEqual(result.missed, ['pkg/admin/admin.go (sqli)']);
 });
 
