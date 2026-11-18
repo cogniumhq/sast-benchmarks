@@ -27,7 +27,7 @@ git clone https://github.com/adeyosemanputra/pygoat
 
 ## Scoring
 
-Per labelled file+category: a reported flow of the expected sink type in that file = detected. The SSTI case is a known false negative (not in the engine's CWE coverage).
+Per labelled `path:function`: a finding of that case's CWE whose line falls inside the function. A label with no colon matches any finding of that CWE in the file. The SSTI case is a known false negative (not in the engine's CWE coverage). Safe rows carry CWE 0, so they stay true negatives unless a finding is itself CWE 0.
 
 ## License / redistribution
 
