@@ -271,6 +271,7 @@ jobs:
             line('FP / TN', m.false_positives + ' / ' + m.true_negatives_known);
             line('Overall TPR', m.overall_tpr);
             line('Overall FPR', m.overall_fpr);
+            if (m.excluded_from_overall) line('Not in overall', m.excluded_from_overall.corpora.join(', ') + ': ' + m.excluded_from_overall.total_cases + ' cases, TPR ' + m.excluded_from_overall.tpr);
             line('Elapsed', (m.total_elapsed_ms / 1000).toFixed(1) + 's');
             console.log('');
             console.log('| Corpus | Cases | TP | FN | FP | TN | TPR | FPR |');

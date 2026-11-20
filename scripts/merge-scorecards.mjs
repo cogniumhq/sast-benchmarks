@@ -80,7 +80,11 @@ if (fs.existsSync(baselinePath)) {
 rows.sort((a, b) => a.corpus.localeCompare(b.corpus));
 
 const scored = rows.filter(r => !r.error && !r.skipped);
-const sum = (k) => scored.reduce((a, r) => a + (r[k] ?? 0), 0);
+// Corpora flagged excluded_from_overall (juliet-java) keep their rows but stay
+// out of the headline totals, which would otherwise be dominated by them.
+const headline = scored.filter(r => !r.excluded_from_overall);
+const excluded = scored.filter(r => r.excluded_from_overall);
+const sum = (k, list = headline) => list.reduce((a, r) => a + (r[k] ?? 0), 0);
 const totals = {
   total_cases: sum('tests'),
   true_positives: sum('tp'),
@@ -100,6 +104,15 @@ const summary = {
     errored_benchmarks: rows.filter(r => r.error).length,
     overall_tpr: pct(totals.true_positives, totals.true_positives + totals.false_negatives),
     overall_fpr: pct(totals.false_positives, totals.false_positives + totals.true_negatives_known),
+    ...(excluded.length ? {
+      excluded_from_overall: {
+        corpora: excluded.map(r => r.corpus),
+        total_cases: sum('tests', excluded),
+        true_positives: sum('tp', excluded),
+        false_negatives: sum('fn', excluded),
+        tpr: pct(sum('tp', excluded), sum('tp', excluded) + sum('fn', excluded)),
+      },
+    } : {}),
     total_elapsed_ms: scored.reduce((a, r) => a + (r.elapsed_ms ?? 0), 0),
   },
   results: rows,
@@ -114,6 +127,7 @@ for (const row of rows) {
 
 console.log(`merged ${scored.length} scored + ${summary.summary.errored_benchmarks} errored -> ${outDir}/run-summary.json`);
 console.log(`overall TPR ${summary.summary.overall_tpr}  FPR ${summary.summary.overall_fpr}  (${totals.total_cases} cases)`);
+if (excluded.length) { const x = summary.summary.excluded_from_overall; console.log(`not in overall: ${x.corpora.join(', ')} — ${x.total_cases} cases, TPR ${x.tpr}`); }
 if (summary.summary.errored_benchmarks > 0) {
   console.log(`errored: ${rows.filter(r => r.error).map(r => r.corpus).join(', ')}`);
 }

@@ -40,6 +40,7 @@ const SLUG = {
   'C# Synthetic': 'csharp-synthetic',
   'Juliet C# (NIST, baseline _01)': 'juliet-csharp',
   'Juliet C# (NIST, default config)': 'juliet-csharp',
+  'Juliet Java (NIST, default config)': 'juliet-java',
 };
 
 const schema = JSON.parse(fs.readFileSync(path.join(root, 'schemas/result.schema.json'), 'utf8'));
@@ -65,17 +66,28 @@ for (const rel of resultFiles) {
   }
 
   // 2. row sums vs summary
+  //    Rows flagged excluded_from_overall are summed into summary.excluded_from_overall
+  //    instead of the headline totals.
   if (Array.isArray(j.results) && j.summary) {
+    const headline = j.results.filter((r) => !r.excluded_from_overall);
+    const excluded = j.results.filter((r) => r.excluded_from_overall);
     const checks = {
-      total_cases: sum(j.results, 'tests'),
-      true_positives: sum(j.results, 'tp'),
-      false_negatives: sum(j.results, 'fn'),
-      false_positives: sum(j.results, 'fp'),
-      true_negatives_known: sum(j.results, 'tn'),
+      total_cases: sum(headline, 'tests'),
+      true_positives: sum(headline, 'tp'),
+      false_negatives: sum(headline, 'fn'),
+      false_positives: sum(headline, 'fp'),
+      true_negatives_known: sum(headline, 'tn'),
       total_benchmarks: j.results.length,
     };
     for (const [k, v] of Object.entries(checks)) {
       if (k in j.summary && j.summary[k] !== v) fail(rel, `summary.${k}=${j.summary[k]} but rows sum to ${v}`);
+    }
+    const x = j.summary.excluded_from_overall;
+    if (excluded.length && !x) fail(rel, 'rows flagged excluded_from_overall but no summary.excluded_from_overall');
+    if (x) {
+      for (const [k, f] of [['total_cases', 'tests'], ['true_positives', 'tp'], ['false_negatives', 'fn']]) {
+        if (x[k] !== sum(excluded, f)) fail(rel, `summary.excluded_from_overall.${k}=${x[k]} but flagged rows sum to ${sum(excluded, f)}`);
+      }
     }
     for (const r of j.results) {
       if (typeof r.tp === 'number' && typeof r.fn === 'number' && r.tpr) {
