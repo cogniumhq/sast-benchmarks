@@ -722,7 +722,7 @@ function scoreCorpus({ corpus, language, ext, repo, commit, archive, sha256, str
 
   const flagged = indexFindings(normalize(report), { match, ext, repoRoot, dir });
   const scoredCases = tally(entries, flagged);
-  const { tp, tn, fp, fn, missed, spurious, categories } = scoredCases;
+  const { tp, tn, fp, fn, detected, missed, spurious, categories } = scoredCases;
 
   const pct = (n) => `${(n * 100).toFixed(1)}%`;
   const tpr = tp + fn > 0 ? tp / (tp + fn) : 0;
