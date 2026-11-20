@@ -54,6 +54,7 @@ const PUBLISHED = [
   ['vulnerability-goapp', 'Vulnerability-goapp', 'Go'],
   ['csharp-synthetic', 'C# Synthetic', 'C#/.NET'],
   ['juliet-csharp', 'Juliet C# (NIST, default config)', 'C#/.NET'],
+  ['juliet-java', 'Juliet Java (NIST, default config)', 'Java'],
 ];
 const BY_CORPUS = new Map(PUBLISHED.map(([corpus, benchmark, language]) => [corpus, { benchmark, language }]));
 
@@ -109,6 +110,7 @@ function buildRows() {
     };
     if (r.dataset_revision) row.dataset_revision = r.dataset_revision;
     if (r.config_note) row.config_note = r.config_note;
+    if (r.excluded_from_overall) row.excluded_from_overall = true;
     rows.push(row);
   }
   // A corpus that scored but is not in PUBLISHED already failed above.
@@ -143,6 +145,32 @@ function languageSummary(rows) {
 }
 
 const num = (v) => (typeof v === 'number' ? v : 0);
+// Rows flagged excluded_from_overall are published but not summed into the
+// headline totals; they get their own block. Older result sets have no such
+// rows, so their totals are unchanged.
+const headlineTotals = (rows) => {
+  const list = rows.filter((r) => !r.excluded_from_overall);
+  return {
+    total_cases: list.reduce((a, r) => a + num(r.tests), 0),
+    true_positives: list.reduce((a, r) => a + num(r.tp), 0),
+    true_negatives_known: list.reduce((a, r) => a + num(r.tn), 0),
+    false_positives: list.reduce((a, r) => a + num(r.fp), 0),
+    false_negatives: list.reduce((a, r) => a + num(r.fn), 0),
+  };
+};
+const excludedTotals = (rows) => {
+  const list = rows.filter((r) => r.excluded_from_overall);
+  if (!list.length) return null;
+  const tp = list.reduce((a, r) => a + num(r.tp), 0);
+  const fn = list.reduce((a, r) => a + num(r.fn), 0);
+  return {
+    corpora: list.map((r) => r.corpus),
+    total_cases: list.reduce((a, r) => a + num(r.tests), 0),
+    true_positives: tp,
+    false_negatives: fn,
+    tpr: tp + fn > 0 ? `${((tp / (tp + fn)) * 100).toFixed(1)}%` : '0.0%',
+  };
+};
 const same = (a, b) => (a == null && b == null) || a === b;
 
 if (args.get('check') === 'true') {
@@ -160,13 +188,7 @@ if (args.get('check') === 'true') {
       if (!same(r[k], e[k])) problems.push(`${e.benchmark}.${k}: generated ${r[k]} != published ${e[k]}`);
     }
   }
-  const totals = {
-    total_cases: rows.reduce((a, r) => a + num(r.tests), 0),
-    true_positives: rows.reduce((a, r) => a + num(r.tp), 0),
-    true_negatives_known: rows.reduce((a, r) => a + num(r.tn), 0),
-    false_positives: rows.reduce((a, r) => a + num(r.fp), 0),
-    false_negatives: rows.reduce((a, r) => a + num(r.fn), 0),
-  };
+  const totals = headlineTotals(rows);
   for (const [k, v] of Object.entries(totals)) {
     if (expect.summary?.[k] !== v) problems.push(`summary.${k}: generated ${v} != published ${expect.summary?.[k]}`);
   }
@@ -195,6 +217,7 @@ if (errored.length) {
 
 const rows = buildRows();
 const langs = languageSummary(rows);
+const excludedSummary = excludedTotals(rows);
 const pins = rows.filter((r) => r.dataset_revision).map((r) => `${r.corpus} ${r.dataset_revision}`).join('; ');
 const doc = {
   published_at: date,
@@ -216,22 +239,19 @@ const doc = {
     version,
     source_url: 'https://github.com/cogniumhq/cognium-dev',
     release_commit: sha,
-    configuration: 'static analysis only; default taint config; no LLM. Juliet C# is recall-only under that default config.',
+    configuration: `static analysis only; default taint config; no LLM. Juliet C#${excludedSummary ? ' and Juliet Java are' : ' is'} recall-only under that default config.`,
     command: `node scripts/run-corpus.mjs --cli <cognium-dev ${short} packages/cli/dist/cli.js> --corpus <name> --out results/run/<name> && node scripts/merge-scorecards.mjs --version ${version} --out results/${date}-detection-quality && node scripts/publish-run.mjs --run results/${date}-detection-quality/run-summary.json --date ${date} --sha ${sha}`,
     runtime: 'GitHub Actions, node:22-bookworm',
   },
   summary: {
-    total_cases: rows.reduce((a, r) => a + num(r.tests), 0),
-    true_positives: rows.reduce((a, r) => a + num(r.tp), 0),
-    true_negatives_known: rows.reduce((a, r) => a + num(r.tn), 0),
-    false_positives: rows.reduce((a, r) => a + num(r.fp), 0),
-    false_negatives: rows.reduce((a, r) => a + num(r.fn), 0),
+    ...headlineTotals(rows),
     total_benchmarks: rows.length,
     perfect_benchmarks: langs.at(-1).perfect_100,
     benchmarks_at_or_above_90_percent: langs.at(-1).at_or_above_90,
     languages: langs.length - 1,
     overall_tpr: summary.summary?.overall_tpr,
     overall_fpr: summary.summary?.overall_fpr,
+    ...(excludedSummary ? { excluded_from_overall: excludedSummary } : {}),
   },
   results: rows,
   language_summary: langs,
@@ -246,7 +266,9 @@ const doc = {
     'A case counts as flagged when at least one finding lands in its file with exactly the expected CWE. Findings without a CWE are dropped.',
     'The frozen regression baseline (baseline/detection-quality.json) is not updated by this publish.',
     'Juliet C# is the full src/testcases tree under the default taint config, recall only. The 2026-09-11 Juliet row is the _01 variant with the corpus source and sink signatures loaded.',
-    'Aggregate TPR and FPR add every corpus together, including recall-only Juliet. Quote a per-benchmark row for a rate that belongs to one dataset.',
+    excludedSummary
+      ? `Aggregate TPR and FPR add every corpus together, including recall-only Juliet C#, except ${excludedSummary.corpora.join(', ')}: reported in its own row and in summary.excluded_from_overall, not in the aggregate. Quote a per-benchmark row for a rate that belongs to one dataset.`
+      : 'Aggregate TPR and FPR add every corpus together, including recall-only Juliet. Quote a per-benchmark row for a rate that belongs to one dataset.',
   ],
 };
 
@@ -278,7 +300,7 @@ const dash = (v) => (v == null ? 'n/a' : String(v));
 const summaryMd = [
   `# cognium-dev SAST Benchmark Results: ${date}`,
   '',
-  `Detection-quality sweep on cognium-dev ${version}${sha ? ` (commit \`${short}\`)` : ''}. ${rows.length} corpora, ${doc.summary.total_cases} cases. Static analysis only, default taint configuration, no LLM.`,
+  `Detection-quality sweep on cognium-dev ${version}${sha ? ` (commit \`${short}\`)` : ''}. ${rows.length} corpora, ${doc.summary.total_cases} cases${excludedSummary ? ` plus ${excludedSummary.total_cases} recall-only ${excludedSummary.corpora.join(', ')} cases reported separately` : ''}. Static analysis only, default taint configuration, no LLM.`,
   '',
   '## Scope',
   '',
@@ -300,7 +322,8 @@ const summaryMd = [
     rows.map((r) => [r.language, r.benchmark, r.tests, r.tp, dash(r.tn), dash(r.fp), r.fn, r.tpr, dash(r.fpr), r.score]),
   ),
   '',
-  `Together: TP ${doc.summary.true_positives}, FN ${doc.summary.false_negatives}, FP ${doc.summary.false_positives}, TN ${doc.summary.true_negatives_known} (TPR ${doc.summary.overall_tpr}, FPR ${doc.summary.overall_fpr}).`,
+  `Together${excludedSummary ? ` (excluding ${excludedSummary.corpora.join(', ')})` : ''}: TP ${doc.summary.true_positives}, FN ${doc.summary.false_negatives}, FP ${doc.summary.false_positives}, TN ${doc.summary.true_negatives_known} (TPR ${doc.summary.overall_tpr}, FPR ${doc.summary.overall_fpr}).`,
+  excludedSummary ? `Not in that total, recall only: ${excludedSummary.corpora.join(', ')}, ${excludedSummary.total_cases} cases, TP ${excludedSummary.true_positives}, FN ${excludedSummary.false_negatives} (TPR ${excludedSummary.tpr}).` : null,
   '',
   '## Language summary',
   '',
@@ -352,7 +375,7 @@ if (args.get('index') === 'true') {
   const start = '<!-- automated-sweeps:start -->';
   const end = '<!-- automated-sweeps:end -->';
   if (!index.includes(start) || !index.includes(end)) fail(`results/README.md is missing ${start} / ${end}`);
-  const bullet = `- \`${date}\`: cognium-dev ${version} (\`${short}\`) detection-quality sweep, ${rows.length} corpora, ${doc.summary.total_cases} cases, TPR ${doc.summary.overall_tpr} / FPR ${doc.summary.overall_fpr}. Scorecards in \`${date}-detection-quality/\`.`;
+  const bullet = `- \`${date}\`: cognium-dev ${version} (\`${short}\`) detection-quality sweep, ${rows.length} corpora, ${doc.summary.total_cases} cases, TPR ${doc.summary.overall_tpr} / FPR ${doc.summary.overall_fpr}${excludedSummary ? ` (${excludedSummary.corpora.join(', ')} separate: ${excludedSummary.total_cases} cases, TPR ${excludedSummary.tpr})` : ''}. Scorecards in \`${date}-detection-quality/\`.`;
   const block = index.slice(index.indexOf(start) + start.length, index.indexOf(end));
   const lines = block.split('\n').filter((l) => l.startsWith('- `') && !l.startsWith(`- \`${date}\``));
   lines.push(bullet);

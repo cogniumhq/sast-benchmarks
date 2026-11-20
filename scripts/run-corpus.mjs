@@ -178,10 +178,13 @@ const FETCHED = [
   // and never an FPR. Categories are the Juliet directory prefixes, e.g.
   // CWE23_Relative_Path_Traversal, CWE643_Xpath_Injection.
   //
-  // OOM risk: cognium-dev aborted with a V8 heap OOM on these 40,845 files even
-  // at a 12GB heap (cognium-dev#424, since closed). Run it once by hand
-  // (`--corpus juliet-java`) on the current engine before relying on the
-  // nightly; an errored corpus is treated as a regression and turns it red.
+  // cognium-dev once aborted with a V8 heap OOM on this tree (cognium-dev#424,
+  // since closed). No longer: the 2026-11-02 PR run on cognium-dev 4.19.0
+  // scanned all 40,547 cases in 38s.
+  //
+  // Excluded from the headline overall TPR/FPR: ~40k cases at a few percent
+  // recall would swamp the other corpora. It keeps its own row and is summed
+  // separately under summary.excluded_from_overall.
   {
     corpus: 'juliet-java',
     language: 'Java',
@@ -191,6 +194,7 @@ const FETCHED = [
     scanPath: 'src/testcases',
     cases: 'juliet-java',
     recallOnly: true,
+    excludeFromOverall: true,
   },
   // Not wired, deliberately — the deriver below is kept because the work is
   // sound; only the corpus is held back:
@@ -508,7 +512,7 @@ function normalize(report) {
   return out;
 }
 
-function scoreCorpus({ corpus, language, ext, repo, commit, archive, sha256, stripTo, cases: caseSource, recallOnly, configNote, scanPath, groundTruth, match = 'basename' }) {
+function scoreCorpus({ corpus, language, ext, repo, commit, archive, sha256, stripTo, cases: caseSource, recallOnly, excludeFromOverall, configNote, scanPath, groundTruth, match = 'basename' }) {
   let dir;
   let repoRoot;
   if (archive) {
@@ -597,6 +601,8 @@ function scoreCorpus({ corpus, language, ext, repo, commit, archive, sha256, str
     // A recall-only corpus has no negatives; reporting FPR 0.0% for it would
     // read as perfect precision rather than "not measured".
     ...(recallOnly ? { recall_only: true } : {}),
+    // Scored and reported per corpus, but left out of summary.overall_tpr/fpr.
+    ...(excludeFromOverall ? { excluded_from_overall: true } : {}),
     ...(configNote ? { config_note: configNote } : {}),
     tests: cases.size,
     tp, tn, fp, fn,
@@ -656,8 +662,11 @@ for (const v of selected) {
 }
 
 const scored = rows.filter(r => !r.error && !r.skipped);
-const sum = (k) => scored.reduce((a, r) => a + r[k], 0);
+const headline = scored.filter(r => !r.excluded_from_overall);
+const excluded = scored.filter(r => r.excluded_from_overall);
+const sum = (k, list = headline) => list.reduce((a, r) => a + r[k], 0);
 const totals = { total_cases: sum('tests'), true_positives: sum('tp'), true_negatives_known: sum('tn'), false_positives: sum('fp'), false_negatives: sum('fn') };
+const pct = (n, d) => (d > 0 ? `${((n / d) * 100).toFixed(1)}%` : '0.0%');
 
 // `--version` prints three lines ("cognium-dev v4.9.20", build, attribution);
 // the version is the vN.N.N token on the first, not the last word of the blob.
@@ -680,10 +689,17 @@ const summary = {
     ...totals,
     total_benchmarks: scored.length,
     errored_benchmarks: rows.filter(r => r.error).length,
-    overall_tpr: totals.true_positives + totals.false_negatives > 0
-      ? `${((totals.true_positives / (totals.true_positives + totals.false_negatives)) * 100).toFixed(1)}%` : '0.0%',
-    overall_fpr: totals.false_positives + totals.true_negatives_known > 0
-      ? `${((totals.false_positives / (totals.false_positives + totals.true_negatives_known)) * 100).toFixed(1)}%` : '0.0%',
+    overall_tpr: pct(totals.true_positives, totals.true_positives + totals.false_negatives),
+    overall_fpr: pct(totals.false_positives, totals.false_positives + totals.true_negatives_known),
+    ...(excluded.length ? {
+      excluded_from_overall: {
+        corpora: excluded.map(r => r.corpus),
+        total_cases: sum('tests', excluded),
+        true_positives: sum('tp', excluded),
+        false_negatives: sum('fn', excluded),
+        tpr: pct(sum('tp', excluded), sum('tp', excluded) + sum('fn', excluded)),
+      },
+    } : {}),
     total_elapsed_ms: scored.reduce((a, r) => a + r.elapsed_ms, 0),
   },
   results: rows,
@@ -695,5 +711,6 @@ console.log(`\n${'='.repeat(72)}`);
 console.log(`cognium-dev ${version} — ${scored.length} corpora, ${totals.total_cases} cases`);
 console.log(`TP ${totals.true_positives}  FN ${totals.false_negatives}  FP ${totals.false_positives}  TN ${totals.true_negatives_known}`);
 console.log(`overall TPR ${summary.summary.overall_tpr}   FPR ${summary.summary.overall_fpr}   ${(summary.summary.total_elapsed_ms / 1000).toFixed(1)}s`);
+if (excluded.length) { const x = summary.summary.excluded_from_overall; console.log(`not in overall: ${x.corpora.join(', ')} — ${x.total_cases} cases, TPR ${x.tpr}`); }
 if (summary.summary.errored_benchmarks > 0) console.log(`errored: ${rows.filter(r => r.error).map(r => r.corpus).join(', ')}`);
 console.log(`written to ${path.relative(process.cwd(), outDir)}/`);
