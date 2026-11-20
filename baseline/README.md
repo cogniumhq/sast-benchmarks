@@ -49,7 +49,19 @@ The register is empty as of 2026-10-22. The three 2026-09-21 entries (PyGoat
 regex crash, NodeGoat hang, Vulnerability-goapp hang) were removed because
 cognium-dev 4.17.0 finishes those scans. Their scores are in
 `results/2026-10-22/` and are not in `detection-quality.json`, so the nightly
-records them and does not gate them.
+records them and does not gate them. A labelled case the scan does not detect
+on one of those corpora is still logged: `compare-baseline.mjs --defects`
+writes it, and the workflow files one issue for the set. A miss already named
+in this baseline's `missed_cases` is the accepted gap and is not logged again.
+
+## Daily coverage
+
+`coverage.json` is the set of labelled vulnerable cases a daily scan has
+detected. The nightly adds to it and does not remove from it. A later run
+that misses a case in that file fails, even when the corpus is not in
+`detection-quality.json`. Cases the scan has never detected stay out of the
+file; they are the defect log, not the coverage bar. The file starts empty
+and fills on the first nightly that records `detected_cases`.
 
 It is an **exemption register, not a way to make a red gate green.** Four rules
 keep it honest, all covered by tests:

@@ -9,6 +9,12 @@
 //   node scripts/compare-baseline.mjs --run results/<date>-detection-quality/run-summary.json
 //   node scripts/compare-baseline.mjs --run <...> --baseline baseline/detection-quality.json
 //   node scripts/compare-baseline.mjs --run <...> --markdown report.md
+//   node scripts/compare-baseline.mjs --run <...> --defects /tmp/defects.md
+//
+// --defects writes every labelled vulnerable case the scan did not detect,
+// except cases already named in the baseline's missed_cases. A corpus with
+// no baseline row logs all of its misses. That file is a defect log, not a
+// gate: the exit code stays the regression verdict.
 //
 // Exit 0 = no regression (improvements are fine and are reported).
 // Exit 1 = regression.
@@ -47,7 +53,7 @@ const fprTolerance = Number(args.get('fpr-tolerance') || 0);
 const knownPath = path.resolve(root, args.get('known-failures') || 'baseline/known-failures.json');
 
 if (!runPath) {
-  console.error('usage: compare-baseline.mjs --run <run-summary.json> [--baseline <file>] [--fpr-tolerance <pp>] [--markdown <out.md>]');
+  console.error('usage: compare-baseline.mjs --run <run-summary.json> [--baseline <file>] [--fpr-tolerance <pp>] [--markdown <out.md>] [--defects <out.md>]');
   process.exit(2);
 }
 
@@ -210,6 +216,76 @@ if (regressions.length === 0) {
 } else {
   console.log(`REGRESSIONS (${regressions.length}):`);
   for (const e of regressions) console.log(fmt(e));
+}
+
+// A miss already named in the baseline is the accepted gap. Anything else
+// the scan failed to detect is a defect: a new miss on a baselined corpus,
+// or every miss on a corpus the baseline does not cover.
+function undetectedDefects(run, base) {
+  const accepted = new Map((base.results ?? []).map(r => [r.corpus, new Set(r.missed_cases ?? [])]));
+  const out = [];
+  for (const row of run.results ?? []) {
+    if (row.error || row.skipped) continue;
+    const missed = row.missed_cases ?? [];
+    if (missed.length === 0) continue;
+    const known = accepted.get(row.corpus);
+    const cases = known ? missed.filter(c => !known.has(c)) : [...missed];
+    if (cases.length === 0) continue;
+    out.push({
+      corpus: row.corpus,
+      cases,
+      baselined: known !== undefined,
+      accepted: known ? known.size : 0,
+    });
+  }
+  return out;
+}
+
+function renderDefects(defects) {
+  if (defects.length === 0) return 'No labelled cases went undetected outside the baseline.\n';
+  const total = defects.reduce((n, d) => n + d.cases.length, 0);
+  const md = [];
+  md.push(`## Undetected labelled cases (${total})`);
+  md.push('');
+  md.push('A labelled vulnerable case the scan did not flag with the expected CWE.');
+  md.push('Cases already named in `baseline/detection-quality.json` `missed_cases` are the accepted gap and are not listed again.');
+  md.push('');
+  md.push('| Corpus | Undetected | Baseline |');
+  md.push('|---|---|---|');
+  for (const d of defects) {
+    md.push(`| ${d.corpus} | ${d.cases.length} | ${d.baselined ? `${d.accepted} accepted misses` : 'no baseline'} |`);
+  }
+  md.push('');
+  const cap = 40;
+  for (const d of defects) {
+    md.push(`### ${d.corpus}`);
+    md.push('');
+    for (const c of d.cases.slice(0, cap)) md.push(`- ${c}`);
+    if (d.cases.length > cap) md.push(`- … and ${d.cases.length - cap} more in \`${d.corpus}.scorecard.json\` \`missed_cases\``);
+    md.push('');
+  }
+  return md.join('\n');
+}
+
+// Logging these does not change the exit code: a standing gap on an ungated
+// corpus is recorded, not a regression.
+const defects = undetectedDefects(run, base);
+const defectCount = defects.reduce((n, d) => n + d.cases.length, 0);
+if (defectCount === 0) {
+  console.log('no undetected cases outside the baseline.');
+} else {
+  console.log(`undetected defects (${defectCount}), not in the baseline:`);
+  for (const d of defects) {
+    const shown = d.cases.slice(0, 8);
+    const more = d.cases.length - shown.length;
+    console.log(`  ${d.corpus}: ${shown.join(', ')}${more ? `, and ${more} more` : ''}`);
+  }
+}
+if (args.get('defects')) {
+  const out = path.resolve(args.get('defects'));
+  fs.mkdirSync(path.dirname(out), { recursive: true });
+  fs.writeFileSync(out, renderDefects(defects));
+  fs.writeFileSync(`${out}.count`, String(defectCount));
 }
 
 if (args.get('markdown')) {

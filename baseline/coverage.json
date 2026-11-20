@@ -1,0 +1,4 @@
+{
+  "_comment": "Labelled vulnerable cases a daily scan has detected. The set only grows. A later run that misses one is a regression. Cases the scan has not detected are not listed here; compare-baseline.mjs --defects logs those. The nightly sweep fills this from each corpus scorecard's detected_cases.",
+  "corpora": {}
+}

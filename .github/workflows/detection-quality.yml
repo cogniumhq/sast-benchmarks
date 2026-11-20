@@ -2,6 +2,13 @@ name: detection-quality
 
 # Runs cognium-dev against every corpus and scores it against
 # baseline/detection-quality.json. A corpus below baseline files a defect.
+# A labelled case the scan does not detect is also logged as a defect, except
+# cases already named in the baseline missed list. That log does not fail the
+# gate: an ungated corpus stays recorded, and its misses are filed.
+#
+# Coverage grows with the same daily run. A labelled case this run detects is
+# added to baseline/coverage.json, and a later run that misses it fails. The
+# file only grows, so today's detections are still required tomorrow.
 #
 # Nightly, monthly, plus on demand. Every run is scored against
 # baseline/detection-quality.json; a corpus scoring below it files a defect.
@@ -83,6 +90,7 @@ jobs:
       sha: ${{ steps.meta.outputs.sha }}
       short: ${{ steps.meta.outputs.short }}
       version: ${{ steps.meta.outputs.version }}
+      ref: ${{ steps.meta.outputs.ref }}
       corpora: ${{ steps.matrix.outputs.corpora }}
 
     steps:
@@ -119,9 +127,32 @@ jobs:
         id: meta
         run: |
           cd .cognium-dev
-          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-          echo "short=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
-          echo "version=$(node packages/cli/dist/cli.js --version | head -1 | grep -oE '[0-9]+[.][0-9]+[.][0-9]+')" >> "$GITHUB_OUTPUT"
+          sha=$(git rev-parse HEAD)
+          short=$(git rev-parse --short HEAD)
+          # A dispatch can pin an old tag (2026-11-03 ran cognium-dev-v4.17.0).
+          # The version string is then honestly 4.17.0; the ref and SHA are what
+          # stop that from being read as a stale label on a main build.
+          ref="${{ inputs.cognium_dev_ref }}"
+          if [ -z "$ref" ]; then ref=main; fi
+          # Only the `cognium-dev vX.Y.Z` line. The first semver in the output
+          # is not the version: a warning above it would be recorded instead.
+          ver=$(node packages/cli/dist/cli.js --version | awk '/^cognium-dev v[0-9]+\.[0-9]+\.[0-9]+$/ { print substr($2, 2); exit }')
+          pkg=$(node -p "require('./packages/cli/package.json').version")
+          if [ -z "$ver" ]; then
+            echo "::error::cognium-dev --version did not print a 'cognium-dev vX.Y.Z' line"
+            node packages/cli/dist/cli.js --version || true
+            exit 1
+          fi
+          if [ "$ver" != "$pkg" ]; then
+            echo "::error::CLI reports v$ver but packages/cli/package.json is $pkg"
+            exit 1
+          fi
+          {
+            echo "sha=$sha"
+            echo "short=$short"
+            echo "version=$ver"
+            echo "ref=$ref"
+          } >> "$GITHUB_OUTPUT"
 
       # The matrix comes from the harness manifest, not a list copied into this
       # file. A copy drifts the moment a corpus is added, and that drift looks
@@ -238,20 +269,44 @@ jobs:
           node scripts/merge-scorecards.mjs \
             --in /tmp/scorecards \
             --version "${{ needs.build.outputs.version }}" \
+            --sha "${{ needs.build.outputs.sha }}" \
+            --ref "${{ needs.build.outputs.ref }}" \
             --out "results/${{ steps.date.outputs.day }}-detection-quality"
 
       # The verdict. run-corpus.mjs always exits 0 so a measurement can never be
-      # mistaken for a pass; this step alone decides regression or not.
+      # mistaken for a pass. A drop against the frozen baseline, or a miss of a
+      # case baseline/coverage.json already recorded, sets regressed.
       - name: Compare against baseline
         id: compare
         if: ${{ !cancelled() }}
         run: |
           f="results/${{ steps.date.outputs.day }}-detection-quality/run-summary.json"
           echo "summary_file=$f" >> "$GITHUB_OUTPUT"
-          if node scripts/compare-baseline.mjs --run "$f" --markdown /tmp/report.md; then
+          if node scripts/compare-baseline.mjs --run "$f" --markdown /tmp/report.md --defects /tmp/defects.md; then
             echo "regressed=false" >> "$GITHUB_OUTPUT"
           else
             echo "regressed=true" >> "$GITHUB_OUTPUT"
+          fi
+          if [ -f /tmp/defects.md.count ]; then
+            echo "undetected=$(cat /tmp/defects.md.count)" >> "$GITHUB_OUTPUT"
+          else
+            echo "undetected=0" >> "$GITHUB_OUTPUT"
+          fi
+          # Union today's detections into baseline/coverage.json. A case that
+          # was covered and is now missed fails the run; the case stays in the
+          # file. New detections are recorded either way, and the publish step
+          # commits the grown file.
+          if node scripts/update-coverage.mjs --run "$f" --write --lost /tmp/coverage-lost.md; then
+            echo "coverage_lost=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "coverage_lost=true" >> "$GITHUB_OUTPUT"
+            echo "regressed=true" >> "$GITHUB_OUTPUT"
+            {
+              echo ""
+              echo "### Coverage lost"
+              echo ""
+              cat /tmp/coverage-lost.md
+            } >> /tmp/report.md
           fi
 
       - name: Summary
@@ -263,7 +318,7 @@ jobs:
             const s = require('$PWD/' + process.argv[1]);
             const m = s.summary;
             const line = (a, b) => console.log('| ' + a + ' | ' + b + ' |');
-            console.log('## Detection quality — cognium-dev ' + s.tool.version);
+            console.log('## Detection quality — cognium-dev ' + s.tool.version + (s.tool.ref ? ' (' + s.tool.ref + (s.tool.sha ? ' @ ' + s.tool.sha.slice(0, 7) : '') + ')' : ''));
             console.log('');
             console.log('| | |'); console.log('|---|---|');
             line('Cases', m.total_cases);
@@ -362,13 +417,65 @@ jobs:
             });
             core.notice(`noted recovery on #${existing.number}`);
 
+      # Standing misses, separate from a regression. One issue, updated in
+      # place: a nightly that opens a fresh issue per miss is muted within a
+      # week, and Juliet alone is hundreds of cases. The count is cases the
+      # scan did not detect that are not already in the baseline missed list.
+      - name: Log undetected cases as defects
+        if: ${{ !cancelled() && steps.compare.outputs.undetected != '0' && steps.compare.outputs.undetected != '' }}
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.COGNIUM_DEV_ISSUES_TOKEN || github.token }}
+          script: |
+            const fs = require('fs');
+            const MARKER = '<!-- detection-quality-undetected -->';
+            const report = fs.readFileSync('/tmp/defects.md', 'utf8');
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const sha = '${{ needs.build.outputs.sha }}';
+            const count = '${{ steps.compare.outputs.undetected }}';
+
+            const crossRepo = Boolean('${{ secrets.COGNIUM_DEV_ISSUES_TOKEN }}');
+            const target = crossRepo
+              ? { owner: 'cogniumhq', repo: 'cognium-dev' }
+              : { owner: context.repo.owner, repo: context.repo.repo };
+
+            const q = `repo:${target.owner}/${target.repo} is:issue is:open in:body "${MARKER}"`;
+            const found = await github.rest.search.issuesAndPullRequests({ q, per_page: 1 });
+            const existing = found.data.items[0];
+
+            const body = [
+              MARKER, '',
+              report, '',
+              `Run: ${runUrl}`,
+              `Measured: cognium-dev \`${sha}\``,
+              '',
+              'Logged by `scripts/compare-baseline.mjs --defects`.',
+              'A case already in `baseline/detection-quality.json` `missed_cases` is not repeated.',
+              'The full list for a truncated corpus is that corpus\'s scorecard in the run artifact.',
+            ].join('\n');
+
+            if (existing) {
+              await github.rest.issues.createComment({ ...target, issue_number: existing.number, body });
+              core.notice(`updated undetected-case defect #${existing.number} (${count} cases) on ${target.owner}/${target.repo}`);
+            } else {
+              const created = await github.rest.issues.create({
+                ...target,
+                title: `Detection-quality: ${count} labelled cases not detected`,
+                body,
+              });
+              core.notice(`filed undetected-case defect #${created.data.number} (${count} cases) on ${target.owner}/${target.repo}`);
+            }
+            if (!crossRepo) {
+              core.warning('COGNIUM_DEV_ISSUES_TOKEN is not set — the defect was filed in this repository rather than cognium-dev.');
+            }
+
       # Monthly, and an on-demand publish. Writes results/<date>/ from the
       # merged scorecards and pushes it to main. A corpus that did not score
       # still commits its scorecards (exit 2) and does not write results.json.
-      # Nightly, only results/<date>-detection-quality/ is pushed, and only
-      # when no dated result set exists for that day: a sweep folder that
-      # disagreed with the results/<date>/ page beside it would be worse than
-      # one day without a nightly sweep.
+      # Nightly always updates results/<date>-detection-quality/. That folder
+      # is what measurements.py reads. Skipping it when a dated page already
+      # existed froze the 2026-11-03 sweep on a dispatch of tag
+      # cognium-dev-v4.17.0 after the scheduled main run had measured 4.19.0.
       # This step is before the regression failure so a red month is still
       # recorded. Pull requests do not reach it.
       - name: Publish the dated result set
@@ -407,7 +514,7 @@ jobs:
             printf '%s\n' \
               "# Detection-quality sweep — ${DAY} (nightly)" \
               "" \
-              "Nightly sweep, not a published result set: there is no \`results/${DAY}/\` page or \`raw/${DAY}/\` for it. cognium-dev ${{ needs.build.outputs.version }}, commit \`${{ needs.build.outputs.short }}\`. Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+              "Nightly sweep. cognium-dev ${{ needs.build.outputs.version }}, ref \`${{ needs.build.outputs.ref }}\`, commit \`${{ needs.build.outputs.sha }}\`. Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
               "" \
               "This folder keeps \`run-summary.json\` and one scorecard per corpus, for cogniumhq/loops \`checks/measurements.py\`." \
               > "${SWEEP}/README.md"
@@ -415,6 +522,10 @@ jobs:
 
           STAGE=$(mktemp -d)
           cp -a "$SWEEP" "$STAGE/sweep"
+          # The coverage file was updated before this checkout. Preserve it
+          # across the reset onto origin/main, or the day's new detections
+          # would be thrown away with the runner's worktree.
+          if [ -f baseline/coverage.json ]; then cp baseline/coverage.json "$STAGE/coverage.json"; fi
           if [ "$PUBLISH_RESULTS" = "true" ]; then
             if [ -d "results/${DAY}" ]; then cp -a "results/${DAY}" "$STAGE/dated"; fi
             if [ -d "raw/${DAY}" ]; then cp -a "raw/${DAY}" "$STAGE/raw"; fi
@@ -434,14 +545,17 @@ jobs:
             if [ -d "raw/${DAY}" ]; then git add "raw/${DAY}"; fi
             MSG="feat: publish the ${DAY} detection-quality sweep"
           else
-            if [ -d "results/${DAY}" ]; then
-              echo "results/${DAY}/ is already published; leaving its sweep folder as published"
-              exit 0
-            fi
             rm -rf "$SWEEP"
             cp -a "$STAGE/sweep" "$SWEEP"
             git add "$SWEEP"
             MSG="chore: record the ${DAY} nightly detection-quality sweep"
+          fi
+          if [ -f "$STAGE/coverage.json" ]; then
+            cp "$STAGE/coverage.json" baseline/coverage.json
+            git add baseline/coverage.json
+          fi
+          if ! git diff --cached --quiet -- baseline/coverage.json; then
+            MSG="${MSG}"$'\n\n'"Extend the daily detection coverage with cases this run flagged."
           fi
           if git diff --cached --quiet; then
             echo "no changes to publish"

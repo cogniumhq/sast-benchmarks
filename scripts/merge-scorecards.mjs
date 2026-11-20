@@ -19,6 +19,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
 
 const args = new Map();
 for (let i = 2; i < process.argv.length; i += 1) {
@@ -32,6 +33,8 @@ const root = path.resolve(new URL('..', import.meta.url).pathname);
 const inDir = args.get('in');
 const outDir = args.get('out');
 const version = args.get('version') || 'unknown';
+const sha = args.get('sha') || '';
+const ref = args.get('ref') || '';
 const baselinePath = path.resolve(root, args.get('baseline') || 'baseline/detection-quality.json');
 
 if (!inDir || !outDir) {
@@ -62,9 +65,30 @@ for (const file of findScorecards(inDir).sort()) {
   rows.push(row);
 }
 
+function expectedCorpora() {
+  const script = path.join(root, 'scripts/run-corpus.mjs');
+  const out = execFileSync(process.execPath, [script, '--list'], { encoding: 'utf8' });
+  const names = JSON.parse(out);
+  if (!Array.isArray(names) || names.length === 0) throw new Error('--list returned no corpora');
+  return names;
+}
+
+// Every corpus the manifest says this run should measure. A job that dies
+// before writing a scorecard — including one the baseline has never gated,
+// which is what happened to OWASP Benchmark on 2026-11-04 — is an error row,
+// not a corpus that quietly disappears.
+for (const corpus of expectedCorpora()) {
+  if (!seen.has(corpus)) {
+    rows.push({ corpus, error: 'no scorecard produced — the job did not complete' });
+    seen.add(corpus);
+  }
+}
+
 // A corpus the baseline expects but that produced no scorecard at all is a
 // failure, not an absence. Without this a job killed before writing its
-// artifact would silently shrink the run.
+// artifact would silently shrink the run. The manifest loop above covers the
+// corpora still being measured; this covers one the baseline still names
+// after it was removed from the manifest.
 if (fs.existsSync(baselinePath)) {
   try {
     const base = JSON.parse(fs.readFileSync(baselinePath, 'utf8'));
@@ -96,7 +120,14 @@ const pct = (n, d) => (d > 0 ? `${((n / d) * 100).toFixed(1)}%` : '0.0%');
 
 const summary = {
   run_at: new Date().toISOString(),
-  tool: { name: 'cognium-dev', version },
+  tool: {
+    name: 'cognium-dev',
+    version,
+    // The version string alone could not tell a dispatch of tag
+    // cognium-dev-v4.17.0 from a main build whose label had gone stale.
+    ...(sha ? { sha } : {}),
+    ...(ref ? { ref } : {}),
+  },
   scope: 'per-corpus jobs merged into one summary',
   summary: {
     ...totals,
@@ -121,7 +152,8 @@ const summary = {
 fs.mkdirSync(path.resolve(root, outDir), { recursive: true });
 fs.writeFileSync(path.resolve(root, outDir, 'run-summary.json'), JSON.stringify(summary, null, 2) + '\n');
 for (const row of rows) {
-  if (row.error && !row.tests) continue; // nothing to copy for a job that never ran
+  // An errored corpus still gets a scorecard. Leaving the file out made the
+  // 2026-11-04 OWASP fetch failure look like the corpus had not been run.
   fs.writeFileSync(path.resolve(root, outDir, `${row.corpus}.scorecard.json`), JSON.stringify(row, null, 2) + '\n');
 }
 
