@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import test from 'node:test';
 import { caseEntries, enclosingFunction, indexFindings, isTransientFetchError, pythonFunctionRanges, tally, toolVersion, withRetry } from './run-corpus.mjs';
 
@@ -97,4 +98,11 @@ test('a DNS failure is retried and a bad pin is not', () => {
     throw new Error('checkout did not land on abc');
   }, { sleep: () => {} }), /did not land/);
   assert.equal(pins, 1);
+});
+
+test('scoreCorpus accepts excludeFromOverall, the Juliet Java headline flag', () => {
+  const src = fs.readFileSync(new URL('./run-corpus.mjs', import.meta.url), 'utf8');
+  const start = src.indexOf('function scoreCorpus(');
+  const sig = src.slice(start, src.indexOf(') {', start));
+  assert.match(sig, /\bexcludeFromOverall\b/);
 });

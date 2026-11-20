@@ -680,7 +680,7 @@ export function tally(entries, flagged) {
   };
 }
 
-function scoreCorpus({ corpus, language, ext, repo, commit, archive, sha256, stripTo, cases: caseSource, recallOnly, configNote, scanPath, groundTruth, match = 'basename' }) {
+function scoreCorpus({ corpus, language, ext, repo, commit, archive, sha256, stripTo, cases: caseSource, recallOnly, excludeFromOverall, configNote, scanPath, groundTruth, match = 'basename' }) {
   let dir;
   let repoRoot;
   if (archive) {
