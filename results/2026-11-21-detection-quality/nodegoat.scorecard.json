@@ -1,0 +1,61 @@
+{
+  "corpus": "nodegoat",
+  "language": "JavaScript",
+  "benchmark": "nodegoat",
+  "dataset_revision": "c5cb68a7084e4ae7dcc60e6a98768720a81841e8",
+  "tests": 14,
+  "tp": 2,
+  "tn": 9,
+  "fp": 0,
+  "fn": 3,
+  "tpr": "40.0%",
+  "fpr": "0.0%",
+  "score": "40.0%",
+  "score_rule": "tpr - fpr",
+  "elapsed_ms": 343,
+  "categories": [
+    {
+      "category": "codeinj",
+      "cwe": "CWE-94",
+      "tp": 1,
+      "tn": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "nosqli",
+      "cwe": "CWE-943",
+      "tp": 0,
+      "tn": 3,
+      "fp": 0,
+      "fn": 1
+    },
+    {
+      "category": "ssrf",
+      "cwe": "CWE-918",
+      "tp": 1,
+      "tn": 0,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "xss",
+      "cwe": "CWE-79",
+      "tp": 0,
+      "tn": 3,
+      "fp": 0,
+      "fn": 2
+    }
+  ],
+  "detected_cases": [
+    "app/routes/contributions.js",
+    "app/routes/research.js (ssrf)"
+  ],
+  "missed_cases": [
+    "app/data/allocations-dao.js",
+    "app/routes/memos.js",
+    "app/routes/research.js (xss)"
+  ],
+  "spurious_cases": [],
+  "scan_report": "nodegoat.scan.json"
+}
