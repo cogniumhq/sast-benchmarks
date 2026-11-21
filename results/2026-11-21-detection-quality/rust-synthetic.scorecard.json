@@ -11,7 +11,7 @@
   "fpr": "7.7%",
   "score": "81.5%",
   "score_rule": "tpr - fpr",
-  "elapsed_ms": 234,
+  "elapsed_ms": 287,
   "categories": [
     {
       "category": "cmdi",

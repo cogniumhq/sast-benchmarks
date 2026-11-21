@@ -12,7 +12,7 @@
   "fpr": "0.0%",
   "score": "60.0%",
   "score_rule": "tpr - fpr",
-  "elapsed_ms": 743,
+  "elapsed_ms": 548,
   "categories": [
     {
       "category": "codeinj",

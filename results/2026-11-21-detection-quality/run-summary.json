@@ -1,10 +1,10 @@
 {
-  "run_at": "2026-11-21T02:43:38.671Z",
+  "run_at": "2026-11-21T10:42:20.347Z",
   "tool": {
     "name": "cognium-dev",
     "version": "4.23.0",
-    "sha": "4fbbfb4c9d04da971d90058011c7c1a9e39c52e5",
-    "ref": "cognium-dev-v4.23.0"
+    "sha": "05bd320accf7e220fd3784f61d3bb1e606d74189",
+    "ref": "main"
   },
   "scope": "per-corpus jobs merged into one summary",
   "summary": {
@@ -26,7 +26,7 @@
       "false_negatives": 39287,
       "tpr": "3.1%"
     },
-    "total_elapsed_ms": 116877
+    "total_elapsed_ms": 63577
   },
   "results": [
     {
@@ -42,7 +42,7 @@
       "fpr": "0.0%",
       "score": "81.8%",
       "score_rule": "tpr - fpr",
-      "elapsed_ms": 271,
+      "elapsed_ms": 404,
       "categories": [
         {
           "category": "cmdi",
@@ -127,7 +127,7 @@
       "fpr": "0.0%",
       "score": "100.0%",
       "score_rule": "tpr - fpr",
-      "elapsed_ms": 174,
+      "elapsed_ms": 278,
       "categories": [
         {
           "category": "cmdi",
@@ -240,7 +240,7 @@
       "fpr": "0.0%",
       "score": "66.7%",
       "score_rule": "tpr - fpr",
-      "elapsed_ms": 201,
+      "elapsed_ms": 267,
       "categories": [
         {
           "category": "cmdi",
@@ -330,7 +330,7 @@
       "fpr": "0.0%",
       "score": "33.3%",
       "score_rule": "tpr - fpr",
-      "elapsed_ms": 285,
+      "elapsed_ms": 325,
       "categories": [
         {
           "category": "cmdi",
@@ -380,7 +380,7 @@
       "fpr": "0.0%",
       "score": "89.5%",
       "score_rule": "tpr - fpr",
-      "elapsed_ms": 181,
+      "elapsed_ms": 267,
       "categories": [
         {
           "category": "cmdi",
@@ -462,7 +462,7 @@
       "fpr": "0.0%",
       "score": "63.2%",
       "score_rule": "tpr - fpr",
-      "elapsed_ms": 209,
+      "elapsed_ms": 272,
       "categories": [
         {
           "category": "css_injection",
@@ -585,7 +585,7 @@
       "fpr": "0.0%",
       "score": "60.0%",
       "score_rule": "tpr - fpr",
-      "elapsed_ms": 743,
+      "elapsed_ms": 548,
       "categories": [
         {
           "category": "codeinj",
@@ -677,7 +677,7 @@
       "fpr": "0.0%",
       "score": "2.3%",
       "score_rule": "tpr - fpr",
-      "elapsed_ms": 41291,
+      "elapsed_ms": 20606,
       "categories": [
         {
           "category": "CWE113_HTTP_Response_Splitting",
@@ -2421,7 +2421,7 @@
       "fpr": "0.0%",
       "score": "3.1%",
       "score_rule": "tpr - fpr",
-      "elapsed_ms": 43794,
+      "elapsed_ms": 26123,
       "categories": [
         {
           "category": "CWE111_Unsafe_JNI",
@@ -43888,7 +43888,7 @@
       "fpr": "0.0%",
       "score": "40.0%",
       "score_rule": "tpr - fpr",
-      "elapsed_ms": 343,
+      "elapsed_ms": 349,
       "categories": [
         {
           "category": "codeinj",
@@ -43948,7 +43948,7 @@
       "fpr": "0.0%",
       "score": "100.0%",
       "score_rule": "tpr - fpr",
-      "elapsed_ms": 212,
+      "elapsed_ms": 293,
       "categories": [
         {
           "category": "cmdi",
@@ -44043,7 +44043,7 @@
       "fpr": "5.0%",
       "score": "92.2%",
       "score_rule": "tpr - fpr",
-      "elapsed_ms": 23468,
+      "elapsed_ms": 9287,
       "categories": [
         {
           "category": "cmdi",
@@ -45637,7 +45637,7 @@
       "fpr": "0.0%",
       "score": "46.7%",
       "score_rule": "tpr - fpr",
-      "elapsed_ms": 816,
+      "elapsed_ms": 634,
       "categories": [
         {
           "category": "cmdi",
@@ -45755,7 +45755,7 @@
       "fpr": "7.7%",
       "score": "81.5%",
       "score_rule": "tpr - fpr",
-      "elapsed_ms": 234,
+      "elapsed_ms": 287,
       "categories": [
         {
           "category": "cmdi",
@@ -45882,7 +45882,7 @@
       "fpr": "20.0%",
       "score": "68.4%",
       "score_rule": "tpr - fpr",
-      "elapsed_ms": 613,
+      "elapsed_ms": 510,
       "categories": [
         {
           "category": "aliasing",
@@ -46117,7 +46117,7 @@
       "fpr": "0.0%",
       "score": "66.7%",
       "score_rule": "tpr - fpr",
-      "elapsed_ms": 2688,
+      "elapsed_ms": 2308,
       "categories": [
         {
           "category": "cmdi",
@@ -46179,7 +46179,7 @@
       "fpr": "0.0%",
       "score": "76.2%",
       "score_rule": "tpr - fpr",
-      "elapsed_ms": 1354,
+      "elapsed_ms": 819,
       "categories": [
         {
           "category": "deserialization",
