@@ -1,0 +1,119 @@
+{
+  "corpus": "pygoat",
+  "language": "Python",
+  "benchmark": "pygoat",
+  "dataset_revision": "19d17cc8874861142b330636d068bbde54e86b85",
+  "tests": 26,
+  "tp": 7,
+  "tn": 11,
+  "fp": 0,
+  "fn": 8,
+  "tpr": "46.7%",
+  "fpr": "0.0%",
+  "score": "46.7%",
+  "score_rule": "tpr - fpr",
+  "elapsed_ms": 636,
+  "categories": [
+    {
+      "category": "cmdi",
+      "cwe": "CWE-78",
+      "tp": 1,
+      "tn": 1,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "codeinj",
+      "cwe": "CWE-94",
+      "tp": 2,
+      "tn": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "deserialization",
+      "cwe": "CWE-502",
+      "tp": 1,
+      "tn": 1,
+      "fp": 0,
+      "fn": 1
+    },
+    {
+      "category": "pathtraver",
+      "cwe": "CWE-22",
+      "tp": 1,
+      "tn": 2,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "sqli",
+      "cwe": "CWE-89",
+      "tp": 1,
+      "tn": 2,
+      "fp": 0,
+      "fn": 1
+    },
+    {
+      "category": "ssrf",
+      "cwe": "CWE-918",
+      "tp": 1,
+      "tn": 1,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "ssti",
+      "cwe": "CWE-1336",
+      "tp": 0,
+      "tn": 0,
+      "fp": 0,
+      "fn": 1
+    },
+    {
+      "category": "weakcrypto",
+      "cwe": "CWE-327",
+      "tp": 0,
+      "tn": 0,
+      "fp": 0,
+      "fn": 1
+    },
+    {
+      "category": "xss",
+      "cwe": "CWE-79",
+      "tp": 0,
+      "tn": 0,
+      "fp": 0,
+      "fn": 3
+    },
+    {
+      "category": "xxe",
+      "cwe": "CWE-611",
+      "tp": 0,
+      "tn": 1,
+      "fp": 0,
+      "fn": 1
+    }
+  ],
+  "detected_cases": [
+    "introduction/views.py:a9_lab",
+    "introduction/views.py:a9_lab2",
+    "introduction/views.py:cmd_lab",
+    "introduction/views.py:cmd_lab2",
+    "introduction/views.py:injection_sql_lab",
+    "introduction/views.py:ssrf_lab",
+    "introduction/views.py:ssrf_lab2"
+  ],
+  "missed_cases": [
+    "introduction/views.py:crypto_failure_lab",
+    "introduction/views.py:insec_des_lab",
+    "introduction/views.py:sql_lab",
+    "introduction/views.py:ssti_lab",
+    "introduction/views.py:xss_lab",
+    "introduction/views.py:xss_lab2",
+    "introduction/views.py:xss_lab3",
+    "introduction/views.py:xxe_parse"
+  ],
+  "spurious_cases": [],
+  "scan_report": "pygoat.scan.json"
+}

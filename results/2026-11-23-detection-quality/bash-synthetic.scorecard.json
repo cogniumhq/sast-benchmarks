@@ -1,0 +1,85 @@
+{
+  "corpus": "bash-synthetic",
+  "language": "Bash",
+  "benchmark": "bash-synthetic",
+  "tests": 31,
+  "tp": 18,
+  "tn": 9,
+  "fp": 0,
+  "fn": 4,
+  "tpr": "81.8%",
+  "fpr": "0.0%",
+  "score": "81.8%",
+  "score_rule": "tpr - fpr",
+  "elapsed_ms": 365,
+  "categories": [
+    {
+      "category": "cmdi",
+      "cwe": "CWE-78",
+      "tp": 5,
+      "tn": 2,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "codeinj",
+      "cwe": "CWE-94",
+      "tp": 4,
+      "tn": 1,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "pathtraver",
+      "cwe": "CWE-22",
+      "tp": 4,
+      "tn": 2,
+      "fp": 0,
+      "fn": 1
+    },
+    {
+      "category": "sqli",
+      "cwe": "CWE-89",
+      "tp": 1,
+      "tn": 2,
+      "fp": 0,
+      "fn": 3
+    },
+    {
+      "category": "ssrf",
+      "cwe": "CWE-918",
+      "tp": 4,
+      "tn": 2,
+      "fp": 0,
+      "fn": 0
+    }
+  ],
+  "detected_cases": [
+    "cmdi_curl_output_to_sh",
+    "cmdi_read_to_bash_c",
+    "cmdi_read_to_sh_c",
+    "cmdi_read_to_zsh_c",
+    "cmdi_wget_output_to_bash",
+    "codeinj_curl_to_eval",
+    "codeinj_read_multi_to_eval",
+    "codeinj_read_to_eval",
+    "codeinj_wget_to_eval",
+    "pathtraver_curl_to_cat",
+    "pathtraver_read_to_cat",
+    "pathtraver_read_to_cp",
+    "pathtraver_read_to_mv",
+    "sqli_read_to_sqlite3",
+    "ssrf_curl_chained_to_curl",
+    "ssrf_read_curl_with_flag",
+    "ssrf_read_to_curl",
+    "ssrf_read_to_wget"
+  ],
+  "missed_cases": [
+    "pathtraver_read_to_rm",
+    "sqli_curl_to_mysql",
+    "sqli_read_to_mysql",
+    "sqli_read_to_psql"
+  ],
+  "spurious_cases": [],
+  "scan_report": "bash-synthetic.scan.json"
+}
