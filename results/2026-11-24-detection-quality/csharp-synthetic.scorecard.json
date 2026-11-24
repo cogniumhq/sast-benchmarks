@@ -1,0 +1,113 @@
+{
+  "corpus": "csharp-synthetic",
+  "language": "C#",
+  "benchmark": "csharp-synthetic",
+  "tests": 15,
+  "tp": 11,
+  "tn": 4,
+  "fp": 0,
+  "fn": 0,
+  "tpr": "100.0%",
+  "fpr": "0.0%",
+  "score": "100.0%",
+  "score_rule": "tpr - fpr",
+  "elapsed_ms": 264,
+  "categories": [
+    {
+      "category": "cmdi",
+      "cwe": "CWE-78",
+      "tp": 1,
+      "tn": 1,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "codeinj",
+      "cwe": "CWE-94",
+      "tp": 1,
+      "tn": 0,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "deser",
+      "cwe": "CWE-502",
+      "tp": 1,
+      "tn": 0,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "ldap",
+      "cwe": "CWE-90",
+      "tp": 1,
+      "tn": 0,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "pathtraver",
+      "cwe": "CWE-22",
+      "tp": 1,
+      "tn": 1,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "sqli",
+      "cwe": "CWE-89",
+      "tp": 2,
+      "tn": 1,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "ssrf",
+      "cwe": "CWE-918",
+      "tp": 1,
+      "tn": 0,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "xpath",
+      "cwe": "CWE-643",
+      "tp": 1,
+      "tn": 0,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "xss",
+      "cwe": "CWE-79",
+      "tp": 1,
+      "tn": 1,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "xxe",
+      "cwe": "CWE-611",
+      "tp": 1,
+      "tn": 0,
+      "fp": 0,
+      "fn": 0
+    }
+  ],
+  "detected_cases": [
+    "cmdi_process_shell_concat",
+    "codeinj_csharpscript_eval",
+    "deser_binaryformatter",
+    "ldap_directorysearcher_concat",
+    "pathtraver_readalltext_concat",
+    "sqli_adonet_concat",
+    "sqli_adonet_interpolation",
+    "ssrf_httpclient_get",
+    "xpath_selectnodes_concat",
+    "xss_response_write_concat",
+    "xxe_loadxml_default"
+  ],
+  "missed_cases": [],
+  "spurious_cases": [],
+  "scan_report": "csharp-synthetic.scan.json"
+}
