@@ -14,7 +14,7 @@
   "fpr": "0.0%",
   "score": "3.1%",
   "score_rule": "tpr - fpr",
-  "elapsed_ms": 45548,
+  "elapsed_ms": 23048,
   "categories": [
     {
       "category": "CWE111_Unsafe_JNI",

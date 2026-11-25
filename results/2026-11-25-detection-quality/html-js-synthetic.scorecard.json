@@ -11,7 +11,7 @@
   "fpr": "0.0%",
   "score": "63.2%",
   "score_rule": "tpr - fpr",
-  "elapsed_ms": 222,
+  "elapsed_ms": 276,
   "categories": [
     {
       "category": "css_injection",

@@ -1,22 +1,22 @@
 {
-  "run_at": "2026-11-25T02:53:33.051Z",
+  "run_at": "2026-11-25T12:07:10.144Z",
   "tool": {
     "name": "cognium-dev",
     "version": "4.23.0",
-    "sha": "4fbbfb4c9d04da971d90058011c7c1a9e39c52e5",
-    "ref": "cognium-dev-v4.23.0"
+    "sha": "c6feb34a79fb30013b14a6b3803083ff582ed856",
+    "ref": "main"
   },
   "scope": "per-corpus jobs merged into one summary",
   "summary": {
     "total_cases": 4069,
     "true_positives": 1650,
-    "true_negatives_known": 1377,
-    "false_positives": 69,
+    "true_negatives_known": 1378,
+    "false_positives": 68,
     "false_negatives": 973,
     "total_benchmarks": 17,
     "errored_benchmarks": 0,
     "overall_tpr": "62.9%",
-    "overall_fpr": "4.8%",
+    "overall_fpr": "4.7%",
     "excluded_from_overall": {
       "corpora": [
         "juliet-java"
@@ -26,7 +26,7 @@
       "false_negatives": 39287,
       "tpr": "3.1%"
     },
-    "total_elapsed_ms": 115014
+    "total_elapsed_ms": 56501
   },
   "results": [
     {
@@ -42,7 +42,7 @@
       "fpr": "0.0%",
       "score": "81.8%",
       "score_rule": "tpr - fpr",
-      "elapsed_ms": 269,
+      "elapsed_ms": 382,
       "categories": [
         {
           "category": "cmdi",
@@ -127,7 +127,7 @@
       "fpr": "0.0%",
       "score": "100.0%",
       "score_rule": "tpr - fpr",
-      "elapsed_ms": 182,
+      "elapsed_ms": 251,
       "categories": [
         {
           "category": "cmdi",
@@ -240,7 +240,7 @@
       "fpr": "0.0%",
       "score": "66.7%",
       "score_rule": "tpr - fpr",
-      "elapsed_ms": 195,
+      "elapsed_ms": 293,
       "categories": [
         {
           "category": "cmdi",
@@ -330,7 +330,7 @@
       "fpr": "0.0%",
       "score": "33.3%",
       "score_rule": "tpr - fpr",
-      "elapsed_ms": 250,
+      "elapsed_ms": 297,
       "categories": [
         {
           "category": "cmdi",
@@ -380,7 +380,7 @@
       "fpr": "0.0%",
       "score": "89.5%",
       "score_rule": "tpr - fpr",
-      "elapsed_ms": 177,
+      "elapsed_ms": 254,
       "categories": [
         {
           "category": "cmdi",
@@ -462,7 +462,7 @@
       "fpr": "0.0%",
       "score": "63.2%",
       "score_rule": "tpr - fpr",
-      "elapsed_ms": 222,
+      "elapsed_ms": 276,
       "categories": [
         {
           "category": "css_injection",
@@ -585,7 +585,7 @@
       "fpr": "0.0%",
       "score": "60.0%",
       "score_rule": "tpr - fpr",
-      "elapsed_ms": 725,
+      "elapsed_ms": 521,
       "categories": [
         {
           "category": "codeinj",
@@ -677,7 +677,7 @@
       "fpr": "0.0%",
       "score": "2.3%",
       "score_rule": "tpr - fpr",
-      "elapsed_ms": 38015,
+      "elapsed_ms": 17696,
       "categories": [
         {
           "category": "CWE113_HTTP_Response_Splitting",
@@ -2421,7 +2421,7 @@
       "fpr": "0.0%",
       "score": "3.1%",
       "score_rule": "tpr - fpr",
-      "elapsed_ms": 45548,
+      "elapsed_ms": 23048,
       "categories": [
         {
           "category": "CWE111_Unsafe_JNI",
@@ -43888,7 +43888,7 @@
       "fpr": "0.0%",
       "score": "40.0%",
       "score_rule": "tpr - fpr",
-      "elapsed_ms": 369,
+      "elapsed_ms": 357,
       "categories": [
         {
           "category": "codeinj",
@@ -43948,7 +43948,7 @@
       "fpr": "0.0%",
       "score": "100.0%",
       "score_rule": "tpr - fpr",
-      "elapsed_ms": 220,
+      "elapsed_ms": 288,
       "categories": [
         {
           "category": "cmdi",
@@ -44043,7 +44043,7 @@
       "fpr": "5.0%",
       "score": "92.2%",
       "score_rule": "tpr - fpr",
-      "elapsed_ms": 23045,
+      "elapsed_ms": 8369,
       "categories": [
         {
           "category": "cmdi",
@@ -45637,7 +45637,7 @@
       "fpr": "0.0%",
       "score": "46.7%",
       "score_rule": "tpr - fpr",
-      "elapsed_ms": 813,
+      "elapsed_ms": 636,
       "categories": [
         {
           "category": "cmdi",
@@ -45755,7 +45755,7 @@
       "fpr": "7.7%",
       "score": "81.5%",
       "score_rule": "tpr - fpr",
-      "elapsed_ms": 238,
+      "elapsed_ms": 277,
       "categories": [
         {
           "category": "cmdi",
@@ -45875,14 +45875,14 @@
       "dataset_revision": "6a5a72488ea830d99f9464fc1f0562c4f864214b",
       "tests": 122,
       "tp": 99,
-      "tn": 8,
-      "fp": 2,
+      "tn": 9,
+      "fp": 1,
       "fn": 13,
       "tpr": "88.4%",
-      "fpr": "20.0%",
-      "score": "68.4%",
+      "fpr": "10.0%",
+      "score": "78.4%",
       "score_rule": "tpr - fpr",
-      "elapsed_ms": 595,
+      "elapsed_ms": 498,
       "categories": [
         {
           "category": "aliasing",
@@ -45976,8 +45976,8 @@
           "category": "strong_updates",
           "cwe": "CWE-79",
           "tp": 1,
-          "tn": 3,
-          "fp": 1,
+          "tn": 4,
+          "fp": 0,
           "fn": 0
         }
       ],
@@ -46098,8 +46098,7 @@
         "Sanitizers6"
       ],
       "spurious_cases": [
-        "Pred3",
-        "StrongUpdates3"
+        "Pred3"
       ],
       "scan_report": "securibench-micro.scan.json"
     },
@@ -46117,7 +46116,7 @@
       "fpr": "0.0%",
       "score": "66.7%",
       "score_rule": "tpr - fpr",
-      "elapsed_ms": 2731,
+      "elapsed_ms": 2296,
       "categories": [
         {
           "category": "cmdi",
@@ -46179,7 +46178,7 @@
       "fpr": "0.0%",
       "score": "76.2%",
       "score_rule": "tpr - fpr",
-      "elapsed_ms": 1420,
+      "elapsed_ms": 762,
       "categories": [
         {
           "category": "deserialization",

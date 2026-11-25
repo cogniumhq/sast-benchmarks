@@ -5,14 +5,14 @@
   "dataset_revision": "6a5a72488ea830d99f9464fc1f0562c4f864214b",
   "tests": 122,
   "tp": 99,
-  "tn": 8,
-  "fp": 2,
+  "tn": 9,
+  "fp": 1,
   "fn": 13,
   "tpr": "88.4%",
-  "fpr": "20.0%",
-  "score": "68.4%",
+  "fpr": "10.0%",
+  "score": "78.4%",
   "score_rule": "tpr - fpr",
-  "elapsed_ms": 595,
+  "elapsed_ms": 498,
   "categories": [
     {
       "category": "aliasing",
@@ -106,8 +106,8 @@
       "category": "strong_updates",
       "cwe": "CWE-79",
       "tp": 1,
-      "tn": 3,
-      "fp": 1,
+      "tn": 4,
+      "fp": 0,
       "fn": 0
     }
   ],
@@ -228,8 +228,7 @@
     "Sanitizers6"
   ],
   "spurious_cases": [
-    "Pred3",
-    "StrongUpdates3"
+    "Pred3"
   ],
   "scan_report": "securibench-micro.scan.json"
 }
