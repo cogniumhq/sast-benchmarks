@@ -1,7 +1,5 @@
-# Detection-quality sweep — 2026-11-26
+# Detection-quality sweep — 2026-11-26 (nightly)
 
-Machine output behind [`../2026-11-26/`](../2026-11-26/summary.md). cognium-dev 4.23.0, commit `4fbbfb4`.
+Nightly sweep. cognium-dev 4.23.0, ref `main`, commit `db6da1c4138d039f45da254830df41bf47d5c10b`. Run: https://github.com/cogniumhq/sast-benchmarks/actions/runs/45814214682
 
-This folder keeps `run-summary.json` and one scorecard per corpus. `scripts/validate-results.mjs` validates `results/2026-11-26/results.json`.
-
-Raw scan JSON, when the sweep uploaded it, is gzipped under `raw/2026-11-26/<corpus>.scan.json.gz`.
+This folder keeps `run-summary.json` and one scorecard per corpus, for cogniumhq/loops `checks/measurements.py`.
