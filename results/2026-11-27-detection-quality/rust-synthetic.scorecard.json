@@ -1,0 +1,126 @@
+{
+  "corpus": "rust-synthetic",
+  "language": "Rust",
+  "benchmark": "rust-synthetic",
+  "tests": 50,
+  "tp": 33,
+  "tn": 12,
+  "fp": 1,
+  "fn": 4,
+  "tpr": "89.2%",
+  "fpr": "7.7%",
+  "score": "81.5%",
+  "score_rule": "tpr - fpr",
+  "elapsed_ms": 277,
+  "categories": [
+    {
+      "category": "cmdi",
+      "cwe": "CWE-78",
+      "tp": 5,
+      "tn": 2,
+      "fp": 0,
+      "fn": 2
+    },
+    {
+      "category": "deser",
+      "cwe": "CWE-502",
+      "tp": 4,
+      "tn": 1,
+      "fp": 0,
+      "fn": 2
+    },
+    {
+      "category": "log_injection",
+      "cwe": "CWE-117",
+      "tp": 2,
+      "tn": 1,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "open_redirect",
+      "cwe": "CWE-601",
+      "tp": 2,
+      "tn": 0,
+      "fp": 1,
+      "fn": 0
+    },
+    {
+      "category": "pathtraver",
+      "cwe": "CWE-22",
+      "tp": 6,
+      "tn": 2,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "sqli",
+      "cwe": "CWE-89",
+      "tp": 6,
+      "tn": 2,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "ssrf",
+      "cwe": "CWE-918",
+      "tp": 4,
+      "tn": 1,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "category": "xss",
+      "cwe": "CWE-79",
+      "tp": 4,
+      "tn": 3,
+      "fp": 0,
+      "fn": 0
+    }
+  ],
+  "detected_cases": [
+    "cmdi_actix_query_to_command",
+    "cmdi_env_to_command",
+    "cmdi_rocket_param_to_command",
+    "cmdi_spawn_shell",
+    "cmdi_tokio_process",
+    "deser_ron_file",
+    "deser_serde_json_untrusted",
+    "deser_toml_untrusted",
+    "deser_yaml_network",
+    "log_injection_basic",
+    "log_injection_tracing",
+    "open_redirect_header",
+    "open_redirect_see_other",
+    "pathtraver_async_file",
+    "pathtraver_create_dir",
+    "pathtraver_file_open",
+    "pathtraver_include_path",
+    "pathtraver_read_dir",
+    "pathtraver_write_file",
+    "sqli_concat_in_loop",
+    "sqli_diesel_raw_sql",
+    "sqli_interpolated_where",
+    "sqli_rusqlite_format",
+    "sqli_sqlx_format_query",
+    "sqli_tokio_postgres",
+    "ssrf_hyper_client",
+    "ssrf_redirect_follow",
+    "ssrf_reqwest_user_url",
+    "ssrf_ureq_user_url",
+    "xss_actix_body_reflect",
+    "xss_format_html_attr",
+    "xss_tera_template",
+    "xss_warp_html_reply"
+  ],
+  "missed_cases": [
+    "cmdi_axum_body_to_command",
+    "cmdi_stdin_to_command",
+    "deser_bincode_network",
+    "deser_msgpack_network"
+  ],
+  "spurious_cases": [
+    "open_redirect_safe_relative"
+  ],
+  "scan_report": "rust-synthetic.scan.json"
+}
