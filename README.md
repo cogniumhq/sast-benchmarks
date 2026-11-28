@@ -26,6 +26,8 @@ You need nothing but `git` and Node.js 18+ to read, validate and re-score
 everything here. Re-running a tool additionally needs that tool (install
 lines are in each `tools/<tool>/README.md`).
 
+> **Engine name from cognium 5.** `cognium` 5 is becoming the one Cognium CLI and replaces `cognium-dev` and `cognium-ai`. Rows measured from then on name `cognium <version>` as the engine, with the same scorer and the same per-row version, configuration and mode. Every row already published stays as it is, under the engine name it was measured with. Nothing below changes.
+
 ## Headline: OWASP Benchmark Java v1.2, full suite, tool comparison
 
 All **2,740** test cases (1,415 vulnerable, 1,325 safe), BenchmarkJava
