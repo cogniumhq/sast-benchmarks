@@ -14,7 +14,7 @@
   "fpr": "0.0%",
   "score": "2.3%",
   "score_rule": "tpr - fpr",
-  "elapsed_ms": 38298,
+  "elapsed_ms": 18233,
   "categories": [
     {
       "category": "CWE113_HTTP_Response_Splitting",
